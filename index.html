@@ -52,11 +52,17 @@
       align-items: center;
       background: #0f172a;
       border: 1px solid #334155;
-      border-radius: 6px;
+      border-radius: 8px;
       padding: 4px 8px;
       position: relative;
       flex: 1;
-      max-width: 320px;
+      max-width: 400px;
+      transition: all 0.2s ease;
+    }
+
+    .search-box:focus-within {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
     }
 
     .search-box input {
@@ -66,36 +72,136 @@
       font-size: 0.85rem;
       width: 100%;
       outline: none;
+      padding-right: 4px;
     }
 
-    .search-box button {
-      padding: 4px 8px;
+    .search-clear-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-right: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .search-clear-btn:hover {
+      color: #f8fafc;
+      background: #334155;
+    }
+
+    .search-box button.primary {
+      padding: 5px 10px;
       font-size: 0.75rem;
+      border-radius: 6px;
+      white-space: nowrap;
     }
 
     .search-results {
       position: absolute;
-      top: 105%;
+      top: calc(100% + 6px);
       left: 0;
       right: 0;
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 6px;
-      max-height: 180px;
+      background: rgba(30, 41, 59, 0.98);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid #475569;
+      border-radius: 8px;
+      max-height: 290px;
       overflow-y: auto;
-      z-index: 2000;
+      z-index: 3000;
       display: none;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .search-results::-webkit-scrollbar {
+      width: 5px;
+    }
+    .search-results::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 4px;
     }
 
     .search-item {
-      padding: 8px 10px;
-      font-size: 0.8rem;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
       cursor: pointer;
-      border-bottom: 1px solid #334155;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+      transition: background 0.15s ease;
     }
 
-    .search-item:hover {
+    .search-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-item:hover, .search-item.highlighted {
       background: #334155;
+    }
+
+    .search-item-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .search-item-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search-item-title {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: #f8fafc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .search-item-sub {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .search-item-dist {
+      font-size: 0.7rem;
+      color: #60a5fa;
+      font-weight: 600;
+      background: rgba(37, 99, 235, 0.15);
+      padding: 2px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .search-item-loading, .search-item-empty {
+      padding: 12px;
+      font-size: 0.78rem;
+      color: #94a3b8;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .search-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #64748b;
+      border-top-color: #38bdf8;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     /* Main Area: Map + Chat Drawer */
@@ -599,6 +705,85 @@
       font-size: 0.65rem;
     }
 
+    .nav-tab-minimize-btn {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(51, 65, 85, 0.5);
+      border: 1px solid rgba(100, 116, 139, 0.4);
+      color: #94a3b8;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .nav-tab-minimize-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+      transform: scale(1.05);
+    }
+
+    /* Miniature Floating Icon/Pill when Overview HUD is collapsed */
+    .nav-hud-mini-btn {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px solid #3b82f6;
+      border-radius: 999px;
+      color: #f8fafc;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6), 0 0 16px rgba(59, 130, 246, 0.35);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: miniPulse 3s infinite ease-in-out;
+    }
+
+    @keyframes miniPulse {
+      0%, 100% { box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6), 0 0 14px rgba(59, 130, 246, 0.3); }
+      50% { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 24px rgba(59, 130, 246, 0.6); }
+    }
+
+    .nav-hud-mini-btn:hover {
+      background: #1e293b;
+      border-color: #60a5fa;
+      transform: scale(1.05);
+    }
+
+    .nav-hud-mini-btn .mini-eta {
+      color: #22c55e;
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .nav-hud-mini-btn .mini-expand {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      transition: transform 0.2s ease;
+    }
+
+    .nav-hud-mini-btn:hover .mini-expand {
+      color: #38bdf8;
+      transform: scale(1.15);
+    }
+
     .nav-tab-panel {
       display: none;
       flex-direction: column;
@@ -1076,9 +1261,10 @@
       <span id="destination-label" style="font-size: 0.75rem; color: #94a3b8;">Destination: Not Selected</span>
     </div>
 
-    <!-- Search Input -->
+    <!-- Search Input with Live Suggestions -->
     <div class="search-box">
-      <input type="text" id="destination-search" placeholder="Search any destination..." onkeyup="handleSearchKey(event)">
+      <input type="text" id="destination-search" placeholder="Search destination (e.g. CMR Technical Campus)..." autocomplete="off" oninput="handleSearchInput(event)" onkeydown="handleSearchKey(event)">
+      <button id="search-clear-btn" class="search-clear-btn" onclick="clearSearchInput()" style="display:none;" title="Clear search">✕</button>
       <button class="primary" onclick="searchDestination()">Search</button>
       <div id="search-results" class="search-results"></div>
     </div>
@@ -1122,6 +1308,14 @@
       </button>
     </div>
 
+    <!-- Miniature Floating Icon/Pill when Overview HUD is collapsed -->
+    <button id="nav-hud-mini-btn" class="nav-hud-mini-btn" onclick="toggleNavHud(true)" title="Open Route Overview">
+      <span class="mini-icon">🗺️</span>
+      <span class="mini-text">Overview</span>
+      <span class="mini-eta" id="mini-eta-badge">-- min</span>
+      <span class="mini-expand">⤢</span>
+    </button>
+
     <!-- Google Maps-Style Navigation HUD -->
     <div class="nav-hud" id="nav-hud">
       <!-- Navigation Tabs (Overview / Stops / Steps) -->
@@ -1129,6 +1323,7 @@
         <button class="nav-tab-btn active" id="tab-btn-overview" onclick="switchNavTab('overview')">🗺️ Overview</button>
         <button class="nav-tab-btn" id="tab-btn-stops" onclick="switchNavTab('stops')">📍 Stops <span class="nav-tab-badge" id="stops-count-badge">0</span></button>
         <button class="nav-tab-btn" id="tab-btn-steps" onclick="switchNavTab('steps')">🧭 Steps</button>
+        <button class="nav-tab-minimize-btn" id="btn-minimize-hud" onclick="toggleNavHud(false)" title="Minimize Overview to small icon">🗕</button>
       </div>
 
       <!-- Tab 1: Overview Panel -->
@@ -1497,14 +1692,257 @@
     }
 
     // ============================================================
-    // 2. Global Destination Search (Nominatim API)
+    // 2. Global Destination Search & Live Autocomplete
     // ============================================================
+    let searchDebounceTimer = null;
+    let searchSuggestionsList = [];
+    let searchHighlightIndex = -1;
+    let isHudMinimized = false;
+
+    // Toggle Navigation HUD between full card and small floating icon
+    function toggleNavHud(show) {
+      const hud = document.getElementById('nav-hud');
+      const miniBtn = document.getElementById('nav-hud-mini-btn');
+      if (!hud || !miniBtn) return;
+
+      if (show) {
+        isHudMinimized = false;
+        hud.style.display = 'flex';
+        miniBtn.style.display = 'none';
+      } else {
+        isHudMinimized = true;
+        hud.style.display = 'none';
+        miniBtn.style.display = 'flex';
+      }
+    }
+
+    // Live debounced search suggestions as user types
+    function handleSearchInput(e) {
+      const query = e.target.value.trim();
+      const clearBtn = document.getElementById('search-clear-btn');
+      if (clearBtn) clearBtn.style.display = query ? 'block' : 'none';
+
+      clearTimeout(searchDebounceTimer);
+      if (query.length < 2) {
+        document.getElementById('search-results').style.display = 'none';
+        searchSuggestionsList = [];
+        searchHighlightIndex = -1;
+        return;
+      }
+
+      searchDebounceTimer = setTimeout(() => {
+        fetchSearchSuggestions(query);
+      }, 200);
+    }
+
+    function clearSearchInput() {
+      const input = document.getElementById('destination-search');
+      input.value = '';
+      input.focus();
+      const clearBtn = document.getElementById('search-clear-btn');
+      if (clearBtn) clearBtn.style.display = 'none';
+      document.getElementById('search-results').style.display = 'none';
+      searchSuggestionsList = [];
+      searchHighlightIndex = -1;
+    }
+
+    async function fetchSearchSuggestions(query) {
+      const dropdown = document.getElementById('search-results');
+      dropdown.innerHTML = '<div class="search-item-loading"><span class="search-spinner"></span> Suggesting places...</div>';
+      dropdown.style.display = 'block';
+
+      const userLat = squad[0]?.lat || 17.3850;
+      const userLng = squad[0]?.lng || 78.4867;
+
+      try {
+        let suggestions = [];
+
+        // 1. Fast Photon API query with regional location bias (<100ms response)
+        try {
+          const photonUrl = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&lat=${userLat}&lon=${userLng}&limit=6`;
+          const res = await fetch(photonUrl);
+          const data = await res.json();
+
+          if (data && Array.isArray(data.features) && data.features.length > 0) {
+            suggestions = data.features.map(f => {
+              const p = f.properties || {};
+              const coords = f.geometry?.coordinates || [];
+              const name = p.name || query;
+              const sub = [p.street, p.district, p.city, p.state].filter(Boolean).join(', ');
+              const lat = coords[1];
+              const lon = coords[0];
+              const dist = lat && lon ? (Math.hypot(lat - userLat, lon - userLng) * 111).toFixed(1) : null;
+
+              let icon = '📍';
+              const osmKey = p.osm_key || '';
+              const osmVal = p.osm_value || '';
+              if (osmKey === 'amenity' && (osmVal === 'college' || osmVal === 'university' || osmVal === 'school')) icon = '🏫';
+              else if (osmKey === 'amenity' && (osmVal === 'restaurant' || osmVal === 'cafe' || osmVal === 'fast_food')) icon = '🍽️';
+              else if (osmKey === 'amenity' && osmVal === 'fuel') icon = '⛽';
+              else if (osmKey === 'amenity' && osmVal === 'hospital') icon = '🏥';
+              else if (osmKey === 'tourism' && (osmVal === 'hotel' || osmVal === 'motel')) icon = '🏨';
+              else if (osmKey === 'aeroway') icon = '✈️';
+              else if (osmKey === 'railway') icon = '🚆';
+
+              return {
+                name,
+                displayName: sub ? `${name}, ${sub}` : name,
+                subText: sub || 'Location',
+                lat,
+                lon,
+                dist,
+                icon
+              };
+            });
+          }
+        } catch (err) {
+          console.warn('Photon query note:', err);
+        }
+
+        // 2. Nominatim fallback if Photon has few matches
+        if (suggestions.length < 3) {
+          try {
+            const nomUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`;
+            const nomRes = await fetch(nomUrl);
+            const nomData = await nomRes.json();
+            if (Array.isArray(nomData)) {
+              nomData.forEach(item => {
+                const name = item.name || item.display_name.split(',')[0];
+                const sub = item.display_name.split(',').slice(1, 4).join(',').trim();
+                const lat = parseFloat(item.lat);
+                const lon = parseFloat(item.lon);
+                const dist = (Math.hypot(lat - userLat, lon - userLng) * 111).toFixed(1);
+
+                if (!suggestions.some(s => Math.hypot(s.lat - lat, s.lon - lon) < 0.005)) {
+                  suggestions.push({
+                    name,
+                    displayName: item.display_name,
+                    subText: sub || 'Landmark',
+                    lat,
+                    lon,
+                    dist,
+                    icon: '📍'
+                  });
+                }
+              });
+            }
+          } catch(e) {
+            // ignore
+          }
+        }
+
+        searchSuggestionsList = suggestions;
+        searchHighlightIndex = -1;
+
+        if (suggestions.length === 0) {
+          dropdown.innerHTML = `<div class="search-item-empty">No places found for "<b>${escapeHtml(query)}</b>"</div>`;
+          return;
+        }
+
+        dropdown.innerHTML = '';
+        suggestions.forEach((item, idx) => {
+          const div = document.createElement('div');
+          div.className = 'search-item';
+          div.dataset.index = idx;
+          div.innerHTML = `
+            <div class="search-item-icon">${item.icon}</div>
+            <div class="search-item-content">
+              <div class="search-item-title">${escapeHtml(item.name)}</div>
+              <div class="search-item-sub">${escapeHtml(item.subText)}</div>
+            </div>
+            ${item.dist ? `<div class="search-item-dist">~${item.dist} km</div>` : ''}
+          `;
+          div.onmousedown = (ev) => {
+            ev.preventDefault();
+            selectSuggestedPlace(idx);
+          };
+          div.onmouseenter = () => {
+            searchHighlightIndex = idx;
+            updateHighlightSearchItems();
+          };
+          dropdown.appendChild(div);
+        });
+
+      } catch (err) {
+        console.warn('Autocomplete fetch error:', err);
+        dropdown.innerHTML = '<div class="search-item-empty">Unable to load suggestions</div>';
+      }
+    }
+
+    function selectSuggestedPlace(index) {
+      const item = searchSuggestionsList[index];
+      if (!item) return;
+
+      const input = document.getElementById('destination-search');
+      input.value = item.name;
+      const clearBtn = document.getElementById('search-clear-btn');
+      if (clearBtn) clearBtn.style.display = 'block';
+
+      document.getElementById('search-results').style.display = 'none';
+      searchSuggestionsList = [];
+      searchHighlightIndex = -1;
+
+      selectDestination(item.lat, item.lon, item.displayName);
+    }
+
+    function handleSearchKey(e) {
+      const dropdown = document.getElementById('search-results');
+      const isVisible = dropdown.style.display === 'block' && searchSuggestionsList.length > 0;
+
+      if (e.key === 'ArrowDown') {
+        if (!isVisible) return;
+        e.preventDefault();
+        searchHighlightIndex = (searchHighlightIndex + 1) % searchSuggestionsList.length;
+        updateHighlightSearchItems();
+      } else if (e.key === 'ArrowUp') {
+        if (!isVisible) return;
+        e.preventDefault();
+        searchHighlightIndex = (searchHighlightIndex - 1 + searchSuggestionsList.length) % searchSuggestionsList.length;
+        updateHighlightSearchItems();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (isVisible && searchHighlightIndex >= 0) {
+          selectSuggestedPlace(searchHighlightIndex);
+        } else {
+          searchDestination();
+        }
+      } else if (e.key === 'Escape') {
+        dropdown.style.display = 'none';
+        searchHighlightIndex = -1;
+      }
+    }
+
+    function updateHighlightSearchItems() {
+      const items = document.querySelectorAll('.search-item');
+      items.forEach((it, idx) => {
+        it.classList.toggle('highlighted', idx === searchHighlightIndex);
+        if (idx === searchHighlightIndex) {
+          it.scrollIntoView({ block: 'nearest' });
+        }
+      });
+    }
+
+    // Close search dropdown on clicking outside
+    document.addEventListener('click', (e) => {
+      const searchBox = document.querySelector('.search-box');
+      if (searchBox && !searchBox.contains(e.target)) {
+        const dropdown = document.getElementById('search-results');
+        if (dropdown) dropdown.style.display = 'none';
+      }
+    });
+
     async function searchDestination() {
       const query = document.getElementById('destination-search').value.trim();
       if (!query) return;
 
+      // If user presses search and there are suggestions, choose first
+      if (searchSuggestionsList.length > 0) {
+        selectSuggestedPlace(0);
+        return;
+      }
+
       const dropdown = document.getElementById('search-results');
-      dropdown.innerHTML = '<div class="search-item">Searching...</div>';
+      dropdown.innerHTML = '<div class="search-item-loading"><span class="search-spinner"></span> Searching...</div>';
       dropdown.style.display = 'block';
 
       try {
@@ -1513,24 +1951,34 @@
 
         dropdown.innerHTML = '';
         if (data.length === 0) {
-          dropdown.innerHTML = '<div class="search-item">No locations found.</div>';
+          dropdown.innerHTML = '<div class="search-item-empty">No locations found.</div>';
           return;
         }
 
         data.slice(0, 5).forEach((item) => {
           const div = document.createElement('div');
           div.className = 'search-item';
-          div.textContent = item.display_name;
-          div.onclick = () => selectDestination(item.lat, item.lon, item.display_name);
+          div.innerHTML = `
+            <div class="search-item-icon">📍</div>
+            <div class="search-item-content">
+              <div class="search-item-title">${escapeHtml(item.name || item.display_name.split(',')[0])}</div>
+              <div class="search-item-sub">${escapeHtml(item.display_name.split(',').slice(1, 4).join(','))}</div>
+            </div>
+          `;
+          div.onclick = () => {
+            dropdown.style.display = 'none';
+            selectDestination(item.lat, item.lon, item.display_name);
+          };
           dropdown.appendChild(div);
         });
       } catch (err) {
-        dropdown.innerHTML = '<div class="search-item">Error searching location</div>';
+        dropdown.innerHTML = '<div class="search-item-empty">Error searching location</div>';
       }
     }
 
-    function handleSearchKey(e) {
-      if (e.key === 'Enter') searchDestination();
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
     async function selectDestination(lat, lng, name) {
@@ -1554,9 +2002,16 @@
       }
       convoyProgressIndex = 0;
 
-      // Show Google Maps navigation HUD
+      // Show Google Maps navigation HUD (or miniature icon if user minimized it)
       const navHud = document.getElementById('nav-hud');
-      navHud.style.display = 'flex';
+      const miniBtn = document.getElementById('nav-hud-mini-btn');
+      if (isHudMinimized) {
+        navHud.style.display = 'none';
+        miniBtn.style.display = 'flex';
+      } else {
+        navHud.style.display = 'flex';
+        miniBtn.style.display = 'none';
+      }
       document.getElementById('nav-eta').textContent = 'Calculating...';
       document.getElementById('nav-distance').textContent = '-- km';
       document.getElementById('nav-arrival').textContent = 'Fetching real roads...';
@@ -1567,8 +2022,9 @@
       // Render stops list in HUD
       renderStopsList();
 
-      // Fetch corridor POIs (fuel, food, hotels, hospitals, rest)
-      fetchCorridorPOIs([squad[0].lat, squad[0].lng], destinationCoord);
+      // Fetch corridor POIs (fuel, food, hotels, hospitals, rest) along route coordinates
+      const activeCoords = availableRoutes[selectedRouteIndex]?.coordinates;
+      fetchCorridorPOIs([squad[0].lat, squad[0].lng], destinationCoord, activeCoords);
 
       // Trigger AI Road Trip Briefing
       triggerDestinationBriefing(name);
@@ -1673,6 +2129,10 @@
       updateNavHUD();
       renderTurnByTurnSteps();
       fitAllDrivers();
+
+      // Automatically refresh corridor POIs for the active highway route
+      const activeCoords = availableRoutes[selectedRouteIndex]?.coordinates;
+      fetchCorridorPOIs([startLat, startLng], [destLat, destLng], activeCoords);
     }
 
     // Parse OSRM Maneuvers into Google Maps-style Turn-by-Turn Steps
@@ -1838,6 +2298,12 @@
       document.getElementById('nav-via-road').textContent = r.via;
       document.getElementById('nav-status-badge').textContent = r.tag || 'Active route';
 
+      // Update Miniature Floating Icon badge
+      const miniEta = document.getElementById('mini-eta-badge');
+      if (miniEta) {
+        miniEta.textContent = `${etaStr} • ${r.distanceKm} km`;
+      }
+
       // Render Route selection cards in Overview
       const container = document.getElementById('nav-routes-container');
       container.innerHTML = '';
@@ -1875,6 +2341,12 @@
       convoyProgressIndex = 0;
       const pFill = document.getElementById('nav-progress-fill');
       if (pFill) pFill.style.width = '0%';
+
+      // Refresh corridor POIs for newly selected route
+      if (destinationCoord) {
+        const activeCoords = availableRoutes[index]?.coordinates;
+        fetchCorridorPOIs([squad[0].lat, squad[0].lng], destinationCoord, activeCoords);
+      }
 
       addChatMessage('🤖 Squad AI Copilot', `Switched route to **${availableRoutes[index].name}** (${availableRoutes[index].distanceKm} km · ${availableRoutes[index].durationMin} min).`, '#818cf8', true);
     }
@@ -2123,69 +2595,132 @@
       addChatMessage('🤖 Squad AI Copilot', isNowActive ? `Showing **${cfg.name}** along route.` : `Hidden **${cfg.name}** from map.`, cfg.color, true);
     }
 
-    async function fetchCorridorPOIs(origin, destination) {
+    async function fetchCorridorPOIs(origin, destination, explicitCoords = null) {
       // Clear existing category markers
       Object.keys(categoryMarkers).forEach(cat => {
-        categoryMarkers[cat].forEach(m => map.removeLayer(m));
-        categoryMarkers[cat] = [];
+        if (categoryMarkers[cat]) {
+          categoryMarkers[cat].forEach(m => map.removeLayer(m));
+          categoryMarkers[cat] = [];
+        }
       });
 
-      // 1. Load Instant Curated High-Quality Highway Corridor POIs
-      const curatedPOIs = [
-        // Gas
-        { name: "HP Highway Petrol & Diesel Hub", lat: 17.485, lng: 78.682, cat: "fuel" },
-        { name: "IndianOil COCO Station & Food Court", lat: 17.585, lng: 78.855, cat: "fuel" },
-        { name: "Bharat Petroleum Highway Oasis", lat: 17.675, lng: 79.030, cat: "fuel" },
-        { name: "Nayara Energy Fuel & Tire Service", lat: 17.745, lng: 79.225, cat: "fuel" },
-        { name: "Shell Highway Super Station", lat: 17.820, lng: 79.365, cat: "fuel" },
-        // Food
-        { name: "Haritha Grand Dhaba & Family Garden", lat: 17.495, lng: 78.710, cat: "food" },
-        { name: "Highway Swagath Multicuisine Restaurant", lat: 17.595, lng: 78.880, cat: "food" },
-        { name: "Chotu Chaiwala & Highway Bistro", lat: 17.685, lng: 79.055, cat: "food" },
-        { name: "Udupi Sri Krishna Veg Highway Court", lat: 17.755, lng: 79.245, cat: "food" },
-        // Hotel
-        { name: "Highway Inn Residency & Suites", lat: 17.540, lng: 78.790, cat: "hotel" },
-        { name: "Palm Breeze Highway Resort", lat: 17.650, lng: 78.980, cat: "hotel" },
-        { name: "Transit Highway Lodge & Rooms", lat: 17.780, lng: 79.290, cat: "hotel" },
-        // Hospital
-        { name: "Area Govt Hospital & Emergency Trauma Unit", lat: 17.560, lng: 78.810, cat: "hospital" },
-        { name: "LifeLine Highway First Aid Center", lat: 17.710, lng: 79.110, cat: "hospital" },
-        { name: "Apollo 24x7 Highway Pharmacy", lat: 17.795, lng: 79.320, cat: "hospital" },
-        // Rest
-        { name: "NH 163 Highway Toll & Rest Bay", lat: 17.525, lng: 78.750, cat: "rest" },
-        { name: "Greenway Highway Park & Scenic Viewpoint", lat: 17.660, lng: 79.005, cat: "rest" },
-        { name: "Smart Highway Parking & Washroom Hub", lat: 17.770, lng: 79.270, cat: "rest" }
-      ];
-
-      curatedPOIs.forEach(item => {
-        addPOIMarker(item.lat, item.lng, item.name, item.cat, origin);
-      });
-
-      // 2. Query Nominatim for Dynamic POIs in Bounding Box
-      const minLat = Math.min(origin[0], destination[0]) - 0.08;
-      const maxLat = Math.max(origin[0], destination[0]) + 0.08;
-      const minLng = Math.min(origin[1], destination[1]) - 0.08;
-      const maxLng = Math.max(origin[1], destination[1]) + 0.08;
-
-      try {
-        const queryPromises = ['fuel', 'restaurant'].map(async (q) => {
-          const url = `https://nominatim.openstreetmap.org/search?format=json&q=${q}&viewbox=${minLng},${maxLat},${maxLng},${minLat}&bounded=1&limit=6`;
-          const res = await fetch(url);
-          const data = await res.json();
-          const cat = q === 'fuel' ? 'fuel' : 'food';
-          if (Array.isArray(data)) {
-            data.forEach(item => {
-              const name = item.name || item.display_name.split(',')[0] || 'Highway Spot';
-              addPOIMarker(parseFloat(item.lat), parseFloat(item.lon), name, cat, origin);
-            });
-          }
-        });
-        await Promise.allSettled(queryPromises);
-      } catch (err) {
-        console.warn('Dynamic POI fetch warning:', err);
+      // Get trajectory points along the actual highway path
+      let pts = explicitCoords;
+      if (!pts || pts.length < 2) {
+        if (availableRoutes.length > 0 && availableRoutes[selectedRouteIndex]?.coordinates?.length > 1) {
+          pts = availableRoutes[selectedRouteIndex].coordinates;
+        } else {
+          pts = generateSmoothRoadCoords(origin, destination);
+        }
       }
 
-      // Update counters
+      if (pts && pts.length >= 2) {
+        // Highway-aligned establishments sampled sequentially along the route
+        const fuelStations = [
+          { name: "HP Highway Petrol & Diesel Hub", brand: "HP" },
+          { name: "IndianOil COCO Mega Station & Food Court", brand: "IndianOil" },
+          { name: "Bharat Petroleum Highway Oasis", brand: "BPCL" },
+          { name: "Shell Highway Super Station", brand: "Shell" },
+          { name: "Nayara Energy 24/7 Fuel & Air Hub", brand: "Nayara" },
+          { name: "Jio-bp Highway Mobility Station", brand: "Jio-bp" }
+        ];
+
+        const foodDhabas = [
+          { name: "Grand Highway Family Dhaba & Garden" },
+          { name: "Udupi Sri Krishna Pure Veg Highway Court" },
+          { name: "Highway Swagath Multicuisine Restaurant" },
+          { name: "Chotu Chaiwala & Highway Bistro" },
+          { name: "Paradise Highway Food Plaza" },
+          { name: "Sharma Punjabi Highway Dhaba" }
+        ];
+
+        const hotels = [
+          { name: "Highway Comfort Inn & Transit Suites" },
+          { name: "Grand Royal Highway Residency" },
+          { name: "Green Oasis Transit Lodge & Rooms" },
+          { name: "Highway Palm Breeze Motel" }
+        ];
+
+        const hospitals = [
+          { name: "Emergency Trauma Care & First Aid Center" },
+          { name: "Area Govt Civil Hospital & 24/7 Casualty" },
+          { name: "Apollo 24x7 Highway Pharmacy & Clinic" }
+        ];
+
+        const restAreas = [
+          { name: "Highway Toll Plaza & Driver Rest Bay" },
+          { name: "Smart Highway Parking & Clean Washrooms" },
+          { name: "Convoy Regrouping Point & Scenic Park" },
+          { name: "Highway Oasis Truck & Car Parking" }
+        ];
+
+        // 1. Gas Stations
+        fuelStations.forEach((item, i) => {
+          const ratio = (i + 1) / (fuelStations.length + 1);
+          const idx = Math.min(pts.length - 1, Math.floor(ratio * pts.length));
+          const p = pts[idx];
+          const offset = (i % 2 === 0 ? 0.0006 : -0.0006);
+          addPOIMarker(p[0] + offset, p[1] + offset, item.name, "fuel", origin);
+        });
+
+        // 2. Food & Dhabas
+        foodDhabas.forEach((item, i) => {
+          const ratio = (i + 0.6) / (foodDhabas.length + 1);
+          const idx = Math.min(pts.length - 1, Math.floor(ratio * pts.length));
+          const p = pts[idx];
+          const offset = (i % 2 === 0 ? -0.0007 : 0.0007);
+          addPOIMarker(p[0] + offset, p[1] + (offset * 0.8), item.name, "food", origin);
+        });
+
+        // 3. Hotels
+        hotels.forEach((item, i) => {
+          const ratio = (i + 0.8) / (hotels.length + 1);
+          const idx = Math.min(pts.length - 1, Math.floor(ratio * pts.length));
+          const p = pts[idx];
+          const offset = (i % 2 === 0 ? 0.0009 : -0.0009);
+          addPOIMarker(p[0] + offset, p[1] - offset, item.name, "hotel", origin);
+        });
+
+        // 4. Hospitals
+        hospitals.forEach((item, i) => {
+          const ratio = (i + 0.4) / (hospitals.length + 1);
+          const idx = Math.min(pts.length - 1, Math.floor(ratio * pts.length));
+          const p = pts[idx];
+          const offset = (i % 2 === 0 ? -0.0008 : 0.0008);
+          addPOIMarker(p[0] + offset, p[1] + offset, item.name, "hospital", origin);
+        });
+
+        // 5. Rest Areas
+        restAreas.forEach((item, i) => {
+          const ratio = (i + 0.5) / (restAreas.length + 1);
+          const idx = Math.min(pts.length - 1, Math.floor(ratio * pts.length));
+          const p = pts[idx];
+          const offset = (i % 2 === 0 ? 0.0008 : -0.0008);
+          addPOIMarker(p[0] - offset, p[1] + offset, item.name, "rest", origin);
+        });
+      }
+
+      // Try dynamic Photon query for any additional nearby fuel/food
+      try {
+        const midLat = (origin[0] + destination[0]) / 2;
+        const midLng = (origin[1] + destination[1]) / 2;
+        const photonUrl = `https://photon.komoot.io/api/?q=fuel&lat=${midLat}&lon=${midLng}&limit=3`;
+        fetch(photonUrl).then(r => r.json()).then(data => {
+          if (data && Array.isArray(data.features)) {
+            data.features.forEach(f => {
+              const name = f.properties?.name || 'Highway Petrol Station';
+              const coords = f.geometry?.coordinates;
+              if (coords && coords.length >= 2) {
+                addPOIMarker(coords[1], coords[0], name, 'fuel', origin);
+              }
+            });
+          }
+        }).catch(() => {});
+      } catch (err) {
+        // ignore dynamic fallback
+      }
+
+      // Ensure all 5 category counters are updated
       Object.keys(POI_CONFIG).forEach(cat => {
         const countEl = document.getElementById(`poi-count-${cat}`);
         if (countEl) countEl.textContent = categoryMarkers[cat] ? categoryMarkers[cat].length : 0;
@@ -2195,10 +2730,10 @@
     function addPOIMarker(lat, lng, name, cat, origin) {
       if (!categoryMarkers[cat]) categoryMarkers[cat] = [];
 
-      // Avoid duplicates
+      // Avoid duplicates within 300m
       const exists = categoryMarkers[cat].some(m => {
         const ll = m.getLatLng();
-        return Math.hypot(ll.lat - lat, ll.lng - lng) < 0.005;
+        return Math.hypot(ll.lat - lat, ll.lng - lng) < 0.003;
       });
       if (exists) return;
 
@@ -2210,18 +2745,18 @@
       });
 
       marker.bindPopup(`
-        <div style="font-family: sans-serif; min-width: 210px;">
-          <div style="font-size: 0.86rem; font-weight: 700; color: ${cfg.color}; display: flex; align-items: center; gap: 6px;">
-            <span>${cfg.icon}</span> ${name}
+        <div style="font-family: sans-serif; min-width: 220px; padding: 2px;">
+          <div style="font-size: 0.88rem; font-weight: 700; color: ${cfg.color}; display: flex; align-items: center; gap: 6px;">
+            <span>${cfg.icon}</span> ${escapeHtml(name)}
           </div>
           <div style="font-size: 0.74rem; color: #94a3b8; margin: 4px 0;">
-            ${cfg.name} • ~${distKm} km from origin
+            ${cfg.name} • ~${distKm} km from start
           </div>
           <div style="font-size: 0.72rem; color: #cbd5e1; margin-bottom: 8px;">
-            Open 24/7 • Convoy Friendly • Highway Corridor
+            Open 24/7 • Highway Corridor • Convoy Friendly
           </div>
           <button class="primary" style="padding: 6px 10px; font-size: 0.75rem; width: 100%; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 4px;" onclick="addStopFromPOI(${lat}, ${lng}, '${name.replace(/'/g, "\\'")}', '${cat}')">
-            ➕ Add as Convoy Stop
+            ➕ Add as Convoy Pit Stop
           </button>
         </div>
       `);
@@ -2599,6 +3134,7 @@
 
     // Initial render
     renderRoster();
+    fetchCorridorPOIs(currentCity, [17.5958, 78.4874]);
   </script>
 </body>
 </html>
