@@ -802,14 +802,14 @@
       transform: translateX(-50%);
       display: none;
       gap: 6px;
-      z-index: 999;
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      padding: 5px 8px;
+      z-index: 1200;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 6px 10px;
       border-radius: 999px;
-      border: 1px solid rgba(51, 65, 85, 0.8);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
       max-width: 90vw;
       overflow-x: auto;
     }
@@ -1263,7 +1263,7 @@
 
     <!-- Search Input with Live Suggestions -->
     <div class="search-box">
-      <input type="text" id="destination-search" placeholder="Search destination (e.g. CMR Technical Campus)..." autocomplete="off" oninput="handleSearchInput(event)" onkeydown="handleSearchKey(event)">
+      <input type="text" id="destination-search" placeholder="Search destination..." autocomplete="off" oninput="handleSearchInput(event)" onkeydown="handleSearchKey(event)">
       <button id="search-clear-btn" class="search-clear-btn" onclick="clearSearchInput()" style="display:none;" title="Clear search">✕</button>
       <button class="primary" onclick="searchDestination()">Search</button>
       <div id="search-results" class="search-results"></div>
@@ -1533,6 +1533,8 @@
     const currentCity = [17.3850, 78.4867]; // Hyderabad Origin
     let destinationCoord = null;
     let destinationMarker = null;
+    let stopMarker = null;
+    let pitStopMarker = null;
     let currentDestShortName = '';
     let currentDestFullName = '';
 
@@ -1697,7 +1699,7 @@
     let searchDebounceTimer = null;
     let searchSuggestionsList = [];
     let searchHighlightIndex = -1;
-    let isHudMinimized = false;
+    let isHudMinimized = true;
 
     // Toggle Navigation HUD between full card and small floating icon
     function toggleNavHud(show) {
@@ -2002,16 +2004,12 @@
       }
       convoyProgressIndex = 0;
 
-      // Show Google Maps navigation HUD (or miniature icon if user minimized it)
+      // Keep Side Overview HUD collapsed as a side icon so it does not show until user presses it
+      isHudMinimized = true;
       const navHud = document.getElementById('nav-hud');
       const miniBtn = document.getElementById('nav-hud-mini-btn');
-      if (isHudMinimized) {
-        navHud.style.display = 'none';
-        miniBtn.style.display = 'flex';
-      } else {
-        navHud.style.display = 'flex';
-        miniBtn.style.display = 'none';
-      }
+      navHud.style.display = 'none';
+      miniBtn.style.display = 'flex';
       document.getElementById('nav-eta').textContent = 'Calculating...';
       document.getElementById('nav-distance').textContent = '-- km';
       document.getElementById('nav-arrival').textContent = 'Fetching real roads...';
@@ -3101,6 +3099,9 @@
       if (destinationMarker) activePins.push(destinationMarker);
       if (stopMarker) activePins.push(stopMarker);
       if (pitStopMarker) activePins.push(pitStopMarker);
+      if (Array.isArray(stopMapMarkers)) {
+        stopMapMarkers.forEach(m => activePins.push(m));
+      }
       if (primaryPolyline) activePins.push(primaryPolyline);
       if (activePins.length === 0) return;
 
