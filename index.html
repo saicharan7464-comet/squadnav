@@ -794,13 +794,13 @@
       display: flex;
     }
 
-    /* Google Maps Top POI Discovery Filter Bar */
+    /* Google Maps Top POI Discovery Filter Bar (Hidden until destination is searched) */
     .poi-category-bar {
       position: absolute;
       top: 14px;
       left: 50%;
       transform: translateX(-50%);
-      display: flex;
+      display: none;
       gap: 6px;
       z-index: 999;
       background: rgba(15, 23, 42, 0.92);
@@ -2604,13 +2604,28 @@
         }
       });
 
-      // Get trajectory points along the actual highway path
+      // Bunks and POIs should NOT show normally unless a destination route has been searched
+      if (!destination && !destinationCoord) {
+        Object.keys(POI_CONFIG).forEach(cat => {
+          const countEl = document.getElementById(`poi-count-${cat}`);
+          if (countEl) countEl.textContent = 0;
+        });
+        const catBar = document.getElementById('poi-category-bar');
+        if (catBar) catBar.style.display = 'none';
+        return;
+      }
+
+      // Show top POI filter bar now that a route exists
+      const catBar = document.getElementById('poi-category-bar');
+      if (catBar) catBar.style.display = 'flex';
+
+      // Get trajectory points along the actual highway path of the searched route
       let pts = explicitCoords;
       if (!pts || pts.length < 2) {
         if (availableRoutes.length > 0 && availableRoutes[selectedRouteIndex]?.coordinates?.length > 1) {
           pts = availableRoutes[selectedRouteIndex].coordinates;
         } else {
-          pts = generateSmoothRoadCoords(origin, destination);
+          pts = generateSmoothRoadCoords(origin, destination || destinationCoord);
         }
       }
 
@@ -3132,9 +3147,8 @@
       map.panTo([stopLat, stopLng]);
     }
 
-    // Initial render
+    // Initial render (Clean map: no bunks or POIs until a destination is searched)
     renderRoster();
-    fetchCorridorPOIs(currentCity, [17.5958, 78.4874]);
   </script>
 </body>
 </html>
