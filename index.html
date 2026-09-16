@@ -1250,6 +1250,320 @@
       font-size: 0.85rem;
       outline: none;
     }
+
+    /* Google Maps Travel Mode Switcher (Car, Bike, Train, Walk) */
+    .travel-mode-bar {
+      display: flex;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 3px;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .mode-pill {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 6px 4px;
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      color: #94a3b8;
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .mode-pill:hover {
+      background: rgba(51, 65, 85, 0.6);
+      color: #f8fafc;
+    }
+
+    .mode-pill.active {
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    }
+    .mode-pill.active[data-mode="car"] {
+      background: #2563eb;
+    }
+    .mode-pill.active[data-mode="bike"] {
+      background: #0d9488;
+    }
+    .mode-pill.active[data-mode="train"] {
+      background: #7c3aed;
+    }
+    .mode-pill.active[data-mode="walk"] {
+      background: #0284c7;
+    }
+
+    /* Floating Google Maps GPS Locate Button */
+    .btn-gps-locate {
+      position: absolute;
+      bottom: 24px;
+      right: 18px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #1e293b;
+      border: 1.5px solid #475569;
+      color: #f8fafc;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-gps-locate:hover {
+      background: #334155;
+      border-color: #3b82f6;
+      transform: scale(1.08);
+    }
+
+    .btn-gps-locate.active {
+      background: #2563eb;
+      border-color: #60a5fa;
+      color: #ffffff;
+      box-shadow: 0 0 16px rgba(37, 99, 235, 0.6);
+    }
+
+    /* Pulsing Google Maps Live Location Dot */
+    .gps-pulsing-marker {
+      position: relative;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gps-core-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #1a73e8;
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 0 8px rgba(26, 115, 232, 0.8);
+      z-index: 2;
+    }
+
+    .gps-pulse-ring {
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(26, 115, 232, 0.35);
+      animation: gpsPulseHalo 2s infinite ease-out;
+      z-index: 1;
+    }
+
+    @keyframes gpsPulseHalo {
+      0% { transform: scale(0.5); opacity: 1; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+
+    /* Google Maps Turn-by-Turn Driving Navigation Header Banner */
+    .nav-driving-banner {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(520px, 92vw);
+      background: #0f9d58;
+      color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2);
+      z-index: 1500;
+      padding: 12px 16px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      animation: navBannerSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes navBannerSlideDown {
+      from { transform: translate(-50%, -40px); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
+
+    .driving-banner-main {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .driving-maneuver-icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .driving-maneuver-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .driving-maneuver-dist {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+
+    .driving-maneuver-road {
+      font-size: 0.88rem;
+      font-weight: 600;
+      opacity: 0.95;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .driving-banner-sub {
+      font-size: 0.76rem;
+      background: rgba(0, 0, 0, 0.15);
+      padding: 4px 8px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Google Maps Turn-by-Turn Driving Bottom Dock */
+    .nav-driving-dock {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(520px, 92vw);
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+      z-index: 1500;
+      padding: 10px 16px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      animation: navDockSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes navDockSlideUp {
+      from { transform: translate(-50%, 40px); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
+
+    .btn-exit-nav {
+      background: #ef4444;
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-exit-nav:hover {
+      background: #dc2626;
+      transform: scale(1.05);
+    }
+
+    .driving-dock-center {
+      text-align: center;
+      flex: 1;
+    }
+
+    .driving-dock-eta {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #22c55e;
+      line-height: 1.1;
+    }
+
+    .driving-dock-meta {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .driving-dock-speed-box {
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 4px 10px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .driving-dock-speed-val {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #f8fafc;
+      line-height: 1;
+    }
+
+    .driving-dock-speed-lbl {
+      font-size: 0.6rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+    }
+
+    .btn-recenter-nav {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #38bdf8;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-recenter-nav:hover {
+      background: #334155;
+      transform: scale(1.1);
+    }
+
+    .start-nav-btn {
+      background: #16a34a !important;
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      border-color: #22c55e !important;
+      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4) !important;
+    }
+    .start-nav-btn:hover {
+      background: #15803d !important;
+      transform: scale(1.03);
+    }
   </style>
 </head>
 <body>
@@ -1308,6 +1622,45 @@
       </button>
     </div>
 
+    <!-- Floating Google Maps GPS Location Button -->
+    <button id="btn-gps-locate" class="btn-gps-locate" onclick="toggleGPSLocation()" title="Track My Location with Live GPS">
+      <span class="gps-crosshair-icon">⌖</span>
+    </button>
+
+    <!-- Google Maps Turn-by-Turn Driving Navigation Header Banner -->
+    <div class="nav-driving-banner" id="nav-driving-banner">
+      <div class="driving-banner-main">
+        <div class="driving-maneuver-icon" id="driving-step-icon">↱</div>
+        <div class="driving-maneuver-text">
+          <div class="driving-maneuver-dist" id="driving-step-dist">In 200 m</div>
+          <div class="driving-maneuver-road" id="driving-step-road">Turn right onto NH 163</div>
+        </div>
+      </div>
+      <div class="driving-banner-sub" id="driving-step-next">
+        <span style="opacity: 0.7;">Then:</span> <span id="driving-step-next-text">Continue straight</span>
+      </div>
+    </div>
+
+    <!-- Google Maps Turn-by-Turn Driving Bottom Dock -->
+    <div class="nav-driving-dock" id="nav-driving-dock">
+      <button class="btn-exit-nav" id="btn-exit-nav" onclick="exitNavigation()" title="Exit Navigation and Movie Back to Overview">
+        <span>✕ Exit</span>
+      </button>
+      <div class="driving-dock-center">
+        <div class="driving-dock-eta" id="dock-eta">-- min</div>
+        <div class="driving-dock-meta">
+          <span id="dock-dist">-- km</span> • <span id="dock-time">--:--</span>
+        </div>
+      </div>
+      <div class="driving-dock-speed-box">
+        <div class="driving-dock-speed-val" id="dock-speed">70</div>
+        <div class="driving-dock-speed-lbl">km/h</div>
+      </div>
+      <button class="btn-recenter-nav" onclick="recenterNavigation()" title="Re-center on vehicle">
+        <span>🎯</span>
+      </button>
+    </div>
+
     <!-- Miniature Floating Icon/Pill when Overview HUD is collapsed -->
     <button id="nav-hud-mini-btn" class="nav-hud-mini-btn" onclick="toggleNavHud(true)" title="Open Route Overview">
       <span class="mini-icon">🗺️</span>
@@ -1324,6 +1677,26 @@
         <button class="nav-tab-btn" id="tab-btn-stops" onclick="switchNavTab('stops')">📍 Stops <span class="nav-tab-badge" id="stops-count-badge">0</span></button>
         <button class="nav-tab-btn" id="tab-btn-steps" onclick="switchNavTab('steps')">🧭 Steps</button>
         <button class="nav-tab-minimize-btn" id="btn-minimize-hud" onclick="toggleNavHud(false)" title="Minimize Overview to small icon">🗕</button>
+      </div>
+
+      <!-- Google Maps Travel Mode Switcher (Car, Bike, Train, Walk) -->
+      <div class="travel-mode-bar" id="travel-mode-bar">
+        <button class="mode-pill active" id="mode-btn-car" data-mode="car" onclick="setTravelMode('car')" title="Car / Driving Route">
+          <span class="mode-icon">🚗</span>
+          <span class="mode-label">Car</span>
+        </button>
+        <button class="mode-pill" id="mode-btn-bike" data-mode="bike" onclick="setTravelMode('bike')" title="Two-Wheeler / Bike Route">
+          <span class="mode-icon">🏍️</span>
+          <span class="mode-label">Bike</span>
+        </button>
+        <button class="mode-pill" id="mode-btn-train" data-mode="train" onclick="setTravelMode('train')" title="Transit / Train / Metro Route">
+          <span class="mode-icon">🚆</span>
+          <span class="mode-label">Train</span>
+        </button>
+        <button class="mode-pill" id="mode-btn-walk" data-mode="walk" onclick="setTravelMode('walk')" title="Walking / Pedestrian Route">
+          <span class="mode-icon">🚶</span>
+          <span class="mode-label">Walk</span>
+        </button>
       </div>
 
       <!-- Tab 1: Overview Panel -->
@@ -1349,11 +1722,14 @@
 
         <!-- Quick Summary Action -->
         <div class="nav-quick-actions">
+          <button class="nav-btn start-nav-btn" onclick="startNavigation()" title="Start Turn-by-Turn Navigation with Camera Zoom">
+            <span>▶ Start</span>
+          </button>
           <button class="nav-btn" onclick="switchNavTab('stops')">
             <span>➕ Add Stop</span>
           </button>
           <button class="nav-btn" onclick="switchNavTab('steps')">
-            <span>📋 Directions</span>
+            <span>📋 Steps</span>
           </button>
         </div>
       </div>
@@ -1447,7 +1823,7 @@
 
     <!-- Convoy Action Buttons -->
     <div class="actions-bar">
-      <button class="primary" id="btn-movement" onclick="simulateDrive()">▶ Start Movement</button>
+      <button class="primary" id="btn-movement" onclick="toggleNavigationOrMovement()">▶ Start Navigation</button>
       <button onclick="switchNavTab('stops')" style="display: flex; align-items: center; gap: 4px;">➕ Add Stop</button>
       <button onclick="switchNavTab('steps')" style="display: flex; align-items: center; gap: 4px;">🧭 Directions</button>
       <button onclick="fitAllDrivers()">🔍 Center Map</button>
@@ -1537,6 +1913,17 @@
     let pitStopMarker = null;
     let currentDestShortName = '';
     let currentDestFullName = '';
+
+    // Google Maps Multi-Modal & Navigation States
+    let currentTravelMode = 'car'; // 'car' | 'bike' | 'train' | 'walk'
+    let isNavigating = false;
+
+    // Real Live GPS Tracking State
+    let isGPSTracking = false;
+    let gpsWatchId = null;
+    let userGPSMarker = null;
+    let gpsAccuracyCircle = null;
+    let hasFirstGPSLock = false;
 
     const squad = [
       { id: 'user', name: 'You (Host)', color: '#22c55e', lat: 17.3850, lng: 78.4867, speed: 70 }
@@ -2029,8 +2416,30 @@
     }
 
     // ============================================================
-    // 3. Multi-Stop & Real Road Routing Engine (OSRM)
+    // 3. Multi-Modal Travel Modes, Real Road Routing & Turn Guidance
     // ============================================================
+    function setTravelMode(mode) {
+      if (!['car', 'bike', 'train', 'walk'].includes(mode)) return;
+      currentTravelMode = mode;
+
+      document.querySelectorAll('.mode-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+
+      const modeLabels = {
+        car: '🚗 Driving (Car)',
+        bike: '🏍️ Two-Wheeler (Bike)',
+        train: '🚆 Transit (Train/Metro)',
+        walk: '🚶 Walking (Walk)'
+      };
+
+      addChatMessage('🤖 Squad AI Copilot', `Switched travel mode to **${modeLabels[mode]}**. Recalculating route...`, '#38bdf8', true);
+
+      if (destinationCoord) {
+        loadRoadRoutes(squad[0].lat, squad[0].lng, destinationCoord[0], destinationCoord[1], currentDestShortName);
+      }
+    }
+
     async function loadRoadRoutes(startLat, startLng, destLat, destLng, destName) {
       // Build waypoint sequence: [Start, ...Stops, Destination]
       const waypoints = [
@@ -2040,10 +2449,15 @@
       ];
 
       const coordsQuery = waypoints.map(w => `${w[0]},${w[1]}`).join(';');
-      const urlPrimary = `https://router.project-osrm.org/route/v1/driving/${coordsQuery}?overview=full&geometries=geojson&steps=true`;
+
+      // Select routing profile based on travel mode
+      let osrmProfile = 'driving';
+      if (currentTravelMode === 'walk') osrmProfile = 'foot';
+
+      const urlPrimary = `https://router.project-osrm.org/route/v1/${osrmProfile}/${coordsQuery}?overview=full&geometries=geojson&steps=true`;
 
       let urlAlternate = null;
-      if (routeStops.length === 0) {
+      if (routeStops.length === 0 && currentTravelMode === 'car') {
         const midLat = (startLat + destLat) / 2 + 0.08;
         const midLng = (startLng + destLng) / 2 - 0.08;
         urlAlternate = `https://router.project-osrm.org/route/v1/driving/${startLng},${startLat};${midLng},${midLat};${destLng},${destLat}?overview=full&geometries=geojson`;
@@ -2053,8 +2467,18 @@
       let alternateData = null;
 
       try {
-        const fetches = [fetch(urlPrimary).then(r => r.json())];
-        if (urlAlternate) fetches.push(fetch(urlAlternate).then(r => r.json()));
+        const fetches = [
+          fetch(urlPrimary)
+            .then(r => r.json())
+            .catch(async err => {
+              // Fallback to driving profile if foot profile is rate-limited
+              if (osrmProfile === 'foot') {
+                return fetch(`https://router.project-osrm.org/route/v1/driving/${coordsQuery}?overview=full&geometries=geojson&steps=true`).then(r => r.json());
+              }
+              throw err;
+            })
+        ];
+        if (urlAlternate) fetches.push(fetch(urlAlternate).then(r => r.json()).catch(() => null));
 
         const results = await Promise.allSettled(fetches);
         if (results[0].status === 'fulfilled' && results[0].value?.routes?.length > 0) {
@@ -2069,57 +2493,152 @@
 
       availableRoutes = [];
 
-      if (primaryData) {
-        const distKm = (primaryData.distance / 1000).toFixed(1);
-        const durMin = Math.round(primaryData.duration / 60);
-        const stopsCount = routeStops.length;
-        const viaText = stopsCount > 0 
-          ? `via NH 163 (${stopsCount} stop${stopsCount > 1 ? 's' : ''})` 
-          : 'via National Highway (NH 163)';
+      const rawDistKm = primaryData 
+        ? (primaryData.distance / 1000).toFixed(1) 
+        : (Math.hypot(destLat - startLat, destLng - startLng) * 111).toFixed(1);
+      const distKmNum = parseFloat(rawDistKm);
+      const fallbackCoords = generateSmoothRoadCoords([startLat, startLng], [destLat, destLng]);
+      const stopsCount = routeStops.length;
+
+      // 1. CAR / DRIVING MODE
+      if (currentTravelMode === 'car') {
+        if (primaryData) {
+          const durMin = Math.round(primaryData.duration / 60);
+          const viaText = stopsCount > 0 
+            ? `via NH 163 (${stopsCount} stop${stopsCount > 1 ? 's' : ''})` 
+            : 'via National Highway (NH 163)';
+
+          availableRoutes.push({
+            id: 'primary',
+            name: stopsCount > 0 ? `Convoy Route (${stopsCount} Stop${stopsCount > 1 ? 's' : ''})` : 'Fastest Driving Route',
+            via: viaText,
+            distanceKm: rawDistKm,
+            durationMin: durMin,
+            tag: stopsCount > 0 ? `${stopsCount} Stop${stopsCount > 1 ? 's' : ''}` : 'Fastest route',
+            coordinates: primaryData.geometry.coordinates.map(c => [c[1], c[0]]),
+            legs: primaryData.legs || []
+          });
+
+          parseGuidanceSteps(primaryData.legs, destName, 'car');
+        } else {
+          availableRoutes.push({
+            id: 'primary',
+            name: 'Direct Highway Route',
+            via: 'via Direct Highway Corridor',
+            distanceKm: rawDistKm,
+            durationMin: Math.round(distKmNum / 65 * 60),
+            tag: 'Direct route',
+            coordinates: fallbackCoords,
+            legs: []
+          });
+        }
+
+        if (alternateData && routeStops.length === 0) {
+          const distKm = (alternateData.distance / 1000).toFixed(1);
+          const durMin = Math.round(alternateData.duration / 60);
+          const diffMin = durMin - availableRoutes[0].durationMin;
+          availableRoutes.push({
+            id: 'alternate',
+            name: 'Alternate Highway Route',
+            via: 'via State Highway / Ring Bypass',
+            distanceKm: distKm,
+            durationMin: durMin,
+            tag: diffMin > 0 ? `+${diffMin} min` : 'Alternative',
+            coordinates: alternateData.geometry.coordinates.map(c => [c[1], c[0]]),
+            legs: alternateData.legs || []
+          });
+        }
+      } 
+      // 2. BIKE / TWO-WHEELER MODE
+      else if (currentTravelMode === 'bike') {
+        const durMin = Math.max(3, Math.round(distKmNum / 38 * 60));
+        const coords = primaryData ? primaryData.geometry.coordinates.map(c => [c[1], c[0]]) : fallbackCoords;
 
         availableRoutes.push({
           id: 'primary',
-          name: stopsCount > 0 ? `Convoy Route (${stopsCount} Stop${stopsCount > 1 ? 's' : ''})` : 'Fastest Route',
-          via: viaText,
-          distanceKm: distKm,
+          name: stopsCount > 0 ? `Bike Convoy (${stopsCount} Stop${stopsCount > 1 ? 's' : ''})` : 'Fastest Bike Route',
+          via: 'via City Arterial & Outer Bypass (Two-Wheeler Route)',
+          distanceKm: rawDistKm,
           durationMin: durMin,
-          tag: stopsCount > 0 ? `${stopsCount} Stop${stopsCount > 1 ? 's' : ''}` : 'Fastest route',
-          coordinates: primaryData.geometry.coordinates.map(c => [c[1], c[0]]),
-          legs: primaryData.legs || []
+          tag: 'Agile traffic speed',
+          coordinates: coords,
+          legs: primaryData?.legs || []
         });
 
-        // Parse turn-by-turn guidance steps
-        parseGuidanceSteps(primaryData.legs, destName);
-      } else {
-        // Fallback smooth spline
-        const fallbackCoords = generateSmoothRoadCoords([startLat, startLng], [destLat, destLng]);
-        const approxDist = (Math.hypot(destLat - startLat, destLng - startLng) * 111).toFixed(1);
+        if (alternateData && routeStops.length === 0) {
+          const altDist = (alternateData.distance / 1000).toFixed(1);
+          const altDur = Math.max(4, Math.round(parseFloat(altDist) / 35 * 60));
+          availableRoutes.push({
+            id: 'alternate',
+            name: 'Scenic Bike Corridor',
+            via: 'via Service Roads & Boulevard',
+            distanceKm: altDist,
+            durationMin: altDur,
+            tag: 'Less traffic',
+            coordinates: alternateData.geometry.coordinates.map(c => [c[1], c[0]]),
+            legs: alternateData.legs || []
+          });
+        }
+
+        if (primaryData?.legs && primaryData.legs.length > 0) {
+          parseGuidanceSteps(primaryData.legs, destName, 'bike');
+        } else {
+          generateModeSteps('bike', destName, distKmNum, durMin);
+        }
+      } 
+      // 3. TRAIN / TRANSIT MODE
+      else if (currentTravelMode === 'train') {
+        const transitDist = (distKmNum * 1.05).toFixed(1);
+        const durMin = Math.max(12, Math.round(distKmNum * 1.5 + 8));
+        const coords = primaryData ? primaryData.geometry.coordinates.map(c => [c[1], c[0]]) : fallbackCoords;
+
         availableRoutes.push({
           id: 'primary',
-          name: 'Direct Highway Route',
-          via: 'via Direct Highway Corridor',
-          distanceKm: approxDist,
-          durationMin: Math.round(approxDist / 65 * 60),
-          tag: 'Direct route',
-          coordinates: fallbackCoords,
+          name: '🚆 MMTS & South Central Railway',
+          via: 'via Railway Mainline Corridor',
+          distanceKm: transitDist,
+          durationMin: durMin,
+          tag: 'Leaves in 6 min • Platform 2',
+          coordinates: coords,
           legs: []
         });
-      }
 
-      if (alternateData && routeStops.length === 0) {
-        const distKm = (alternateData.distance / 1000).toFixed(1);
-        const durMin = Math.round(alternateData.duration / 60);
-        const diffMin = durMin - availableRoutes[0].durationMin;
+        const metroDur = Math.max(14, Math.round(distKmNum * 1.8 + 5));
         availableRoutes.push({
           id: 'alternate',
-          name: 'Alternate Route',
-          via: 'via State Highway / Ring Bypass',
-          distanceKm: distKm,
-          durationMin: durMin,
-          tag: diffMin > 0 ? `+${diffMin} min` : 'Alternative',
-          coordinates: alternateData.geometry.coordinates.map(c => [c[1], c[0]]),
-          legs: alternateData.legs || []
+          name: '🚇 Metro Rail Express Line',
+          via: 'via Elevated Metro Corridor',
+          distanceKm: rawDistKm,
+          durationMin: metroDur,
+          tag: 'Every 5 min • Air conditioned',
+          coordinates: coords,
+          legs: []
         });
+
+        generateModeSteps('train', destName, distKmNum, durMin);
+      } 
+      // 4. WALK / PEDESTRIAN MODE
+      else if (currentTravelMode === 'walk') {
+        const durMin = Math.max(4, Math.round(distKmNum * 12.5));
+        const totalSteps = Math.round(distKmNum * 1320);
+        const coords = primaryData ? primaryData.geometry.coordinates.map(c => [c[1], c[0]]) : fallbackCoords;
+
+        availableRoutes.push({
+          id: 'primary',
+          name: 'Walking Pedestrian Route',
+          via: 'via Footpaths, Sidewalks & Crosswalks',
+          distanceKm: rawDistKm,
+          durationMin: durMin,
+          tag: `~${totalSteps.toLocaleString()} steps • Mostly flat`,
+          coordinates: coords,
+          legs: primaryData?.legs || []
+        });
+
+        if (primaryData?.legs && primaryData.legs.length > 0) {
+          parseGuidanceSteps(primaryData.legs, destName, 'walk');
+        } else {
+          generateModeSteps('walk', destName, distKmNum, durMin);
+        }
       }
 
       selectedRouteIndex = 0;
@@ -2133,8 +2652,84 @@
       fetchCorridorPOIs([startLat, startLng], [destLat, destLng], activeCoords);
     }
 
+    // Generate Transit or Mode Steps when OSRM steps are unavailable or mode-specific
+    function generateModeSteps(mode, destName, distKm, durMin) {
+      stepManeuvers = [];
+
+      if (mode === 'train') {
+        stepManeuvers.push({
+          icon: '🚶',
+          text: 'Walk to nearest Railway / Metro Station (400 m)',
+          distance: '5 min',
+          isStop: false
+        });
+        stepManeuvers.push({
+          icon: '🚆',
+          text: `Board Intercity Express / Metro towards ${destName} (Platform 2)`,
+          distance: `${durMin - 10} min`,
+          isStop: false
+        });
+        stepManeuvers.push({
+          icon: '🛑',
+          text: 'Ride 4 intermediate stops along railway corridor',
+          distance: `${distKm} km`,
+          isStop: false
+        });
+        stepManeuvers.push({
+          icon: '🚶',
+          text: `Disembark and walk 350 m to ${destName}`,
+          distance: '4 min',
+          isStop: false
+        });
+        stepManeuvers.push({
+          icon: '🏁',
+          text: `Arrive at Final Destination: ${destName}`,
+          distance: 'End of Transit',
+          isStop: true
+        });
+      } else if (mode === 'bike') {
+        stepManeuvers.push({
+          icon: '🏍️',
+          text: `Head out on motorcycle / scooter along main road`,
+          distance: '300 m',
+          isStop: false
+        });
+        stepManeuvers.push({
+          icon: '⬆',
+          text: `Continue on two-wheeler lane towards ${destName}`,
+          distance: `${distKm} km`,
+          isStop: false
+        });
+        stepManeuvers.push({
+          icon: '🏁',
+          text: `Arrive on bike at ${destName}`,
+          distance: 'End of Trip',
+          isStop: true
+        });
+      } else if (mode === 'walk') {
+        stepManeuvers.push({
+          icon: '🚶',
+          text: 'Walk towards pedestrian sidewalk',
+          distance: '50 m',
+          isStop: false
+        });
+        stepManeuvers.push({
+          icon: '⬆',
+          text: `Continue walking along footpath towards ${destName}`,
+          distance: `${distKm} km`,
+          isStop: false
+        });
+        stepManeuvers.push({
+          icon: '🏁',
+          text: `Arrive at ${destName}`,
+          distance: 'End of Walk',
+          isStop: true
+        });
+      }
+    }
+
     // Parse OSRM Maneuvers into Google Maps-style Turn-by-Turn Steps
-    function parseGuidanceSteps(legs, destName) {
+    function parseGuidanceSteps(legs, destName, mode = 'car') {
       stepManeuvers = [];
       if (!legs || legs.length === 0) return;
 
@@ -2154,8 +2749,10 @@
             let instruction = `Continue along ${road}`;
 
             if (mType === 'depart') {
-              icon = '🚗';
-              instruction = `Head out on ${road}`;
+              icon = mode === 'bike' ? '🏍️' : (mode === 'walk' ? '🚶' : '🚗');
+              instruction = mode === 'bike' 
+                ? `Head out on two-wheeler on ${road}` 
+                : (mode === 'walk' ? `Walk out onto ${road}` : `Head out on ${road}`);
             } else if (mType === 'arrive') {
               icon = '🏁';
               instruction = `Arrive at waypoint`;
@@ -2216,7 +2813,7 @@
       }
 
       if (stepManeuvers.length === 0) {
-        container.innerHTML = '<div style="font-size: 0.75rem; color: #94a3b8; text-align: center; padding: 16px;">No driving steps available.</div>';
+        container.innerHTML = '<div style="font-size: 0.75rem; color: #94a3b8; text-align: center; padding: 16px;">No route steps available.</div>';
         return;
       }
 
@@ -2250,6 +2847,24 @@
       const activeRoute = availableRoutes[selectedRouteIndex];
       const otherRoute = availableRoutes[selectedRouteIndex === 0 ? 1 : 0];
 
+      // Styling based on current travel mode
+      let primaryColor = '#2563eb'; // Car: Google Maps vibrant blue
+      let primaryWeight = 6;
+      let primaryDash = null;
+
+      if (currentTravelMode === 'bike') {
+        primaryColor = '#0d9488'; // Vibrant teal
+        primaryWeight = 5;
+      } else if (currentTravelMode === 'train') {
+        primaryColor = '#8b5cf6'; // Violet / transit purple
+        primaryWeight = 6;
+        primaryDash = '8, 8'; // Railway track dash pattern
+      } else if (currentTravelMode === 'walk') {
+        primaryColor = '#0284c7'; // Sky blue
+        primaryWeight = 5;
+        primaryDash = '2, 6'; // Dotted pedestrian path
+      }
+
       // Draw Unselected / Alternate Route first (underneath)
       if (otherRoute && routeStops.length === 0) {
         alternatePolyline = L.polyline(otherRoute.coordinates, {
@@ -2266,16 +2881,276 @@
         });
       }
 
-      // Draw Selected Route on top (Vibrant Google Maps Blue)
+      // Draw Selected Route on top
       primaryPolyline = L.polyline(activeRoute.coordinates, {
-        color: '#2563eb',
-        weight: 6,
+        color: primaryColor,
+        weight: primaryWeight,
         opacity: 0.95,
+        dashArray: primaryDash,
         lineCap: 'round',
         lineJoin: 'round'
       }).addTo(map);
 
       primaryPolyline.bindTooltip(`<b>${activeRoute.name}</b><br>${activeRoute.distanceKm} km · ${activeRoute.durationMin} min`, { sticky: true });
+    }
+
+    // ============================================================
+    // Real Live GPS Tracking Engine (navigator.geolocation)
+    // ============================================================
+    function toggleGPSLocation() {
+      if (isGPSTracking) {
+        stopGPSTracking();
+      } else {
+        startGPSTracking();
+      }
+    }
+
+    function startGPSTracking() {
+      if (!('geolocation' in navigator)) {
+        alert('Geolocation is not supported by your browser.');
+        return;
+      }
+
+      const btn = document.getElementById('btn-gps-locate');
+      if (btn) btn.classList.add('active');
+      isGPSTracking = true;
+
+      addChatMessage('🎯 GPS Tracking', 'Requesting live GPS location...', '#38bdf8', true);
+
+      gpsWatchId = navigator.geolocation.watchPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          const accuracy = pos.coords.accuracy || 25;
+
+          // Update host driver coordinates in squad
+          squad[0].lat = lat;
+          squad[0].lng = lng;
+
+          // Update or create pulsing Google Maps GPS blue dot marker
+          if (!userGPSMarker) {
+            const pulsingIcon = L.divIcon({
+              className: 'gps-pulsing-marker',
+              html: '<div class="gps-pulse-ring"></div><div class="gps-core-dot"></div>',
+              iconSize: [26, 26],
+              iconAnchor: [13, 13]
+            });
+            userGPSMarker = L.marker([lat, lng], {
+              icon: pulsingIcon,
+              zIndexOffset: 1000
+            }).addTo(map).bindPopup('<b>You (Host)</b><br>Live GPS Location');
+
+            // Hide initial static marker for host to prevent duplication
+            if (markers[squad[0].id]) {
+              map.removeLayer(markers[squad[0].id]);
+            }
+          } else {
+            userGPSMarker.setLatLng([lat, lng]);
+          }
+
+          // Accuracy halo circle
+          if (!gpsAccuracyCircle) {
+            gpsAccuracyCircle = L.circle([lat, lng], {
+              radius: accuracy,
+              color: '#38bdf8',
+              fillColor: '#38bdf8',
+              fillOpacity: 0.12,
+              weight: 1
+            }).addTo(map);
+          } else {
+            gpsAccuracyCircle.setLatLng([lat, lng]);
+            gpsAccuracyCircle.setRadius(accuracy);
+          }
+
+          // Initial GPS Lock: fly to user and recalculate routes if destination active
+          if (!hasFirstGPSLock) {
+            hasFirstGPSLock = true;
+            map.flyTo([lat, lng], 16, { animate: true, duration: 1.2 });
+            addChatMessage('🎯 GPS Live Location', `Locked real GPS position: **${lat.toFixed(4)}, ${lng.toFixed(4)}** (accuracy ±${Math.round(accuracy)}m)`, '#22c55e', true);
+
+            if (destinationCoord) {
+              loadRoadRoutes(lat, lng, destinationCoord[0], destinationCoord[1], currentDestShortName);
+            }
+          }
+
+          if (isNavigating) {
+            updateDrivingNavigationUI();
+          }
+        },
+        (err) => {
+          console.warn('Geolocation error:', err);
+          let msg = 'Could not access GPS.';
+          if (err.code === 1) msg = 'Location permission denied by user.';
+          else if (err.code === 2) msg = 'Location unavailable or no GPS signal.';
+          else if (err.code === 3) msg = 'Location request timed out.';
+          addChatMessage('⚠️ GPS Notice', `${msg} Using map default origin.`, '#f59e0b', true);
+          if (btn) btn.classList.remove('active');
+          isGPSTracking = false;
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 20000,
+          maximumAge: 4000
+        }
+      );
+    }
+
+    function stopGPSTracking() {
+      if (gpsWatchId !== null) {
+        navigator.geolocation.clearWatch(gpsWatchId);
+        gpsWatchId = null;
+      }
+      isGPSTracking = false;
+      hasFirstGPSLock = false;
+
+      const btn = document.getElementById('btn-gps-locate');
+      if (btn) btn.classList.remove('active');
+
+      if (gpsAccuracyCircle) {
+        map.removeLayer(gpsAccuracyCircle);
+        gpsAccuracyCircle = null;
+      }
+
+      addChatMessage('🎯 GPS Tracking', 'Live GPS tracking stopped.', '#94a3b8', true);
+    }
+
+    // ============================================================
+    // Turn-by-Turn Navigation Engine (Start Zoom In & Exit Movie Back)
+    // ============================================================
+    function startNavigation() {
+      if (!destinationCoord || availableRoutes.length === 0) {
+        alert('Please search and select a destination first before starting navigation!');
+        return;
+      }
+
+      isNavigating = true;
+
+      // 1. Smoothly Zoom Camera in close to driver (level 17)
+      const originPt = [squad[0].lat, squad[0].lng];
+      map.flyTo(originPt, 17, { animate: true, duration: 1.5 });
+
+      // 2. Show Driving Navigation UI
+      const banner = document.getElementById('nav-driving-banner');
+      const dock = document.getElementById('nav-driving-dock');
+      if (banner) banner.style.display = 'flex';
+      if (dock) dock.style.display = 'flex';
+
+      // 3. Hide background overview HUD and bottom telemetry panel for clean Google Maps view
+      const navHud = document.getElementById('nav-hud');
+      const miniBtn = document.getElementById('nav-hud-mini-btn');
+      const hudPanel = document.querySelector('.hud-panel');
+      if (navHud) navHud.style.display = 'none';
+      if (miniBtn) miniBtn.style.display = 'none';
+      if (hudPanel) hudPanel.style.display = 'none';
+
+      // 4. Update Initial Navigation Banner & Dock
+      updateDrivingNavigationUI();
+
+      // 5. Automatically start movement simulation along the route
+      if (!simInterval) {
+        simulateDrive();
+      }
+
+      addChatMessage('🚗 Turn-by-Turn Navigation', `Google Maps Navigation active towards **${currentDestShortName}**. Following your route with turn-by-turn guidance!`, '#22c55e', true);
+    }
+
+    function exitNavigation() {
+      isNavigating = false;
+
+      // 1. Hide Driving Navigation UI
+      const banner = document.getElementById('nav-driving-banner');
+      const dock = document.getElementById('nav-driving-dock');
+      if (banner) banner.style.display = 'none';
+      if (dock) dock.style.display = 'none';
+
+      // 2. Restore bottom telemetry and Overview HUD mini button
+      const hudPanel = document.querySelector('.hud-panel');
+      const miniBtn = document.getElementById('nav-hud-mini-btn');
+      if (hudPanel) hudPanel.style.display = 'block';
+      if (miniBtn) miniBtn.style.display = 'flex';
+
+      // 3. Pause movement simulation if running
+      if (simInterval) {
+        clearInterval(simInterval);
+        simInterval = null;
+        const btnMov = document.getElementById('btn-movement');
+        if (btnMov) btnMov.textContent = '▶ Start Navigation';
+      }
+
+      // 4. Smooth Cinematic "Movie Back" Camera Zoom Out to Full Route Overview
+      if (availableRoutes.length > 0 && availableRoutes[selectedRouteIndex]?.coordinates?.length > 0) {
+        const routeBounds = L.latLngBounds(availableRoutes[selectedRouteIndex].coordinates);
+        map.flyToBounds(routeBounds, {
+          animate: true,
+          duration: 1.5,
+          padding: [60, 60]
+        });
+      } else {
+        fitAllDrivers();
+      }
+
+      addChatMessage('🚗 Navigation', 'Exited turn-by-turn navigation. Restored route overview ("movie back").', '#94a3b8', true);
+    }
+
+    function recenterNavigation() {
+      map.flyTo([squad[0].lat, squad[0].lng], 17, { animate: true, duration: 0.8 });
+    }
+
+    function updateDrivingNavigationUI() {
+      if (!availableRoutes || availableRoutes.length === 0) return;
+      const activeRoute = availableRoutes[selectedRouteIndex];
+      const coords = activeRoute.coordinates;
+      if (!coords || coords.length === 0) return;
+
+      const pct = Math.min(1, Math.max(0, convoyProgressIndex / Math.max(1, coords.length - 1)));
+      const totalKm = parseFloat(activeRoute.distanceKm);
+      const remKm = (totalKm * (1 - pct)).toFixed(1);
+      const remMin = Math.max(1, Math.round(activeRoute.durationMin * (1 - pct)));
+
+      const hours = Math.floor(remMin / 60);
+      const mins = remMin % 60;
+      const etaStr = hours > 0 ? `${hours}h ${mins}m` : `${mins} min`;
+
+      const arrivalDate = new Date(Date.now() + remMin * 60000);
+      const arrivalTimeStr = arrivalDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      // Update Bottom Dock
+      const dockEta = document.getElementById('dock-eta');
+      const dockDist = document.getElementById('dock-dist');
+      const dockTime = document.getElementById('dock-time');
+      const dockSpeed = document.getElementById('dock-speed');
+
+      if (dockEta) dockEta.textContent = etaStr;
+      if (dockDist) dockDist.textContent = `${remKm} km`;
+      if (dockTime) dockTime.textContent = arrivalTimeStr;
+      if (dockSpeed) dockSpeed.textContent = squad[0].speed || 70;
+
+      // Update Top Driving Banner Maneuver
+      const iconEl = document.getElementById('driving-step-icon');
+      const distEl = document.getElementById('driving-step-dist');
+      const roadEl = document.getElementById('driving-step-road');
+      const nextEl = document.getElementById('driving-step-next-text');
+
+      if (stepManeuvers.length > 0) {
+        const stepIdx = Math.min(stepManeuvers.length - 1, Math.floor(pct * stepManeuvers.length));
+        const currStep = stepManeuvers[stepIdx];
+        const nextStep = stepManeuvers[Math.min(stepManeuvers.length - 1, stepIdx + 1)];
+
+        if (iconEl) iconEl.textContent = currStep.icon || '↱';
+        if (distEl) distEl.textContent = currStep.distance ? `In ${currStep.distance}` : 'In 200 m';
+        if (roadEl) roadEl.textContent = currStep.text || `Follow road towards ${currentDestShortName}`;
+        if (nextEl) nextEl.textContent = nextStep ? nextStep.text : `Arrive at destination: ${currentDestShortName}`;
+      } else {
+        if (iconEl) iconEl.textContent = '⬆';
+        if (distEl) distEl.textContent = `${remKm} km`;
+        if (roadEl) roadEl.textContent = `Follow route towards ${currentDestShortName}`;
+        if (nextEl) nextEl.textContent = `Arrive in ~${etaStr}`;
+      }
+
+      // Keep camera smoothly centered on driver during active navigation
+      if (isNavigating) {
+        map.panTo([squad[0].lat, squad[0].lng], { animate: true, duration: 0.25 });
+      }
     }
 
     // Update Floating Google Maps HUD
@@ -2795,6 +3670,14 @@
     // ============================================================
     // 6. Multi-Leg Convoy Simulation with Intermediate Stops
     // ============================================================
+    function toggleNavigationOrMovement() {
+      if (!isNavigating) {
+        startNavigation();
+      } else {
+        simulateDrive();
+      }
+    }
+
     function simulateDrive() {
       if (!destinationCoord || availableRoutes.length === 0) {
         alert('Please search and select a destination first!');
@@ -2807,11 +3690,11 @@
       if (simInterval) {
         clearInterval(simInterval);
         simInterval = null;
-        document.getElementById('btn-movement').textContent = '▶ Resume Movement';
+        document.getElementById('btn-movement').textContent = isNavigating ? '▶ Resume Navigation' : '▶ Resume Movement';
         return;
       }
 
-      document.getElementById('btn-movement').textContent = '⏸ Pause Movement';
+      document.getElementById('btn-movement').textContent = isNavigating ? '⏸ Pause Navigation' : '⏸ Pause Movement';
 
       const pBar = document.getElementById('nav-progress-bar');
       const pFill = document.getElementById('nav-progress-fill');
@@ -2855,6 +3738,7 @@
             m.lng = coords[coords.length - 1][1];
             m.speed = 0;
             if (markers[m.id]) markers[m.id].setLatLng([m.lat, m.lng]);
+            if (userGPSMarker && m.id === squad[0].id) userGPSMarker.setLatLng([m.lat, m.lng]);
             const sEl = document.getElementById(`speed-${m.id}`);
             if (sEl) sEl.textContent = 'Speed: 0 km/h';
           });
@@ -2864,6 +3748,17 @@
           document.getElementById('nav-eta').textContent = 'Arrived!';
           document.getElementById('nav-distance').textContent = '0.0 km remaining';
 
+          if (isNavigating) {
+            const dockEta = document.getElementById('dock-eta');
+            const iconEl = document.getElementById('driving-step-icon');
+            const distEl = document.getElementById('driving-step-dist');
+            const roadEl = document.getElementById('driving-step-road');
+            if (dockEta) dockEta.textContent = 'Arrived!';
+            if (iconEl) iconEl.textContent = '🏁';
+            if (distEl) distEl.textContent = 'You have arrived!';
+            if (roadEl) roadEl.textContent = currentDestShortName;
+          }
+
           addChatMessage('🎉 Squad Convoy', `All squad members arrived at the destination (${currentDestShortName}) safely!`, '#22c55e');
           return;
         }
@@ -2872,8 +3767,16 @@
         const hostPt = coords[convoyProgressIndex];
         squad[0].lat = hostPt[0];
         squad[0].lng = hostPt[1];
-        squad[0].speed = Math.floor(70 + Math.random() * 8);
+
+        // Speed realistic to travel mode
+        let baseSpeed = 70;
+        if (currentTravelMode === 'bike') baseSpeed = 40;
+        else if (currentTravelMode === 'train') baseSpeed = 80;
+        else if (currentTravelMode === 'walk') baseSpeed = 5;
+        squad[0].speed = Math.floor(baseSpeed + (currentTravelMode === 'walk' ? 0 : Math.random() * 8));
+
         if (markers[squad[0].id]) markers[squad[0].id].setLatLng(hostPt);
+        if (userGPSMarker) userGPSMarker.setLatLng(hostPt);
 
         // Friends follow behind
         for (let i = 1; i < squad.length; i++) {
@@ -2882,7 +3785,7 @@
           const friendPt = coords[friendIdx];
           squad[i].lat = friendPt[0];
           squad[i].lng = friendPt[1];
-          squad[i].speed = Math.floor(68 + Math.random() * 10);
+          squad[i].speed = Math.floor(baseSpeed - 2 + (currentTravelMode === 'walk' ? 0 : Math.random() * 10));
           if (markers[squad[i].id]) markers[squad[i].id].setLatLng(friendPt);
         }
 
@@ -2903,6 +3806,11 @@
           const sEl = document.getElementById(`speed-${m.id}`);
           if (sEl) sEl.textContent = `Speed: ${m.speed} km/h`;
         });
+
+        // Sync Google Maps Driving Navigation HUD if active
+        if (isNavigating) {
+          updateDrivingNavigationUI();
+        }
 
       }, 200);
     }
