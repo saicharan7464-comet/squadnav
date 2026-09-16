@@ -383,19 +383,30 @@
       position: absolute;
       top: 14px;
       left: 14px;
-      width: 325px;
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      width: 360px;
+      max-height: calc(100vh - 185px);
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border: 1px solid rgba(51, 65, 85, 0.85);
-      border-radius: 12px;
-      padding: 14px;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
       z-index: 1000;
       display: none;
       flex-direction: column;
       gap: 10px;
+      overflow-y: auto;
+      overflow-x: hidden;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nav-hud::-webkit-scrollbar {
+      width: 5px;
+    }
+    .nav-hud::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
     }
 
     .nav-eta-row {
@@ -542,7 +553,467 @@
       font-weight: 700;
     }
 
-    /* Petrol Bunk Pin */
+    /* Google Maps Tab Switcher */
+    .nav-tabs {
+      display: flex;
+      background: #0f172a;
+      border-radius: 8px;
+      padding: 3px;
+      gap: 4px;
+      border: 1px solid #334155;
+    }
+
+    .nav-tab-btn {
+      flex: 1;
+      padding: 5px 6px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #94a3b8;
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-tab-btn:hover {
+      color: #f8fafc;
+      background: rgba(51, 65, 85, 0.5);
+    }
+
+    .nav-tab-btn.active {
+      background: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+    }
+
+    .nav-tab-badge {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 0 5px;
+      border-radius: 999px;
+      font-size: 0.65rem;
+    }
+
+    .nav-tab-panel {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nav-tab-panel.active {
+      display: flex;
+    }
+
+    /* Google Maps Top POI Discovery Filter Bar */
+    .poi-category-bar {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(51, 65, 85, 0.8);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      max-width: 90vw;
+      overflow-x: auto;
+    }
+
+    .poi-category-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .poi-pill {
+      background: transparent;
+      color: #cbd5e1;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .poi-pill:hover {
+      background: rgba(51, 65, 85, 0.5);
+      color: #ffffff;
+    }
+
+    .poi-counter {
+      background: rgba(51, 65, 85, 0.8);
+      color: #94a3b8;
+      padding: 0 5px;
+      border-radius: 999px;
+      font-size: 0.65rem;
+    }
+
+    .poi-pill.active[data-cat="fuel"] {
+      background: rgba(245, 158, 11, 0.18);
+      border-color: #f59e0b;
+      color: #fbbf24;
+    }
+    .poi-pill.active[data-cat="fuel"] .poi-counter {
+      background: #f59e0b;
+      color: #000;
+      font-weight: 700;
+    }
+
+    .poi-pill.active[data-cat="food"] {
+      background: rgba(249, 115, 22, 0.18);
+      border-color: #f97316;
+      color: #fdba74;
+    }
+    .poi-pill.active[data-cat="food"] .poi-counter {
+      background: #f97316;
+      color: #000;
+      font-weight: 700;
+    }
+
+    .poi-pill.active[data-cat="hotel"] {
+      background: rgba(168, 85, 247, 0.18);
+      border-color: #a855f7;
+      color: #d8b4fe;
+    }
+    .poi-pill.active[data-cat="hotel"] .poi-counter {
+      background: #a855f7;
+      color: #000;
+      font-weight: 700;
+    }
+
+    .poi-pill.active[data-cat="hospital"] {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: #ef4444;
+      color: #fca5a5;
+    }
+    .poi-pill.active[data-cat="hospital"] .poi-counter {
+      background: #ef4444;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .poi-pill.active[data-cat="rest"] {
+      background: rgba(14, 165, 233, 0.18);
+      border-color: #0ea5e9;
+      color: #7dd3fc;
+    }
+    .poi-pill.active[data-cat="rest"] .poi-counter {
+      background: #0ea5e9;
+      color: #000;
+      font-weight: 700;
+    }
+
+    /* Google Maps Multi-Stop Itinerary */
+    .itinerary-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 10px 8px;
+    }
+
+    .itinerary-node {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      position: relative;
+      padding: 4px 0;
+    }
+
+    .itinerary-badge {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      z-index: 2;
+    }
+
+    .itinerary-badge.origin {
+      background: #2563eb;
+      color: #fff;
+    }
+
+    .itinerary-badge.stop {
+      background: #f97316;
+      color: #fff;
+      box-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+    }
+
+    .itinerary-badge.dest {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .itinerary-connector {
+      width: 2px;
+      height: 16px;
+      margin-left: 10px;
+      border-left: 2px dashed #475569;
+    }
+
+    .itinerary-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .itinerary-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .itinerary-meta {
+      font-size: 0.68rem;
+      color: #94a3b8;
+    }
+
+    .itinerary-actions {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+    }
+
+    .itinerary-btn {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      font-size: 0.65rem;
+      cursor: pointer;
+    }
+
+    .itinerary-btn:hover {
+      color: #f8fafc;
+      background: #334155;
+    }
+
+    .itinerary-btn.remove:hover {
+      color: #ef4444;
+      border-color: #ef4444;
+    }
+
+    .add-stop-panel {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .add-stop-input-row {
+      display: flex;
+      gap: 4px;
+    }
+
+    .add-stop-input-row input {
+      flex: 1;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #fff;
+      padding: 5px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      outline: none;
+    }
+
+    .add-stop-input-row input:focus {
+      border-color: #2563eb;
+    }
+
+    .stop-search-dropdown {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      max-height: 140px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .stop-search-item {
+      padding: 6px 8px;
+      font-size: 0.74rem;
+      cursor: pointer;
+      border-bottom: 1px solid #334155;
+    }
+
+    .stop-search-item:hover {
+      background: #2563eb;
+      color: white;
+    }
+
+    /* Google Maps Turn-by-Turn Steps */
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-height: 280px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .steps-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    .steps-container::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 6px 8px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      font-size: 0.74rem;
+    }
+
+    .step-item:hover {
+      background: #1e293b;
+      border-color: #64748b;
+    }
+
+    .step-icon-wrap {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: #1e293b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      flex-shrink: 0;
+      color: #60a5fa;
+    }
+
+    .step-text {
+      flex: 1;
+      color: #cbd5e1;
+      line-height: 1.3;
+    }
+
+    .step-dist {
+      font-weight: 700;
+      color: #94a3b8;
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+
+    .step-stop-banner {
+      background: rgba(249, 115, 22, 0.15);
+      border: 1px solid rgba(249, 115, 22, 0.4);
+      padding: 6px 8px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      color: #fdba74;
+      font-size: 0.74rem;
+    }
+
+    /* Category POI Pins */
+    .poi-avatar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.65);
+      font-size: 13px;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    .poi-avatar:hover {
+      transform: scale(1.18);
+    }
+    .poi-avatar.fuel { background: #f59e0b; }
+    .poi-avatar.food { background: #f97316; }
+    .poi-avatar.hotel { background: #8b5cf6; }
+    .poi-avatar.hospital { background: #ef4444; }
+    .poi-avatar.rest { background: #0284c7; }
+
+    /* Waypoint Stop Pin */
+    .waypoint-avatar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #f97316;
+      border: 2px solid #ffffff;
+      color: white;
+      font-weight: 800;
+      font-size: 12px;
+      box-shadow: 0 0 12px rgba(249, 115, 22, 0.85);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    .waypoint-avatar:hover {
+      transform: scale(1.2);
+    }
+
+    /* Regrouping Toast Banner */
+    .regroup-banner {
+      position: absolute;
+      top: 65px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(249, 115, 22, 0.95);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4);
+      display: none;
+      align-items: center;
+      gap: 8px;
+      z-index: 1001;
+      animation: pulseAlert 1.5s infinite;
+    }
+    @keyframes pulseAlert {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.03); }
+    }
+
+    /* Petrol Bunk Pin (Compatibility) */
     .fuel-avatar {
       display: flex;
       align-items: center;
@@ -627,36 +1098,108 @@
   <div class="main-viewport">
     <div id="map"></div>
 
+    <!-- Regrouping Toast Banner -->
+    <div class="regroup-banner" id="regroup-banner">
+      <span>🛑</span> <span id="regroup-banner-text">Regrouping at Stop A...</span>
+    </div>
+
+    <!-- Google Maps Top POI Discovery Filter Bar -->
+    <div class="poi-category-bar" id="poi-category-bar">
+      <button class="poi-pill active" id="pill-fuel" data-cat="fuel" onclick="togglePOICategory('fuel')">
+        <span>⛽</span> Gas <span class="poi-counter" id="poi-count-fuel">0</span>
+      </button>
+      <button class="poi-pill active" id="pill-food" data-cat="food" onclick="togglePOICategory('food')">
+        <span>☕</span> Food & Dhabas <span class="poi-counter" id="poi-count-food">0</span>
+      </button>
+      <button class="poi-pill" id="pill-hotel" data-cat="hotel" onclick="togglePOICategory('hotel')">
+        <span>🏨</span> Hotels <span class="poi-counter" id="poi-count-hotel">0</span>
+      </button>
+      <button class="poi-pill" id="pill-hospital" data-cat="hospital" onclick="togglePOICategory('hospital')">
+        <span>🏥</span> Hospitals <span class="poi-counter" id="poi-count-hospital">0</span>
+      </button>
+      <button class="poi-pill" id="pill-rest" data-cat="rest" onclick="togglePOICategory('rest')">
+        <span>🅿️</span> Rest Areas <span class="poi-counter" id="poi-count-rest">0</span>
+      </button>
+    </div>
+
     <!-- Google Maps-Style Navigation HUD -->
     <div class="nav-hud" id="nav-hud">
-      <div class="nav-eta-row">
-        <div class="nav-eta" id="nav-eta">-- min</div>
-        <div class="nav-status-badge" id="nav-status-badge">Fastest route</div>
-      </div>
-      <div class="nav-distance-row">
-        <span id="nav-distance">-- km</span>
-        <span style="opacity: 0.5;">•</span>
-        <span id="nav-arrival">Arrive --:--</span>
-      </div>
-      <div class="nav-via-road" id="nav-via-road">via Highway</div>
-      
-      <!-- Convoy Progress bar (during movement) -->
-      <div class="nav-progress-bar" id="nav-progress-bar">
-        <div class="nav-progress-fill" id="nav-progress-fill"></div>
+      <!-- Navigation Tabs (Overview / Stops / Steps) -->
+      <div class="nav-tabs">
+        <button class="nav-tab-btn active" id="tab-btn-overview" onclick="switchNavTab('overview')">🗺️ Overview</button>
+        <button class="nav-tab-btn" id="tab-btn-stops" onclick="switchNavTab('stops')">📍 Stops <span class="nav-tab-badge" id="stops-count-badge">0</span></button>
+        <button class="nav-tab-btn" id="tab-btn-steps" onclick="switchNavTab('steps')">🧭 Steps</button>
       </div>
 
-      <!-- Route Choices (Primary & Alternate) -->
-      <div class="nav-routes-container" id="nav-routes-container"></div>
+      <!-- Tab 1: Overview Panel -->
+      <div class="nav-tab-panel active" id="tab-panel-overview">
+        <div class="nav-eta-row">
+          <div class="nav-eta" id="nav-eta">-- min</div>
+          <div class="nav-status-badge" id="nav-status-badge">Fastest route</div>
+        </div>
+        <div class="nav-distance-row">
+          <span id="nav-distance">-- km</span>
+          <span style="opacity: 0.5;">•</span>
+          <span id="nav-arrival">Arrive --:--</span>
+        </div>
+        <div class="nav-via-road" id="nav-via-road">via Highway</div>
+        
+        <!-- Convoy Progress bar (during movement) -->
+        <div class="nav-progress-bar" id="nav-progress-bar">
+          <div class="nav-progress-fill" id="nav-progress-fill"></div>
+        </div>
 
-      <!-- Quick Nav Filters -->
-      <div class="nav-quick-actions">
-        <button class="nav-btn active" id="btn-toggle-fuel" onclick="togglePetrolBunks()">
-          <span>⛽ Petrol Bunks</span>
-          <span class="nav-badge" id="fuel-count">0</span>
-        </button>
-        <button class="nav-btn" onclick="addMeetingPoint()">
-          <span>🥪 Food Stop</span>
-        </button>
+        <!-- Route Choices (Primary & Alternate) -->
+        <div class="nav-routes-container" id="nav-routes-container"></div>
+
+        <!-- Quick Summary Action -->
+        <div class="nav-quick-actions">
+          <button class="nav-btn" onclick="switchNavTab('stops')">
+            <span>➕ Add Stop</span>
+          </button>
+          <button class="nav-btn" onclick="switchNavTab('steps')">
+            <span>📋 Directions</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab 2: Stops / Itinerary Panel -->
+      <div class="nav-tab-panel" id="tab-panel-stops">
+        <div style="font-size: 0.74rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">
+          Convoy Itinerary & Stops
+        </div>
+        <div class="itinerary-container" id="itinerary-container">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Add Stop Search & Tools -->
+        <div class="add-stop-panel">
+          <div class="add-stop-input-row">
+            <input type="text" id="stop-search-input" placeholder="Search town, dhaba, pump to add stop..." onkeyup="handleStopSearchKey(event)">
+            <button class="primary" onclick="searchNewStop()">Find</button>
+          </div>
+          <div class="stop-search-dropdown" id="stop-search-dropdown"></div>
+
+          <div style="display: flex; gap: 6px; margin-top: 4px;">
+            <button class="nav-btn" id="btn-pick-map" onclick="togglePickOnMap()" style="flex: 1; font-size: 0.72rem;">
+              <span>📍 Click on Map to Add</span>
+            </button>
+            <button class="nav-btn" onclick="clearAllStops()" style="font-size: 0.72rem; color: #f87171;">
+              <span>🗑️ Clear</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Turn-by-Turn Steps Panel -->
+      <div class="nav-tab-panel" id="tab-panel-steps">
+        <div style="font-size: 0.74rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center;">
+          <span>Turn-by-Turn Maneuvers</span>
+          <span id="steps-total-dist" style="color: #4ade80; font-weight: 700;">-- km</span>
+        </div>
+        <div class="steps-container" id="steps-container">
+          <div style="font-size: 0.75rem; color: #94a3b8; text-align: center; padding: 16px;">Pick a destination to load driving maneuvers.</div>
+        </div>
       </div>
     </div>
 
@@ -710,8 +1253,8 @@
     <!-- Convoy Action Buttons -->
     <div class="actions-bar">
       <button class="primary" id="btn-movement" onclick="simulateDrive()">▶ Start Movement</button>
-      <button onclick="addMeetingPoint()" style="display: flex; align-items: center; gap: 4px;">📍 Propose Food Stop</button>
-      <button id="btn-bar-fuel" onclick="togglePetrolBunks()" style="display: flex; align-items: center; gap: 4px;">⛽ Petrol Bunks</button>
+      <button onclick="switchNavTab('stops')" style="display: flex; align-items: center; gap: 4px;">➕ Add Stop</button>
+      <button onclick="switchNavTab('steps')" style="display: flex; align-items: center; gap: 4px;">🧭 Directions</button>
       <button onclick="fitAllDrivers()">🔍 Center Map</button>
     </div>
   </div>
@@ -789,10 +1332,14 @@
       closeKeyModal();
     }
 
-    // 1. Initial State
+    // ============================================================
+    // 1. Initial State & Maps Setup
+    // ============================================================
     const currentCity = [17.3850, 78.4867]; // Hyderabad Origin
     let destinationCoord = null;
     let destinationMarker = null;
+    let currentDestShortName = '';
+    let currentDestFullName = '';
 
     const squad = [
       { id: 'user', name: 'You (Host)', color: '#22c55e', lat: 17.3850, lng: 78.4867, speed: 70 }
@@ -803,14 +1350,31 @@
     let selectedRouteIndex = 0;
     let primaryPolyline = null;
     let alternatePolyline = null;
-    let petrolMarkers = [];
-    let petrolBunksVisible = true;
-    let pitStopMarker = null;
-    let stopMarker = null;
+
+    // Multi-stop routing state
+    let routeStops = []; // [{ id, name, lat, lng, category, letter }]
+    let stopMapMarkers = []; // Array of Leaflet markers
+    let isPickingOnMap = false;
+
+    // POI categories and discovery state
+    const POI_CONFIG = {
+      fuel: { name: 'Gas & Petrol', icon: '⛽', color: '#f59e0b', cssClass: 'fuel', defaultQuery: 'fuel' },
+      food: { name: 'Food & Dhabas', icon: '☕', color: '#f97316', cssClass: 'food', defaultQuery: 'restaurant,dhaba,cafe,fast_food' },
+      hotel: { name: 'Hotels & Stays', icon: '🏨', color: '#8b5cf6', cssClass: 'hotel', defaultQuery: 'hotel,resort,motel,guest_house' },
+      hospital: { name: 'Hospitals & Medical', icon: '🏥', color: '#ef4444', cssClass: 'hospital', defaultQuery: 'hospital,clinic,pharmacy' },
+      rest: { name: 'Rest Areas & Tolls', icon: '🅿️', color: '#0ea5e9', cssClass: 'rest', defaultQuery: 'parking,rest_area,toll_plaza' }
+    };
+    let activePOICategories = new Set(['fuel', 'food']);
+    let categoryMarkers = { fuel: [], food: [], hotel: [], hospital: [], rest: [] };
+
+    // Turn-by-turn guidance maneuvers
+    let stepManeuvers = [];
 
     // Simulation state
     let simInterval = null;
     let convoyProgressIndex = 0;
+    let isPausedForRegroup = false;
+    let stopWaypointIndices = []; // Waypoint index along coordinates for each stop
 
     // Initialize Map with clean, 100% watermark-free basemaps
     const osmStreets = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -842,6 +1406,28 @@
 
     L.control.layers(baseLayers, null, { position: 'topright' }).addTo(map);
 
+    // Map Click Listener (for Pick on Map mode)
+    map.on('click', async function(e) {
+      if (!isPickingOnMap) return;
+      togglePickOnMap();
+
+      const lat = e.latlng.lat;
+      const lng = e.latlng.lng;
+      let placeName = `Highway Waypoint (${lat.toFixed(3)}, ${lng.toFixed(3)})`;
+
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+        const data = await res.json();
+        if (data && data.display_name) {
+          placeName = data.display_name.split(',').slice(0, 2).join(',');
+        }
+      } catch(err) {
+        console.warn('Reverse geocode failed:', err);
+      }
+
+      addStop(lat, lng, placeName, 'custom');
+    });
+
     function createIcon(color, text) {
       return L.divIcon({
         className: 'custom-icon',
@@ -851,12 +1437,32 @@
       });
     }
 
-    function createFuelIcon() {
+    function createPOIIcon(cat) {
+      const cfg = POI_CONFIG[cat] || POI_CONFIG.fuel;
       return L.divIcon({
         className: 'custom-icon',
-        html: `<div class="fuel-avatar">⛽</div>`,
+        html: `<div class="poi-avatar ${cfg.cssClass}">${cfg.icon}</div>`,
         iconSize: [28, 28],
         iconAnchor: [14, 14]
+      });
+    }
+
+    function createWaypointIcon(letter) {
+      return L.divIcon({
+        className: 'custom-icon',
+        html: `<div class="waypoint-avatar">${letter}</div>`,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14]
+      });
+    }
+
+    // Tab Switcher for Navigation HUD
+    function switchNavTab(tabName) {
+      ['overview', 'stops', 'steps'].forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        const panel = document.getElementById(`tab-panel-${t}`);
+        if (btn) btn.classList.toggle('active', t === tabName);
+        if (panel) panel.classList.toggle('active', t === tabName);
       });
     }
 
@@ -890,7 +1496,9 @@
       document.getElementById('squad-counter').textContent = `${squad.length} Member${squad.length > 1 ? 's' : ''}`;
     }
 
+    // ============================================================
     // 2. Global Destination Search (Nominatim API)
+    // ============================================================
     async function searchDestination() {
       const query = document.getElementById('destination-search').value.trim();
       if (!query) return;
@@ -928,9 +1536,10 @@
     async function selectDestination(lat, lng, name) {
       document.getElementById('search-results').style.display = 'none';
       destinationCoord = [parseFloat(lat), parseFloat(lng)];
+      currentDestFullName = name;
+      currentDestShortName = name.split(',')[0];
 
-      const shortName = name.split(',')[0];
-      document.getElementById('destination-label').textContent = `Destination: ${shortName}`;
+      document.getElementById('destination-label').textContent = `Destination: ${currentDestShortName}`;
 
       if (destinationMarker) map.removeLayer(destinationMarker);
       destinationMarker = L.marker(destinationCoord, {
@@ -952,33 +1561,54 @@
       document.getElementById('nav-distance').textContent = '-- km';
       document.getElementById('nav-arrival').textContent = 'Fetching real roads...';
 
-      // Load real road routing & alternative routes via OSRM
-      await loadRoadRoutes(squad[0].lat, squad[0].lng, destinationCoord[0], destinationCoord[1], shortName);
+      // Load multi-stop routes
+      await loadRoadRoutes(squad[0].lat, squad[0].lng, destinationCoord[0], destinationCoord[1], currentDestShortName);
+
+      // Render stops list in HUD
+      renderStopsList();
+
+      // Fetch corridor POIs (fuel, food, hotels, hospitals, rest)
+      fetchCorridorPOIs([squad[0].lat, squad[0].lng], destinationCoord);
 
       // Trigger AI Road Trip Briefing
       triggerDestinationBriefing(name);
     }
 
-    // 3. Real Road Routing & Alternative Routes Engine (OSRM)
+    // ============================================================
+    // 3. Multi-Stop & Real Road Routing Engine (OSRM)
+    // ============================================================
     async function loadRoadRoutes(startLat, startLng, destLat, destLng, destName) {
-      // Primary Route: OSRM driving endpoint
-      const urlPrimary = `https://router.project-osrm.org/route/v1/driving/${startLng},${startLat};${destLng},${destLat}?overview=full&geometries=geojson&steps=true`;
+      // Build waypoint sequence: [Start, ...Stops, Destination]
+      const waypoints = [
+        [startLng, startLat],
+        ...routeStops.map(s => [s.lng, s.lat]),
+        [destLng, destLat]
+      ];
 
-      // Alternate Route: via offset corridor
-      const midLat = (startLat + destLat) / 2 + 0.08;
-      const midLng = (startLng + destLng) / 2 - 0.08;
-      const urlAlternate = `https://router.project-osrm.org/route/v1/driving/${startLng},${startLat};${midLng},${midLat};${destLng},${destLat}?overview=full&geometries=geojson`;
+      const coordsQuery = waypoints.map(w => `${w[0]},${w[1]}`).join(';');
+      const urlPrimary = `https://router.project-osrm.org/route/v1/driving/${coordsQuery}?overview=full&geometries=geojson&steps=true`;
+
+      let urlAlternate = null;
+      if (routeStops.length === 0) {
+        const midLat = (startLat + destLat) / 2 + 0.08;
+        const midLng = (startLng + destLng) / 2 - 0.08;
+        urlAlternate = `https://router.project-osrm.org/route/v1/driving/${startLng},${startLat};${midLng},${midLat};${destLng},${destLat}?overview=full&geometries=geojson`;
+      }
 
       let primaryData = null;
       let alternateData = null;
 
       try {
-        const [res1, res2] = await Promise.allSettled([
-          fetch(urlPrimary).then(r => r.json()),
-          fetch(urlAlternate).then(r => r.json())
-        ]);
-        if (res1.status === 'fulfilled' && res1.value?.routes?.length > 0) primaryData = res1.value.routes[0];
-        if (res2.status === 'fulfilled' && res2.value?.routes?.length > 0) alternateData = res2.value.routes[0];
+        const fetches = [fetch(urlPrimary).then(r => r.json())];
+        if (urlAlternate) fetches.push(fetch(urlAlternate).then(r => r.json()));
+
+        const results = await Promise.allSettled(fetches);
+        if (results[0].status === 'fulfilled' && results[0].value?.routes?.length > 0) {
+          primaryData = results[0].value.routes[0];
+        }
+        if (results[1] && results[1].status === 'fulfilled' && results[1].value?.routes?.length > 0) {
+          alternateData = results[1].value.routes[0];
+        }
       } catch (err) {
         console.warn('OSRM routing fetch error:', err);
       }
@@ -988,30 +1618,41 @@
       if (primaryData) {
         const distKm = (primaryData.distance / 1000).toFixed(1);
         const durMin = Math.round(primaryData.duration / 60);
+        const stopsCount = routeStops.length;
+        const viaText = stopsCount > 0 
+          ? `via NH 163 (${stopsCount} stop${stopsCount > 1 ? 's' : ''})` 
+          : 'via National Highway (NH 163)';
+
         availableRoutes.push({
           id: 'primary',
-          name: 'Fastest Route',
-          via: 'via National Highway (NH 163)',
+          name: stopsCount > 0 ? `Convoy Route (${stopsCount} Stop${stopsCount > 1 ? 's' : ''})` : 'Fastest Route',
+          via: viaText,
           distanceKm: distKm,
           durationMin: durMin,
-          tag: 'Fastest route',
-          coordinates: primaryData.geometry.coordinates.map(c => [c[1], c[0]])
+          tag: stopsCount > 0 ? `${stopsCount} Stop${stopsCount > 1 ? 's' : ''}` : 'Fastest route',
+          coordinates: primaryData.geometry.coordinates.map(c => [c[1], c[0]]),
+          legs: primaryData.legs || []
         });
+
+        // Parse turn-by-turn guidance steps
+        parseGuidanceSteps(primaryData.legs, destName);
       } else {
-        // Fallback road interpolation if offline
+        // Fallback smooth spline
         const fallbackCoords = generateSmoothRoadCoords([startLat, startLng], [destLat, destLng]);
+        const approxDist = (Math.hypot(destLat - startLat, destLng - startLng) * 111).toFixed(1);
         availableRoutes.push({
           id: 'primary',
           name: 'Direct Highway Route',
           via: 'via Direct Highway Corridor',
-          distanceKm: (Math.hypot(destLat - startLat, destLng - startLng) * 111).toFixed(1),
-          durationMin: Math.round(Math.hypot(destLat - startLat, destLng - startLng) * 111 / 65 * 60),
-          tag: 'Fastest route',
-          coordinates: fallbackCoords
+          distanceKm: approxDist,
+          durationMin: Math.round(approxDist / 65 * 60),
+          tag: 'Direct route',
+          coordinates: fallbackCoords,
+          legs: []
         });
       }
 
-      if (alternateData) {
+      if (alternateData && routeStops.length === 0) {
         const distKm = (alternateData.distance / 1000).toFixed(1);
         const durMin = Math.round(alternateData.duration / 60);
         const diffMin = durMin - availableRoutes[0].durationMin;
@@ -1022,17 +1663,123 @@
           distanceKm: distKm,
           durationMin: durMin,
           tag: diffMin > 0 ? `+${diffMin} min` : 'Alternative',
-          coordinates: alternateData.geometry.coordinates.map(c => [c[1], c[0]])
+          coordinates: alternateData.geometry.coordinates.map(c => [c[1], c[0]]),
+          legs: alternateData.legs || []
         });
       }
 
       selectedRouteIndex = 0;
       renderRoadRoutes();
       updateNavHUD();
+      renderTurnByTurnSteps();
       fitAllDrivers();
+    }
 
-      // Fetch nearby petrol bunks along this route
-      fetchNearbyPetrolBunks([startLat, startLng], [destLat, destLng]);
+    // Parse OSRM Maneuvers into Google Maps-style Turn-by-Turn Steps
+    function parseGuidanceSteps(legs, destName) {
+      stepManeuvers = [];
+      if (!legs || legs.length === 0) return;
+
+      legs.forEach((leg, legIdx) => {
+        if (leg.steps) {
+          leg.steps.forEach(st => {
+            if (st.distance < 20) return; // skip negligible maneuvers
+
+            const mType = st.maneuver ? st.maneuver.type : 'turn';
+            const mMod = st.maneuver ? (st.maneuver.modifier || '') : '';
+            const road = st.name || 'Highway';
+            const distStr = st.distance >= 1000 
+              ? `${(st.distance / 1000).toFixed(1)} km` 
+              : `${Math.round(st.distance)} m`;
+
+            let icon = '⬆';
+            let instruction = `Continue along ${road}`;
+
+            if (mType === 'depart') {
+              icon = '🚗';
+              instruction = `Head out on ${road}`;
+            } else if (mType === 'arrive') {
+              icon = '🏁';
+              instruction = `Arrive at waypoint`;
+            } else if (mMod.includes('right')) {
+              icon = '↱';
+              instruction = `Turn right onto ${road}`;
+            } else if (mMod.includes('left')) {
+              icon = '↰';
+              instruction = `Turn left onto ${road}`;
+            } else if (mMod.includes('straight')) {
+              icon = '⬆';
+              instruction = `Continue straight onto ${road}`;
+            } else if (mMod.includes('uturn')) {
+              icon = '⮌';
+              instruction = `Make a U-turn on ${road}`;
+            } else if (mType === 'roundabout') {
+              icon = '🔄';
+              instruction = `At the roundabout, take exit onto ${road}`;
+            }
+
+            stepManeuvers.push({
+              icon,
+              text: instruction,
+              distance: distStr,
+              isStop: false
+            });
+          });
+        }
+
+        // Add Arrival banner at end of leg
+        if (legIdx < routeStops.length) {
+          const st = routeStops[legIdx];
+          stepManeuvers.push({
+            icon: '🛑',
+            text: `Arrive at Stop ${st.letter}: ${st.name}`,
+            distance: 'Pit Stop',
+            isStop: true
+          });
+        } else {
+          stepManeuvers.push({
+            icon: '🏁',
+            text: `Arrive at Final Destination: ${destName}`,
+            distance: 'End of Trip',
+            isStop: true
+          });
+        }
+      });
+    }
+
+    // Render Turn-by-Turn Steps in HUD
+    function renderTurnByTurnSteps() {
+      const container = document.getElementById('steps-container');
+      const distEl = document.getElementById('steps-total-dist');
+      if (!container) return;
+
+      if (availableRoutes.length > 0 && distEl) {
+        distEl.textContent = `${availableRoutes[selectedRouteIndex].distanceKm} km total`;
+      }
+
+      if (stepManeuvers.length === 0) {
+        container.innerHTML = '<div style="font-size: 0.75rem; color: #94a3b8; text-align: center; padding: 16px;">No driving steps available.</div>';
+        return;
+      }
+
+      container.innerHTML = '';
+      stepManeuvers.forEach(step => {
+        if (step.isStop) {
+          const banner = document.createElement('div');
+          banner.className = 'step-stop-banner';
+          banner.innerHTML = `<span>${step.icon}</span> <span>${step.text}</span>`;
+          container.appendChild(banner);
+        } else {
+          const item = document.createElement('div');
+          item.className = 'step-item';
+          item.innerHTML = `
+            <div class="step-icon-wrap">${step.icon}</div>
+            <div class="step-text">${step.text}</div>
+            <div class="step-dist">${step.distance}</div>
+          `;
+          container.appendChild(item);
+        }
+      });
     }
 
     // Render Primary and Alternate Road Polylines
@@ -1046,7 +1793,7 @@
       const otherRoute = availableRoutes[selectedRouteIndex === 0 ? 1 : 0];
 
       // Draw Unselected / Alternate Route first (underneath)
-      if (otherRoute) {
+      if (otherRoute && routeStops.length === 0) {
         alternatePolyline = L.polyline(otherRoute.coordinates, {
           color: '#64748b',
           weight: 5,
@@ -1078,12 +1825,10 @@
       if (availableRoutes.length === 0) return;
       const r = availableRoutes[selectedRouteIndex];
 
-      // Format ETA display (e.g., "1 hr 19 min" or "45 min")
       const hours = Math.floor(r.durationMin / 60);
       const mins = r.durationMin % 60;
       const etaStr = hours > 0 ? `${hours} hr ${mins} min` : `${mins} min`;
 
-      // Calculate arrival clock time
       const arrivalDate = new Date(Date.now() + r.durationMin * 60000);
       const arrivalStr = arrivalDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -1091,9 +1836,9 @@
       document.getElementById('nav-distance').textContent = `${r.distanceKm} km`;
       document.getElementById('nav-arrival').textContent = `Arrive ~${arrivalStr}`;
       document.getElementById('nav-via-road').textContent = r.via;
-      document.getElementById('nav-status-badge').textContent = r.tag || 'Fastest route';
+      document.getElementById('nav-status-badge').textContent = r.tag || 'Active route';
 
-      // Render Route selection cards
+      // Render Route selection cards in Overview
       const container = document.getElementById('nav-routes-container');
       container.innerHTML = '';
 
@@ -1127,7 +1872,6 @@
       renderRoadRoutes();
       updateNavHUD();
 
-      // Reset progress
       convoyProgressIndex = 0;
       const pFill = document.getElementById('nav-progress-fill');
       if (pFill) pFill.style.width = '0%';
@@ -1135,91 +1879,374 @@
       addChatMessage('🤖 Squad AI Copilot', `Switched route to **${availableRoutes[index].name}** (${availableRoutes[index].distanceKm} km · ${availableRoutes[index].durationMin} min).`, '#818cf8', true);
     }
 
-    // 4. Nearby Petrol Bunks / Fuel Stations Locator
-    async function fetchNearbyPetrolBunks(origin, destination) {
-      // Clear old fuel markers
-      petrolMarkers.forEach(m => map.removeLayer(m));
-      petrolMarkers = [];
+    // ============================================================
+    // 4. Google Maps Multi-Stop Management
+    // ============================================================
+    function addStop(lat, lng, name, category = 'stop') {
+      if (!destinationCoord) {
+        alert('Please search and select a destination first before adding stops!');
+        return;
+      }
 
+      const letter = String.fromCharCode(65 + routeStops.length);
+      routeStops.push({
+        id: 'stop_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        name: name,
+        lat: parseFloat(lat),
+        lng: parseFloat(lng),
+        category: category,
+        letter: letter
+      });
+
+      // Switch to Stops tab
+      switchNavTab('stops');
+
+      updateStopsUIAndRoute();
+      addChatMessage('🤖 Squad AI Copilot', `Added **Stop ${letter}: ${name}** to convoy route! Recalculating highway itinerary...`, '#f97316', true);
+    }
+
+    function addStopFromPOI(lat, lng, name, category) {
+      addStop(lat, lng, name, category);
+      map.closePopup();
+    }
+
+    function removeStop(idx) {
+      if (idx >= 0 && idx < routeStops.length) {
+        const removed = routeStops.splice(idx, 1)[0];
+        updateStopsUIAndRoute();
+        addChatMessage('🤖 Squad AI Copilot', `Removed **Stop ${removed.letter}: ${removed.name}** from convoy route.`, '#94a3b8', true);
+      }
+    }
+
+    function moveStop(idx, delta) {
+      const targetIdx = idx + delta;
+      if (targetIdx < 0 || targetIdx >= routeStops.length) return;
+      const temp = routeStops[idx];
+      routeStops[idx] = routeStops[targetIdx];
+      routeStops[targetIdx] = temp;
+      updateStopsUIAndRoute();
+      addChatMessage('🤖 Squad AI Copilot', `Reordered stops. Convoy will now visit **${routeStops[targetIdx].name}** first.`, '#818cf8', true);
+    }
+
+    function clearAllStops() {
+      if (routeStops.length === 0) return;
+      routeStops = [];
+      updateStopsUIAndRoute();
+      addChatMessage('🤖 Squad AI Copilot', 'Cleared all intermediate stops. Route restored to direct destination.', '#94a3b8', true);
+    }
+
+    function updateStopsUIAndRoute() {
+      // Re-assign letters
+      routeStops.forEach((s, i) => {
+        s.letter = String.fromCharCode(65 + i);
+      });
+
+      // Update badge
+      const badge = document.getElementById('stops-count-badge');
+      if (badge) badge.textContent = routeStops.length;
+
+      renderStopsList();
+      renderStopMarkers();
+
+      if (destinationCoord) {
+        loadRoadRoutes(squad[0].lat, squad[0].lng, destinationCoord[0], destinationCoord[1], currentDestShortName);
+      }
+    }
+
+    function renderStopsList() {
+      const container = document.getElementById('itinerary-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      // 1. Origin Node
+      const originNode = document.createElement('div');
+      originNode.className = 'itinerary-node';
+      originNode.innerHTML = `
+        <div class="itinerary-badge origin">●</div>
+        <div class="itinerary-content">
+          <div class="itinerary-title">Uppal, Hyderabad (Leader Origin)</div>
+          <div class="itinerary-meta">Convoy Start Point</div>
+        </div>
+      `;
+      container.appendChild(originNode);
+
+      // Connector
+      const conn1 = document.createElement('div');
+      conn1.className = 'itinerary-connector';
+      container.appendChild(conn1);
+
+      // 2. Intermediate Stops
+      routeStops.forEach((st, idx) => {
+        const node = document.createElement('div');
+        node.className = 'itinerary-node';
+        node.innerHTML = `
+          <div class="itinerary-badge stop">${st.letter}</div>
+          <div class="itinerary-content">
+            <div class="itinerary-title">${st.name}</div>
+            <div class="itinerary-meta">${POI_CONFIG[st.category]?.name || 'Pit Stop'}</div>
+          </div>
+          <div class="itinerary-actions">
+            <button class="itinerary-btn" onclick="moveStop(${idx}, -1)" title="Move earlier" ${idx === 0 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>▲</button>
+            <button class="itinerary-btn" onclick="moveStop(${idx}, 1)" title="Move later" ${idx === routeStops.length - 1 ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}>▼</button>
+            <button class="itinerary-btn remove" onclick="removeStop(${idx})" title="Remove stop">✕</button>
+          </div>
+        `;
+        container.appendChild(node);
+
+        const conn = document.createElement('div');
+        conn.className = 'itinerary-connector';
+        container.appendChild(conn);
+      });
+
+      // 3. Destination Node
+      const destNode = document.createElement('div');
+      destNode.className = 'itinerary-node';
+      destNode.innerHTML = `
+        <div class="itinerary-badge dest">🏁</div>
+        <div class="itinerary-content">
+          <div class="itinerary-title">${currentDestShortName || 'Select Destination'}</div>
+          <div class="itinerary-meta">Final Destination</div>
+        </div>
+      `;
+      container.appendChild(destNode);
+    }
+
+    function renderStopMarkers() {
+      // Clear old stop markers
+      stopMapMarkers.forEach(m => map.removeLayer(m));
+      stopMapMarkers = [];
+
+      routeStops.forEach((st, idx) => {
+        const marker = L.marker([st.lat, st.lng], {
+          icon: createWaypointIcon(st.letter)
+        }).addTo(map);
+
+        marker.bindPopup(`
+          <div style="font-family: sans-serif; min-width: 170px;">
+            <div style="font-size: 0.85rem; font-weight: 700; color: #f97316; margin-bottom: 4px;">
+              Stop ${st.letter}: ${st.name}
+            </div>
+            <div style="font-size: 0.72rem; color: #94a3b8; margin-bottom: 8px;">
+              Intermediate Convoy Waypoint
+            </div>
+            <button class="primary" style="padding: 4px 8px; font-size: 0.72rem; width: 100%; border-radius: 4px; background: #ef4444;" onclick="removeStop(${idx})">
+              ✕ Remove Stop
+            </button>
+          </div>
+        `);
+        stopMapMarkers.push(marker);
+      });
+    }
+
+    // Add Stop Search in HUD
+    async function searchNewStop() {
+      const input = document.getElementById('stop-search-input');
+      const query = input.value.trim();
+      if (!query) return;
+
+      const dropdown = document.getElementById('stop-search-dropdown');
+      dropdown.innerHTML = '<div class="stop-search-item">Searching places...</div>';
+      dropdown.style.display = 'block';
+
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        dropdown.innerHTML = '';
+
+        if (!data || data.length === 0) {
+          dropdown.innerHTML = '<div class="stop-search-item">No places found</div>';
+          return;
+        }
+
+        data.slice(0, 5).forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'stop-search-item';
+          const short = item.display_name.split(',').slice(0, 2).join(',');
+          div.textContent = short;
+          div.onclick = () => {
+            addStop(item.lat, item.lon, short, 'custom');
+            input.value = '';
+            dropdown.style.display = 'none';
+          };
+          dropdown.appendChild(div);
+        });
+      } catch (err) {
+        dropdown.innerHTML = '<div class="stop-search-item">Error searching</div>';
+      }
+    }
+
+    function handleStopSearchKey(e) {
+      if (e.key === 'Enter') searchNewStop();
+    }
+
+    function togglePickOnMap() {
+      isPickingOnMap = !isPickingOnMap;
+      const btn = document.getElementById('btn-pick-map');
+      const mapEl = document.getElementById('map');
+      if (isPickingOnMap) {
+        btn.style.background = '#2563eb';
+        btn.style.color = '#fff';
+        btn.innerHTML = '<span>📍 Click Map Now...</span>';
+        mapEl.style.cursor = 'crosshair';
+      } else {
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.innerHTML = '<span>📍 Click on Map to Add</span>';
+        mapEl.style.cursor = '';
+      }
+    }
+
+    // ============================================================
+    // 5. Google Maps POI Discovery Along Route (Gas, Food, Hotel, Hospital, Rest)
+    // ============================================================
+    function togglePOICategory(cat) {
+      if (activePOICategories.has(cat)) {
+        activePOICategories.delete(cat);
+        // Hide markers
+        if (categoryMarkers[cat]) {
+          categoryMarkers[cat].forEach(m => map.removeLayer(m));
+        }
+      } else {
+        activePOICategories.add(cat);
+        // Show markers
+        if (categoryMarkers[cat]) {
+          categoryMarkers[cat].forEach(m => m.addTo(map));
+        }
+      }
+
+      // Update button styling
+      const pill = document.getElementById(`pill-${cat}`);
+      if (pill) pill.classList.toggle('active', activePOICategories.has(cat));
+
+      const cfg = POI_CONFIG[cat];
+      const isNowActive = activePOICategories.has(cat);
+      addChatMessage('🤖 Squad AI Copilot', isNowActive ? `Showing **${cfg.name}** along route.` : `Hidden **${cfg.name}** from map.`, cfg.color, true);
+    }
+
+    async function fetchCorridorPOIs(origin, destination) {
+      // Clear existing category markers
+      Object.keys(categoryMarkers).forEach(cat => {
+        categoryMarkers[cat].forEach(m => map.removeLayer(m));
+        categoryMarkers[cat] = [];
+      });
+
+      // 1. Load Instant Curated High-Quality Highway Corridor POIs
+      const curatedPOIs = [
+        // Gas
+        { name: "HP Highway Petrol & Diesel Hub", lat: 17.485, lng: 78.682, cat: "fuel" },
+        { name: "IndianOil COCO Station & Food Court", lat: 17.585, lng: 78.855, cat: "fuel" },
+        { name: "Bharat Petroleum Highway Oasis", lat: 17.675, lng: 79.030, cat: "fuel" },
+        { name: "Nayara Energy Fuel & Tire Service", lat: 17.745, lng: 79.225, cat: "fuel" },
+        { name: "Shell Highway Super Station", lat: 17.820, lng: 79.365, cat: "fuel" },
+        // Food
+        { name: "Haritha Grand Dhaba & Family Garden", lat: 17.495, lng: 78.710, cat: "food" },
+        { name: "Highway Swagath Multicuisine Restaurant", lat: 17.595, lng: 78.880, cat: "food" },
+        { name: "Chotu Chaiwala & Highway Bistro", lat: 17.685, lng: 79.055, cat: "food" },
+        { name: "Udupi Sri Krishna Veg Highway Court", lat: 17.755, lng: 79.245, cat: "food" },
+        // Hotel
+        { name: "Highway Inn Residency & Suites", lat: 17.540, lng: 78.790, cat: "hotel" },
+        { name: "Palm Breeze Highway Resort", lat: 17.650, lng: 78.980, cat: "hotel" },
+        { name: "Transit Highway Lodge & Rooms", lat: 17.780, lng: 79.290, cat: "hotel" },
+        // Hospital
+        { name: "Area Govt Hospital & Emergency Trauma Unit", lat: 17.560, lng: 78.810, cat: "hospital" },
+        { name: "LifeLine Highway First Aid Center", lat: 17.710, lng: 79.110, cat: "hospital" },
+        { name: "Apollo 24x7 Highway Pharmacy", lat: 17.795, lng: 79.320, cat: "hospital" },
+        // Rest
+        { name: "NH 163 Highway Toll & Rest Bay", lat: 17.525, lng: 78.750, cat: "rest" },
+        { name: "Greenway Highway Park & Scenic Viewpoint", lat: 17.660, lng: 79.005, cat: "rest" },
+        { name: "Smart Highway Parking & Washroom Hub", lat: 17.770, lng: 79.270, cat: "rest" }
+      ];
+
+      curatedPOIs.forEach(item => {
+        addPOIMarker(item.lat, item.lng, item.name, item.cat, origin);
+      });
+
+      // 2. Query Nominatim for Dynamic POIs in Bounding Box
       const minLat = Math.min(origin[0], destination[0]) - 0.08;
       const maxLat = Math.max(origin[0], destination[0]) + 0.08;
       const minLng = Math.min(origin[1], destination[1]) - 0.08;
       const maxLng = Math.max(origin[1], destination[1]) + 0.08;
 
       try {
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=fuel&viewbox=${minLng},${maxLat},${maxLng},${minLat}&bounded=1&limit=12`;
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if (Array.isArray(data) && data.length > 0) {
-          data.forEach(item => {
-            const pLat = parseFloat(item.lat);
-            const pLng = parseFloat(item.lon);
-            const pumpName = item.name || item.display_name.split(',')[0] || 'Highway Fuel Station';
-
-            // Calculate distance from start
-            const distFromStart = (Math.hypot(pLat - origin[0], pLng - origin[1]) * 111).toFixed(1);
-
-            const marker = L.marker([pLat, pLng], {
-              icon: createFuelIcon()
+        const queryPromises = ['fuel', 'restaurant'].map(async (q) => {
+          const url = `https://nominatim.openstreetmap.org/search?format=json&q=${q}&viewbox=${minLng},${maxLat},${maxLng},${minLat}&bounded=1&limit=6`;
+          const res = await fetch(url);
+          const data = await res.json();
+          const cat = q === 'fuel' ? 'fuel' : 'food';
+          if (Array.isArray(data)) {
+            data.forEach(item => {
+              const name = item.name || item.display_name.split(',')[0] || 'Highway Spot';
+              addPOIMarker(parseFloat(item.lat), parseFloat(item.lon), name, cat, origin);
             });
-
-            marker.bindPopup(`
-              <div style="min-width: 180px;">
-                <div style="font-size:0.85rem; font-weight:700; color:#fbbf24; display:flex; align-items:center; gap:6px;">
-                  <span>⛽</span> ${pumpName}
-                </div>
-                <div style="font-size:0.75rem; color:#94a3b8; margin: 4px 0;">
-                  Highway Fuel Station • ~${distFromStart} km from origin
-                </div>
-                <div style="font-size:0.72rem; color:#cbd5e1; margin-bottom: 8px;">
-                  Petrol • Diesel • Tire Air & Washroom
-                </div>
-                <button class="primary" style="padding:4px 8px; font-size:0.75rem; width:100%; border-radius:4px;" onclick="setPitStop(${pLat}, ${pLng}, '${pumpName.replace(/'/g, "\\'")}')">
-                  ➕ Set as Convoy Pit Stop
-                </button>
-              </div>
-            `);
-
-            if (petrolBunksVisible) marker.addTo(map);
-            petrolMarkers.push(marker);
-          });
-        }
+          }
+        });
+        await Promise.allSettled(queryPromises);
       } catch (err) {
-        console.warn('Petrol bunks search failed:', err);
+        console.warn('Dynamic POI fetch warning:', err);
       }
 
-      // Update badge
-      const countEl = document.getElementById('fuel-count');
-      if (countEl) countEl.textContent = petrolMarkers.length;
+      // Update counters
+      Object.keys(POI_CONFIG).forEach(cat => {
+        const countEl = document.getElementById(`poi-count-${cat}`);
+        if (countEl) countEl.textContent = categoryMarkers[cat] ? categoryMarkers[cat].length : 0;
+      });
     }
 
-    function togglePetrolBunks() {
-      petrolBunksVisible = !petrolBunksVisible;
-      petrolMarkers.forEach(m => {
-        if (petrolBunksVisible) m.addTo(map);
-        else map.removeLayer(m);
+    function addPOIMarker(lat, lng, name, cat, origin) {
+      if (!categoryMarkers[cat]) categoryMarkers[cat] = [];
+
+      // Avoid duplicates
+      const exists = categoryMarkers[cat].some(m => {
+        const ll = m.getLatLng();
+        return Math.hypot(ll.lat - lat, ll.lng - lng) < 0.005;
+      });
+      if (exists) return;
+
+      const cfg = POI_CONFIG[cat] || POI_CONFIG.fuel;
+      const distKm = (Math.hypot(lat - origin[0], lng - origin[1]) * 111).toFixed(1);
+
+      const marker = L.marker([lat, lng], {
+        icon: createPOIIcon(cat)
       });
 
-      const navBtn = document.getElementById('btn-toggle-fuel');
-      const barBtn = document.getElementById('btn-bar-fuel');
-      if (navBtn) navBtn.classList.toggle('active', petrolBunksVisible);
-      if (barBtn) barBtn.classList.toggle('primary', petrolBunksVisible);
+      marker.bindPopup(`
+        <div style="font-family: sans-serif; min-width: 210px;">
+          <div style="font-size: 0.86rem; font-weight: 700; color: ${cfg.color}; display: flex; align-items: center; gap: 6px;">
+            <span>${cfg.icon}</span> ${name}
+          </div>
+          <div style="font-size: 0.74rem; color: #94a3b8; margin: 4px 0;">
+            ${cfg.name} • ~${distKm} km from origin
+          </div>
+          <div style="font-size: 0.72rem; color: #cbd5e1; margin-bottom: 8px;">
+            Open 24/7 • Convoy Friendly • Highway Corridor
+          </div>
+          <button class="primary" style="padding: 6px 10px; font-size: 0.75rem; width: 100%; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 4px;" onclick="addStopFromPOI(${lat}, ${lng}, '${name.replace(/'/g, "\\'")}', '${cat}')">
+            ➕ Add as Convoy Stop
+          </button>
+        </div>
+      `);
 
-      addChatMessage('🤖 Squad AI Copilot', petrolBunksVisible ? `Showing ${petrolMarkers.length} petrol bunks along the route corridor.` : 'Hidden petrol bunks from map.', '#f59e0b', true);
+      if (activePOICategories.has(cat)) {
+        marker.addTo(map);
+      }
+      categoryMarkers[cat].push(marker);
+
+      const countEl = document.getElementById(`poi-count-${cat}`);
+      if (countEl) countEl.textContent = categoryMarkers[cat].length;
     }
 
-    function setPitStop(lat, lng, name) {
-      if (pitStopMarker) map.removeLayer(pitStopMarker);
-      pitStopMarker = L.marker([lat, lng], {
-        icon: createIcon('#f97316', '⛽')
-      }).addTo(map).bindPopup(`<b>Convoy Pit Stop:</b><br>${name}`).openPopup();
-
-      map.panTo([lat, lng]);
-      addChatMessage('🤖 Squad AI Copilot', `⛽ Pit stop added at **${name}**! Convoy will regroup here for refueling.`, '#f59e0b', true);
+    // Compatibility method
+    function togglePetrolBunks() {
+      togglePOICategory('fuel');
     }
 
-    // 5. Realistic Road-Following Convoy Simulation
+    function addMeetingPoint() {
+      switchNavTab('stops');
+    }
+
+    // ============================================================
+    // 6. Multi-Leg Convoy Simulation with Intermediate Stops
+    // ============================================================
     function simulateDrive() {
       if (!destinationCoord || availableRoutes.length === 0) {
         alert('Please search and select a destination first!');
@@ -1230,28 +2257,47 @@
       const coords = activeRoute.coordinates;
 
       if (simInterval) {
-        // Pause
         clearInterval(simInterval);
         simInterval = null;
         document.getElementById('btn-movement').textContent = '▶ Resume Movement';
-        document.querySelector('.actions-bar button.primary').textContent = '▶ Resume Movement';
         return;
       }
 
       document.getElementById('btn-movement').textContent = '⏸ Pause Movement';
-      document.querySelector('.actions-bar button.primary').textContent = '⏸ Pause Movement';
 
-      // Show progress bar
       const pBar = document.getElementById('nav-progress-bar');
       const pFill = document.getElementById('nav-progress-fill');
       if (pBar) pBar.style.display = 'block';
 
+      // Find coordinate index for each stop
+      stopWaypointIndices = routeStops.map(st => {
+        let minD = Infinity;
+        let bestIdx = 0;
+        for (let i = 0; i < coords.length; i++) {
+          const d = Math.hypot(coords[i][0] - st.lat, coords[i][1] - st.lng);
+          if (d < minD) {
+            minD = d;
+            bestIdx = i;
+          }
+        }
+        return { stop: st, index: bestIdx, reached: false };
+      });
+
       simInterval = setInterval(() => {
-        // Advance along road points
+        if (isPausedForRegroup) return;
+
         convoyProgressIndex += 3;
 
+        // Check if leader reached intermediate stop
+        stopWaypointIndices.forEach(item => {
+          if (!item.reached && Math.abs(convoyProgressIndex - item.index) <= 3) {
+            item.reached = true;
+            triggerStopRegroup(item.stop);
+          }
+        });
+
+        // Arrived at Final Destination
         if (convoyProgressIndex >= coords.length - 1) {
-          // Arrived!
           convoyProgressIndex = coords.length - 1;
           clearInterval(simInterval);
           simInterval = null;
@@ -1266,23 +2312,22 @@
           });
 
           document.getElementById('btn-movement').textContent = '↺ Restart Trip';
-          document.querySelector('.actions-bar button.primary').textContent = '↺ Restart Trip';
           if (pFill) pFill.style.width = '100%';
           document.getElementById('nav-eta').textContent = 'Arrived!';
           document.getElementById('nav-distance').textContent = '0.0 km remaining';
 
-          addChatMessage('🎉 Squad Convoy', 'All squad members have arrived at the destination safely!', '#22c55e');
+          addChatMessage('🎉 Squad Convoy', `All squad members arrived at the destination (${currentDestShortName}) safely!`, '#22c55e');
           return;
         }
 
-        // Host vehicle position along the road
+        // Host vehicle position along road
         const hostPt = coords[convoyProgressIndex];
         squad[0].lat = hostPt[0];
         squad[0].lng = hostPt[1];
         squad[0].speed = Math.floor(70 + Math.random() * 8);
         if (markers[squad[0].id]) markers[squad[0].id].setLatLng(hostPt);
 
-        // Friends follow behind with realistic road spacing
+        // Friends follow behind
         for (let i = 1; i < squad.length; i++) {
           const lag = i * 7;
           const friendIdx = Math.max(0, convoyProgressIndex - lag);
@@ -1293,8 +2338,8 @@
           if (markers[squad[i].id]) markers[squad[i].id].setLatLng(friendPt);
         }
 
-        // Update HUD cards & Progress
-        const pct = (convoyProgressIndex / (coords.length - 1));
+        // Update progress bar
+        const pct = convoyProgressIndex / (coords.length - 1);
         if (pFill) pFill.style.width = `${(pct * 100).toFixed(1)}%`;
 
         const totalKm = parseFloat(activeRoute.distanceKm);
@@ -1306,13 +2351,31 @@
         document.getElementById('nav-eta').textContent = hours > 0 ? `${hours} hr ${mins} min` : `${mins} min`;
         document.getElementById('nav-distance').textContent = `${remKm} km remaining`;
 
-        // Update roster speeds
         squad.forEach(m => {
           const sEl = document.getElementById(`speed-${m.id}`);
           if (sEl) sEl.textContent = `Speed: ${m.speed} km/h`;
         });
 
       }, 200);
+    }
+
+    function triggerStopRegroup(stop) {
+      isPausedForRegroup = true;
+      const banner = document.getElementById('regroup-banner');
+      const textEl = document.getElementById('regroup-banner-text');
+      if (banner && textEl) {
+        textEl.textContent = `🛑 Regrouping at Stop ${stop.letter}: ${stop.name} (Refueling & Food Break)`;
+        banner.style.display = 'flex';
+      }
+
+      addChatMessage('🛑 Squad AI Copilot', `Convoy arrived at **Stop ${stop.letter}: ${stop.name}**! Taking a short pit stop to regroup.`, '#f97316', true);
+
+      // Auto-resume after 3.5 seconds
+      setTimeout(() => {
+        isPausedForRegroup = false;
+        if (banner) banner.style.display = 'none';
+        addChatMessage('🚗 Squad Convoy', `Pit stop completed at **Stop ${stop.letter}**. Convoy continuing along highway!`, '#22c55e');
+      }, 3500);
     }
 
     function generateSmoothRoadCoords(p1, p2) {
