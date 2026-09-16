@@ -18,11 +18,16 @@ SquadNav is a real-time group convoy navigation web application featuring real r
 
 ## 🚀 Getting Started
 
+### Repository
+🔗 **[https://github.com/saicharan7464-comet/squadnav](https://github.com/saicharan7464-comet/squadnav)**
+
 ### Prerequisites
 - Any modern web browser (Chrome, Edge, Firefox, Safari).
 - (Optional) A local HTTP server such as Python:
 
 ```bash
+git clone https://github.com/saicharan7464-comet/squadnav.git
+cd squadnav
 python -m http.server 3000
 ```
 
