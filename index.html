@@ -583,33 +583,149 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 10px;
+      padding: 9px 12px;
       background: #1e293b;
       border: 1.5px solid #334155;
-      border-radius: 8px;
+      border-radius: 9px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       font-size: 0.78rem;
     }
 
     .route-card:hover {
       background: #283548;
       border-color: #64748b;
+      transform: translateY(-1px);
     }
 
     .route-card.selected {
       background: rgba(37, 99, 235, 0.18);
       border-color: #3b82f6;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
     }
 
     .route-card.selected .route-title {
-      color: #60a5fa;
+      color: #93c5fd;
       font-weight: 700;
     }
 
     .route-card .route-meta {
       font-size: 0.73rem;
       color: #94a3b8;
+    }
+
+    /* Google Maps Route Pills on Leaflet Map */
+    .map-route-pill-wrapper {
+      background: transparent !important;
+      border: none !important;
+    }
+
+    .map-route-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.12);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+    }
+
+    .map-route-pill.active {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 6px 22px rgba(37, 99, 235, 0.65), 0 0 0 2px rgba(255, 255, 255, 0.25);
+    }
+
+    .map-route-pill.inactive {
+      background: #1e293b;
+      color: #cbd5e1;
+      border: 1.5px solid #64748b;
+    }
+
+    .map-route-pill.inactive:hover {
+      background: #334155;
+      border-color: #38bdf8;
+      color: #ffffff;
+      transform: scale(1.08);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+
+    .route-pill-time {
+      font-weight: 800;
+    }
+
+    .route-pill-diff {
+      font-size: 0.68rem;
+      opacity: 0.9;
+    }
+
+    /* Top Navigation Travel Modes Bar */
+    .header-travel-modes {
+      display: flex;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 3px;
+      gap: 3px;
+    }
+
+    .header-mode-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+
+    .header-mode-btn:hover {
+      background: rgba(51, 65, 85, 0.6);
+      color: #f8fafc;
+    }
+
+    .header-mode-btn.active {
+      background: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+    }
+
+    .header-mode-btn.active[data-mode="bike"] {
+      background: #0d9488;
+      box-shadow: 0 2px 8px rgba(13, 148, 136, 0.4);
+    }
+    .header-mode-btn.active[data-mode="train"] {
+      background: #7c3aed;
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
+    }
+    .header-mode-btn.active[data-mode="walk"] {
+      background: #0284c7;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+    }
+
+    @media (max-width: 820px) {
+      .header-mode-btn .mode-text {
+        display: none;
+      }
+      .header-travel-modes {
+        padding: 2px;
+        gap: 2px;
+      }
+      .header-mode-btn {
+        padding: 5px 8px;
+      }
     }
 
     .nav-quick-actions {
@@ -1583,14 +1699,31 @@
       <div id="search-results" class="search-results"></div>
     </div>
 
+    <!-- Google Maps Vehicle Modes Switcher -->
+    <div class="header-travel-modes" id="header-travel-modes">
+      <button class="header-mode-btn active" data-mode="car" onclick="setTravelMode('car')" title="Car / Driving Route">
+        <span>🚗</span> <span class="mode-text">Drive</span>
+      </button>
+      <button class="header-mode-btn" data-mode="bike" onclick="setTravelMode('bike')" title="Two-Wheeler / Bike Route">
+        <span>🏍️</span> <span class="mode-text">Bike</span>
+      </button>
+      <button class="header-mode-btn" data-mode="train" onclick="setTravelMode('train')" title="Transit / Train / Metro Route">
+        <span>🚆</span> <span class="mode-text">Transit</span>
+      </button>
+      <button class="header-mode-btn" data-mode="walk" onclick="setTravelMode('walk')" title="Walking / Pedestrian Route">
+        <span>🚶</span> <span class="mode-text">Walk</span>
+      </button>
+    </div>
+
     <div style="display: flex; align-items: center; gap: 8px;">
       <div class="ai-pill" onclick="openKeyModal()" title="Google AI / Map API Key Active • Click to manage">
         <span class="ai-dot"></span>
         <span>AI Copilot Active</span>
         <span style="font-size: 0.7rem; opacity: 0.75;">⚙️</span>
       </div>
-      <button onclick="toggleChat()">💬 Chat</button>
-      <button class="primary" onclick="openAddFriendModal()">+ Add Friend</button>
+      <button onclick="toggleChat()" style="display: flex; align-items: center; gap: 5px;">
+        <span>💬</span> <span>Chat</span>
+      </button>
     </div>
   </header>
 
@@ -1934,6 +2067,7 @@
     let selectedRouteIndex = 0;
     let primaryPolyline = null;
     let alternatePolyline = null;
+    let routeBadgeMarkers = [];
 
     // Multi-stop routing state
     let routeStops = []; // [{ id, name, lat, lng, category, letter }]
@@ -2387,21 +2521,23 @@
       if (simInterval) {
         clearInterval(simInterval);
         simInterval = null;
-        document.getElementById('btn-movement').textContent = '▶ Start Movement';
+        document.getElementById('btn-movement').textContent = '▶ Start Navigation';
       }
       convoyProgressIndex = 0;
 
-      // Keep Side Overview HUD collapsed as a side icon so it does not show until user presses it
-      isHudMinimized = true;
+      // Automatically open the Google Maps Overview & Directions HUD
+      isHudMinimized = false;
       const navHud = document.getElementById('nav-hud');
       const miniBtn = document.getElementById('nav-hud-mini-btn');
-      navHud.style.display = 'none';
-      miniBtn.style.display = 'flex';
+      if (navHud) navHud.style.display = 'flex';
+      if (miniBtn) miniBtn.style.display = 'none';
+      switchNavTab('overview');
+
       document.getElementById('nav-eta').textContent = 'Calculating...';
       document.getElementById('nav-distance').textContent = '-- km';
-      document.getElementById('nav-arrival').textContent = 'Fetching real roads...';
+      document.getElementById('nav-arrival').textContent = 'Finding optimal routes...';
 
-      // Load multi-stop routes
+      // Load primary and alternative routes
       await loadRoadRoutes(squad[0].lat, squad[0].lng, destinationCoord[0], destinationCoord[1], currentDestShortName);
 
       // Render stops list in HUD
@@ -2422,7 +2558,7 @@
       if (!['car', 'bike', 'train', 'walk'].includes(mode)) return;
       currentTravelMode = mode;
 
-      document.querySelectorAll('.mode-pill').forEach(btn => {
+      document.querySelectorAll('.mode-pill, .header-mode-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.mode === mode);
       });
 
@@ -2433,7 +2569,7 @@
         walk: '🚶 Walking (Walk)'
       };
 
-      addChatMessage('🤖 Squad AI Copilot', `Switched travel mode to **${modeLabels[mode]}**. Recalculating route...`, '#38bdf8', true);
+      addChatMessage('🤖 Squad AI Copilot', `Switched travel mode to **${modeLabels[mode]}**. Recalculating routes...`, '#38bdf8', true);
 
       if (destinationCoord) {
         loadRoadRoutes(squad[0].lat, squad[0].lng, destinationCoord[0], destinationCoord[1], currentDestShortName);
@@ -2454,38 +2590,43 @@
       let osrmProfile = 'driving';
       if (currentTravelMode === 'walk') osrmProfile = 'foot';
 
-      const urlPrimary = `https://router.project-osrm.org/route/v1/${osrmProfile}/${coordsQuery}?overview=full&geometries=geojson&steps=true`;
+      // 1. Primary route query with alternatives=true to get native alternate routes from OSRM
+      const urlPrimary = `https://router.project-osrm.org/route/v1/${osrmProfile}/${coordsQuery}?overview=full&geometries=geojson&steps=true&alternatives=true`;
 
-      let urlAlternate = null;
-      if (routeStops.length === 0 && currentTravelMode === 'car') {
-        const midLat = (startLat + destLat) / 2 + 0.08;
-        const midLng = (startLng + destLng) / 2 - 0.08;
-        urlAlternate = `https://router.project-osrm.org/route/v1/driving/${startLng},${startLat};${midLng},${midLat};${destLng},${destLat}?overview=full&geometries=geojson`;
-      }
+      // 2. Secondary bypass corridor query to ensure we ALWAYS have a distinct alternate route
+      const dx = destLng - startLng;
+      const dy = destLat - startLat;
+      const distDeg = Math.hypot(dx, dy) || 0.1;
+      const offsetFactor = Math.min(0.08, Math.max(0.03, distDeg * 0.18));
+      const midLat = (startLat + destLat) / 2 - (dx / distDeg) * offsetFactor;
+      const midLng = (startLng + destLng) / 2 + (dy / distDeg) * offsetFactor;
+      const urlBypass = `https://router.project-osrm.org/route/v1/${osrmProfile}/${startLng},${startLat};${midLng.toFixed(5)},${midLat.toFixed(5)};${destLng},${destLat}?overview=full&geometries=geojson&steps=true`;
 
       let primaryData = null;
       let alternateData = null;
 
       try {
-        const fetches = [
+        const [resPrimary, resBypass] = await Promise.allSettled([
           fetch(urlPrimary)
             .then(r => r.json())
             .catch(async err => {
-              // Fallback to driving profile if foot profile is rate-limited
               if (osrmProfile === 'foot') {
-                return fetch(`https://router.project-osrm.org/route/v1/driving/${coordsQuery}?overview=full&geometries=geojson&steps=true`).then(r => r.json());
+                return fetch(`https://router.project-osrm.org/route/v1/driving/${coordsQuery}?overview=full&geometries=geojson&steps=true&alternatives=true`).then(r => r.json());
               }
               throw err;
-            })
-        ];
-        if (urlAlternate) fetches.push(fetch(urlAlternate).then(r => r.json()).catch(() => null));
+            }),
+          fetch(urlBypass).then(r => r.json()).catch(() => null)
+        ]);
 
-        const results = await Promise.allSettled(fetches);
-        if (results[0].status === 'fulfilled' && results[0].value?.routes?.length > 0) {
-          primaryData = results[0].value.routes[0];
+        if (resPrimary.status === 'fulfilled' && resPrimary.value?.routes?.length > 0) {
+          primaryData = resPrimary.value.routes[0];
+          if (resPrimary.value.routes.length > 1) {
+            alternateData = resPrimary.value.routes[1];
+          }
         }
-        if (results[1] && results[1].status === 'fulfilled' && results[1].value?.routes?.length > 0) {
-          alternateData = results[1].value.routes[0];
+
+        if (!alternateData && resBypass.status === 'fulfilled' && resBypass.value?.routes?.length > 0) {
+          alternateData = resBypass.value.routes[0];
         }
       } catch (err) {
         console.warn('OSRM routing fetch error:', err);
@@ -2500,146 +2641,106 @@
       const fallbackCoords = generateSmoothRoadCoords([startLat, startLng], [destLat, destLng]);
       const stopsCount = routeStops.length;
 
-      // 1. CAR / DRIVING MODE
+      // Base speeds per mode
+      let modeSpeed = 65; // car km/h
+      if (currentTravelMode === 'bike') modeSpeed = 38;
+      else if (currentTravelMode === 'train') modeSpeed = 55;
+      else if (currentTravelMode === 'walk') modeSpeed = 4.8;
+
+      let primaryDurMin = 0;
       if (currentTravelMode === 'car') {
-        if (primaryData) {
-          const durMin = Math.round(primaryData.duration / 60);
-          const viaText = stopsCount > 0 
-            ? `via NH 163 (${stopsCount} stop${stopsCount > 1 ? 's' : ''})` 
-            : 'via National Highway (NH 163)';
-
-          availableRoutes.push({
-            id: 'primary',
-            name: stopsCount > 0 ? `Convoy Route (${stopsCount} Stop${stopsCount > 1 ? 's' : ''})` : 'Fastest Driving Route',
-            via: viaText,
-            distanceKm: rawDistKm,
-            durationMin: durMin,
-            tag: stopsCount > 0 ? `${stopsCount} Stop${stopsCount > 1 ? 's' : ''}` : 'Fastest route',
-            coordinates: primaryData.geometry.coordinates.map(c => [c[1], c[0]]),
-            legs: primaryData.legs || []
-          });
-
-          parseGuidanceSteps(primaryData.legs, destName, 'car');
-        } else {
-          availableRoutes.push({
-            id: 'primary',
-            name: 'Direct Highway Route',
-            via: 'via Direct Highway Corridor',
-            distanceKm: rawDistKm,
-            durationMin: Math.round(distKmNum / 65 * 60),
-            tag: 'Direct route',
-            coordinates: fallbackCoords,
-            legs: []
-          });
-        }
-
-        if (alternateData && routeStops.length === 0) {
-          const distKm = (alternateData.distance / 1000).toFixed(1);
-          const durMin = Math.round(alternateData.duration / 60);
-          const diffMin = durMin - availableRoutes[0].durationMin;
-          availableRoutes.push({
-            id: 'alternate',
-            name: 'Alternate Highway Route',
-            via: 'via State Highway / Ring Bypass',
-            distanceKm: distKm,
-            durationMin: durMin,
-            tag: diffMin > 0 ? `+${diffMin} min` : 'Alternative',
-            coordinates: alternateData.geometry.coordinates.map(c => [c[1], c[0]]),
-            legs: alternateData.legs || []
-          });
-        }
-      } 
-      // 2. BIKE / TWO-WHEELER MODE
-      else if (currentTravelMode === 'bike') {
-        const durMin = Math.max(3, Math.round(distKmNum / 38 * 60));
-        const coords = primaryData ? primaryData.geometry.coordinates.map(c => [c[1], c[0]]) : fallbackCoords;
-
-        availableRoutes.push({
-          id: 'primary',
-          name: stopsCount > 0 ? `Bike Convoy (${stopsCount} Stop${stopsCount > 1 ? 's' : ''})` : 'Fastest Bike Route',
-          via: 'via City Arterial & Outer Bypass (Two-Wheeler Route)',
-          distanceKm: rawDistKm,
-          durationMin: durMin,
-          tag: 'Agile traffic speed',
-          coordinates: coords,
-          legs: primaryData?.legs || []
-        });
-
-        if (alternateData && routeStops.length === 0) {
-          const altDist = (alternateData.distance / 1000).toFixed(1);
-          const altDur = Math.max(4, Math.round(parseFloat(altDist) / 35 * 60));
-          availableRoutes.push({
-            id: 'alternate',
-            name: 'Scenic Bike Corridor',
-            via: 'via Service Roads & Boulevard',
-            distanceKm: altDist,
-            durationMin: altDur,
-            tag: 'Less traffic',
-            coordinates: alternateData.geometry.coordinates.map(c => [c[1], c[0]]),
-            legs: alternateData.legs || []
-          });
-        }
-
-        if (primaryData?.legs && primaryData.legs.length > 0) {
-          parseGuidanceSteps(primaryData.legs, destName, 'bike');
-        } else {
-          generateModeSteps('bike', destName, distKmNum, durMin);
-        }
-      } 
-      // 3. TRAIN / TRANSIT MODE
-      else if (currentTravelMode === 'train') {
-        const transitDist = (distKmNum * 1.05).toFixed(1);
-        const durMin = Math.max(12, Math.round(distKmNum * 1.5 + 8));
-        const coords = primaryData ? primaryData.geometry.coordinates.map(c => [c[1], c[0]]) : fallbackCoords;
-
-        availableRoutes.push({
-          id: 'primary',
-          name: '🚆 MMTS & South Central Railway',
-          via: 'via Railway Mainline Corridor',
-          distanceKm: transitDist,
-          durationMin: durMin,
-          tag: 'Leaves in 6 min • Platform 2',
-          coordinates: coords,
-          legs: []
-        });
-
-        const metroDur = Math.max(14, Math.round(distKmNum * 1.8 + 5));
-        availableRoutes.push({
-          id: 'alternate',
-          name: '🚇 Metro Rail Express Line',
-          via: 'via Elevated Metro Corridor',
-          distanceKm: rawDistKm,
-          durationMin: metroDur,
-          tag: 'Every 5 min • Air conditioned',
-          coordinates: coords,
-          legs: []
-        });
-
-        generateModeSteps('train', destName, distKmNum, durMin);
-      } 
-      // 4. WALK / PEDESTRIAN MODE
-      else if (currentTravelMode === 'walk') {
-        const durMin = Math.max(4, Math.round(distKmNum * 12.5));
-        const totalSteps = Math.round(distKmNum * 1320);
-        const coords = primaryData ? primaryData.geometry.coordinates.map(c => [c[1], c[0]]) : fallbackCoords;
-
-        availableRoutes.push({
-          id: 'primary',
-          name: 'Walking Pedestrian Route',
-          via: 'via Footpaths, Sidewalks & Crosswalks',
-          distanceKm: rawDistKm,
-          durationMin: durMin,
-          tag: `~${totalSteps.toLocaleString()} steps • Mostly flat`,
-          coordinates: coords,
-          legs: primaryData?.legs || []
-        });
-
-        if (primaryData?.legs && primaryData.legs.length > 0) {
-          parseGuidanceSteps(primaryData.legs, destName, 'walk');
-        } else {
-          generateModeSteps('walk', destName, distKmNum, durMin);
-        }
+        primaryDurMin = primaryData ? Math.round(primaryData.duration / 60) : Math.round((distKmNum / modeSpeed) * 60);
+      } else if (currentTravelMode === 'bike') {
+        primaryDurMin = Math.max(3, Math.round((distKmNum / modeSpeed) * 60));
+      } else if (currentTravelMode === 'train') {
+        primaryDurMin = Math.max(12, Math.round(distKmNum * 1.4 + 6));
+      } else if (currentTravelMode === 'walk') {
+        primaryDurMin = Math.max(4, Math.round(distKmNum * 12.5));
       }
+
+      const primaryCoords = primaryData 
+        ? primaryData.geometry.coordinates.map(c => [c[1], c[0]]) 
+        : fallbackCoords;
+
+      let primaryName = stopsCount > 0 ? `Convoy Route (${stopsCount} Stop${stopsCount > 1 ? 's' : ''})` : 'Fastest Route';
+      let primaryVia = stopsCount > 0 ? `via NH Corridor (${stopsCount} stops)` : 'via Main Highway Corridor';
+      if (currentTravelMode === 'bike') {
+        primaryName = stopsCount > 0 ? `Bike Route (${stopsCount} Stops)` : 'Fastest Bike Route';
+        primaryVia = 'via Arterial Road & Bike Corridor';
+      } else if (currentTravelMode === 'train') {
+        primaryName = '🚆 MMTS & South Central Railway';
+        primaryVia = 'via Mainline Rail Corridor';
+      } else if (currentTravelMode === 'walk') {
+        primaryName = 'Pedestrian Sidewalk Route';
+        primaryVia = 'via Footpaths & Crosswalks';
+      }
+
+      availableRoutes.push({
+        id: 'primary',
+        name: primaryName,
+        via: primaryVia,
+        distanceKm: rawDistKm,
+        durationMin: primaryDurMin,
+        tag: stopsCount > 0 ? `${stopsCount} Stop${stopsCount > 1 ? 's' : ''}` : 'Fastest route',
+        coordinates: primaryCoords,
+        legs: primaryData?.legs || []
+      });
+
+      // Parse step maneuvers
+      if (primaryData?.legs && primaryData.legs.length > 0) {
+        parseGuidanceSteps(primaryData.legs, destName, currentTravelMode);
+      } else {
+        generateModeSteps(currentTravelMode, destName, distKmNum, primaryDurMin);
+      }
+
+      // ALTERNATE ROUTE (Guaranteed for all modes)
+      let altDistKm = (distKmNum * 1.14).toFixed(1);
+      let altCoords = null;
+
+      if (alternateData) {
+        altDistKm = (alternateData.distance / 1000).toFixed(1);
+        altCoords = alternateData.geometry.coordinates.map(c => [c[1], c[0]]);
+      } else {
+        altCoords = generateBypassCoords([startLat, startLng], [destLat, destLng]);
+      }
+
+      const altDistNum = parseFloat(altDistKm);
+      let altDurMin = 0;
+      if (currentTravelMode === 'car') {
+        altDurMin = alternateData ? Math.round(alternateData.duration / 60) : Math.round((altDistNum / 58) * 60);
+      } else if (currentTravelMode === 'bike') {
+        altDurMin = Math.max(4, Math.round((altDistNum / 34) * 60));
+      } else if (currentTravelMode === 'train') {
+        altDurMin = Math.max(15, Math.round(altDistNum * 1.6 + 5));
+      } else if (currentTravelMode === 'walk') {
+        altDurMin = Math.max(5, Math.round(altDistNum * 13.5));
+      }
+
+      const diffMin = Math.max(1, altDurMin - primaryDurMin);
+
+      let altName = 'Alternate Highway Route';
+      let altVia = 'via Ring Road / Bypass Corridor';
+      if (currentTravelMode === 'bike') {
+        altName = 'Scenic Bike Boulevard';
+        altVia = 'via Service Roads & Parkway';
+      } else if (currentTravelMode === 'train') {
+        altName = '🚇 Metro Rail Express Line';
+        altVia = 'via Elevated Metro Corridor';
+      } else if (currentTravelMode === 'walk') {
+        altName = 'Scenic Promenade Route';
+        altVia = 'via Park Walkways & Boulevard';
+      }
+
+      availableRoutes.push({
+        id: 'alternate',
+        name: altName,
+        via: altVia,
+        distanceKm: altDistKm,
+        durationMin: altDurMin,
+        tag: `+${diffMin} min`,
+        coordinates: altCoords,
+        legs: alternateData?.legs || []
+      });
 
       selectedRouteIndex = 0;
       renderRoadRoutes();
@@ -2839,59 +2940,131 @@
 
     // Render Primary and Alternate Road Polylines
     function renderRoadRoutes() {
-      if (primaryPolyline) map.removeLayer(primaryPolyline);
-      if (alternatePolyline) map.removeLayer(alternatePolyline);
+      if (primaryPolyline) { map.removeLayer(primaryPolyline); primaryPolyline = null; }
+      if (alternatePolyline) { map.removeLayer(alternatePolyline); alternatePolyline = null; }
+      if (window.routeCasingPolyline) { map.removeLayer(window.routeCasingPolyline); window.routeCasingPolyline = null; }
+
+      // Clear existing floating ETA route pills on map
+      if (routeBadgeMarkers && routeBadgeMarkers.length > 0) {
+        routeBadgeMarkers.forEach(m => map.removeLayer(m));
+        routeBadgeMarkers = [];
+      }
 
       if (availableRoutes.length === 0) return;
 
       const activeRoute = availableRoutes[selectedRouteIndex];
-      const otherRoute = availableRoutes[selectedRouteIndex === 0 ? 1 : 0];
+      const altIndex = selectedRouteIndex === 0 ? 1 : 0;
+      const otherRoute = availableRoutes[altIndex];
 
-      // Styling based on current travel mode
+      // Travel mode colors & line styles
       let primaryColor = '#2563eb'; // Car: Google Maps vibrant blue
-      let primaryWeight = 6;
+      let primaryWeight = 7;
       let primaryDash = null;
 
       if (currentTravelMode === 'bike') {
         primaryColor = '#0d9488'; // Vibrant teal
-        primaryWeight = 5;
-      } else if (currentTravelMode === 'train') {
-        primaryColor = '#8b5cf6'; // Violet / transit purple
         primaryWeight = 6;
-        primaryDash = '8, 8'; // Railway track dash pattern
+      } else if (currentTravelMode === 'train') {
+        primaryColor = '#7c3aed'; // Violet transit
+        primaryWeight = 6;
+        primaryDash = '8, 8';
       } else if (currentTravelMode === 'walk') {
         primaryColor = '#0284c7'; // Sky blue
         primaryWeight = 5;
-        primaryDash = '2, 6'; // Dotted pedestrian path
+        primaryDash = '2, 6';
       }
 
-      // Draw Unselected / Alternate Route first (underneath)
-      if (otherRoute && routeStops.length === 0) {
+      // 1. Draw Inactive / Alternate Route underneath first
+      if (otherRoute && otherRoute.coordinates && otherRoute.coordinates.length > 0) {
         alternatePolyline = L.polyline(otherRoute.coordinates, {
           color: '#64748b',
-          weight: 5,
-          opacity: 0.7,
-          dashArray: '6, 8',
-          lineCap: 'round'
+          weight: 5.5,
+          opacity: 0.8,
+          lineCap: 'round',
+          lineJoin: 'round'
         }).addTo(map);
 
-        alternatePolyline.bindTooltip(`<b>${otherRoute.name}</b><br>${otherRoute.distanceKm} km · ${otherRoute.durationMin} min (Click to select)`, { sticky: true });
+        alternatePolyline.bindTooltip(`<b>${otherRoute.name}</b><br>${otherRoute.distanceKm} km · ${otherRoute.durationMin} min (Click to select route)`, { sticky: true });
         alternatePolyline.on('click', () => {
-          selectRoute(selectedRouteIndex === 0 ? 1 : 0);
+          selectRoute(altIndex);
         });
+
+        // Floating Google Maps-style pill on alternate route line
+        const altMidCoord = otherRoute.coordinates[Math.floor(otherRoute.coordinates.length * 0.54)];
+        if (altMidCoord) {
+          const rHours = Math.floor(otherRoute.durationMin / 60);
+          const rMins = otherRoute.durationMin % 60;
+          const altTimeStr = rHours > 0 ? `${rHours}h ${rMins}m` : `${rMins}m`;
+
+          const altBadge = L.marker(altMidCoord, {
+            icon: L.divIcon({
+              className: 'map-route-pill-wrapper',
+              html: `
+                <div class="map-route-pill inactive" title="Click to choose this alternative route">
+                  <span style="font-size: 0.8rem;">⚪</span>
+                  <span class="route-pill-time">${altTimeStr}</span>
+                  <span class="route-pill-diff">${otherRoute.tag || 'Alternative'}</span>
+                </div>
+              `,
+              iconSize: [140, 32],
+              iconAnchor: [70, 16]
+            }),
+            zIndexOffset: 500
+          }).addTo(map);
+
+          altBadge.on('click', () => selectRoute(altIndex));
+          routeBadgeMarkers.push(altBadge);
+        }
       }
 
-      // Draw Selected Route on top
-      primaryPolyline = L.polyline(activeRoute.coordinates, {
-        color: primaryColor,
-        weight: primaryWeight,
-        opacity: 0.95,
-        dashArray: primaryDash,
-        lineCap: 'round',
-        lineJoin: 'round'
-      }).addTo(map);
+      // 2. Draw Selected / Active Route on top
+      if (activeRoute && activeRoute.coordinates && activeRoute.coordinates.length > 0) {
+        // High-contrast background casing border for Google Maps look
+        window.routeCasingPolyline = L.polyline(activeRoute.coordinates, {
+          color: '#ffffff',
+          weight: primaryWeight + 3.5,
+          opacity: 0.35,
+          lineCap: 'round',
+          lineJoin: 'round'
+        }).addTo(map);
 
-      primaryPolyline.bindTooltip(`<b>${activeRoute.name}</b><br>${activeRoute.distanceKm} km · ${activeRoute.durationMin} min`, { sticky: true });
+        primaryPolyline = L.polyline(activeRoute.coordinates, {
+          color: primaryColor,
+          weight: primaryWeight,
+          opacity: 0.98,
+          dashArray: primaryDash,
+          lineCap: 'round',
+          lineJoin: 'round'
+        }).addTo(map);
+
+        primaryPolyline.bindTooltip(`<b>${activeRoute.name}</b><br>${activeRoute.distanceKm} km · ${activeRoute.durationMin} min (Active Route)`, { sticky: true });
+
+        // Floating Google Maps-style pill on active route line
+        const activeMidCoord = activeRoute.coordinates[Math.floor(activeRoute.coordinates.length * 0.44)];
+        if (activeMidCoord) {
+          const rHours = Math.floor(activeRoute.durationMin / 60);
+          const rMins = activeRoute.durationMin % 60;
+          const activeTimeStr = rHours > 0 ? `${rHours}h ${rMins}m` : `${rMins}m`;
+
+          const activeBadge = L.marker(activeMidCoord, {
+            icon: L.divIcon({
+              className: 'map-route-pill-wrapper',
+              html: `
+                <div class="map-route-pill active" title="Active Route">
+                  <span style="font-size: 0.8rem;">🔵</span>
+                  <span class="route-pill-time">${activeTimeStr}</span>
+                  <span class="route-pill-diff">${activeRoute.tag || 'Fastest'}</span>
+                </div>
+              `,
+              iconSize: [140, 32],
+              iconAnchor: [70, 16]
+            }),
+            zIndexOffset: 600
+          }).addTo(map);
+
+          routeBadgeMarkers.push(activeBadge);
+        }
+      }
     }
 
     // ============================================================
@@ -3192,13 +3365,24 @@
         const timeStr = rHours > 0 ? `${rHours}h ${rMins}m` : `${rMins}m`;
 
         card.innerHTML = `
-          <div>
-            <div class="route-title">${route.name}</div>
-            <div class="route-meta">${route.via}</div>
+          <div style="display: flex; align-items: center; gap: 9px;">
+            <div style="font-size: 1rem; color: ${isSel ? '#3b82f6' : '#64748b'};">${isSel ? '🔘' : '⚪'}</div>
+            <div>
+              <div class="route-title" style="font-weight: 700; color: ${isSel ? '#93c5fd' : '#f8fafc'}; font-size: 0.83rem;">
+                ${route.name}
+              </div>
+              <div class="route-meta" style="font-size: 0.72rem; color: #94a3b8; margin-top: 1px;">
+                ${route.via}
+              </div>
+            </div>
           </div>
           <div style="text-align: right;">
-            <div style="font-weight: 700; color: ${isSel ? '#4ade80' : '#f8fafc'};">${timeStr}</div>
-            <div class="route-meta">${route.distanceKm} km</div>
+            <div style="font-weight: 800; font-size: 0.94rem; color: ${isSel ? '#4ade80' : '#e2e8f0'};">
+              ${timeStr}
+            </div>
+            <div class="route-meta" style="font-size: 0.7rem; color: #94a3b8; margin-top: 1px;">
+              ${route.distanceKm} km ${route.tag && route.tag !== 'Active route' ? `• <span style="color: ${isSel ? '#60a5fa' : '#94a3b8'}; font-weight: 600;">${route.tag}</span>` : ''}
+            </div>
           </div>
         `;
         container.appendChild(card);
@@ -3206,7 +3390,7 @@
     }
 
     function selectRoute(index) {
-      if (index === selectedRouteIndex || !availableRoutes[index]) return;
+      if (!availableRoutes[index]) return;
       selectedRouteIndex = index;
       renderRoadRoutes();
       updateNavHUD();
@@ -3221,7 +3405,12 @@
         fetchCorridorPOIs([squad[0].lat, squad[0].lng], destinationCoord, activeCoords);
       }
 
-      addChatMessage('🤖 Squad AI Copilot', `Switched route to **${availableRoutes[index].name}** (${availableRoutes[index].distanceKm} km · ${availableRoutes[index].durationMin} min).`, '#818cf8', true);
+      // If active navigation, update driving dock & banner
+      if (isNavigating) {
+        updateDrivingNavigationUI();
+      }
+
+      addChatMessage('🤖 Squad AI Copilot', `Selected **${availableRoutes[index].name}** (${availableRoutes[index].distanceKm} km · ${availableRoutes[index].durationMin} min). Convoy navigation will follow this route!`, '#38bdf8', true);
     }
 
     // ============================================================
@@ -3849,6 +4038,28 @@
       return pts;
     }
 
+    function generateBypassCoords(p1, p2) {
+      // Generate realistic curved bypass road curving in opposite direction
+      const pts = [];
+      const steps = 100;
+      const dx = p2[1] - p1[1];
+      const dy = p2[0] - p1[0];
+      const dist = Math.hypot(dx, dy) || 0.1;
+      const arc = Math.min(0.08, Math.max(0.025, dist * 0.18));
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const arcOffset = Math.sin(t * Math.PI) * arc;
+        const wobble = Math.sin(t * Math.PI * 4) * 0.01;
+        const baseLat = p1[0] + dy * t;
+        const baseLng = p1[1] + dx * t;
+        pts.push([
+          baseLat - (dx / dist) * arcOffset + wobble,
+          baseLng + (dy / dist) * arcOffset + wobble * 0.5
+        ]);
+      }
+      return pts;
+    }
+
     // 6. Add Friend Modal & Logic
     const colorPalette = ['#a855f7', '#f97316', '#3b82f6', '#ec4899', '#14b8a6'];
 
@@ -4011,6 +4222,7 @@
         stopMapMarkers.forEach(m => activePins.push(m));
       }
       if (primaryPolyline) activePins.push(primaryPolyline);
+      if (alternatePolyline) activePins.push(alternatePolyline);
       if (activePins.length === 0) return;
 
       const group = new L.featureGroup(activePins);
