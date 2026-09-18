@@ -2,11 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SquadNav — Group Convoy Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>SquadNav — Mobile Group Convoy Navigation</title>
+
+  <!-- PWA & Mobile Web App Meta -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SquadNav">
+  <meta name="description" content="Mobile-first real-time group navigation and convoy tracking web app">
 
   <!-- Leaflet Map CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Firebase Compat CDN (Official Google SDK for Client-Side Realtime Database Sync) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
   <style>
     * {
@@ -1688,9 +1701,197 @@
       background: #15803d !important;
       transform: scale(1.03);
     }
+
+    /* Offline Notice Banner */
+    .offline-banner {
+      background: #b91c1c;
+      color: #fef2f2;
+      text-align: center;
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      z-index: 3000;
+    }
+
+    /* Mobile Bottom Navigation Bar */
+    .mobile-bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: #0f172a;
+      border-top: 1px solid #334155;
+      padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+      z-index: 1500;
+      position: relative;
+    }
+
+    .mobile-bottom-nav .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 6px 4px;
+      border-radius: 8px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-bottom-nav .nav-item.active {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+    }
+
+    .mobile-bottom-nav .nav-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .mobile-bottom-nav .nav-badge {
+      position: absolute;
+      top: 2px;
+      right: calc(50% - 18px);
+      background: #ef4444;
+      color: #fff;
+      font-size: 0.62rem;
+      padding: 1px 5px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    /* Convoy Status Badges */
+    .convoy-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 9999px;
+    }
+    .convoy-badge.leader {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+    .convoy-badge.behind {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .convoy-badge.offline {
+      background: rgba(148, 163, 184, 0.15);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+    .convoy-badge.arrived {
+      background: rgba(99, 102, 241, 0.18);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+    }
+
+    /* Modal Form Inputs & Grids */
+    .modal-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 12px;
+    }
+    .modal-field label {
+      font-size: 0.75rem;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+    .modal-field input, .modal-field select, .modal-field textarea {
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .modal-field input:focus, .modal-field select:focus, .modal-field textarea:focus {
+      border-color: #38bdf8;
+    }
+
+    /* Regroup & Poll Toast Overlay */
+    .regroup-prompt-card {
+      position: absolute;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 420px;
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(16px);
+      border: 1px solid #f59e0b;
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+      z-index: 2500;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Mobile Responsive Optimizations */
+    @media (max-width: 768px) {
+      header {
+        padding: 8px 10px;
+        gap: 6px;
+      }
+      .brand span:last-child {
+        display: none;
+      }
+      .search-box {
+        max-width: none;
+        order: 3;
+        width: 100%;
+        margin-top: 4px;
+      }
+      .header-travel-modes {
+        display: none; /* Visible inside Navigation HUD */
+      }
+      .nav-hud {
+        width: calc(100vw - 20px);
+        left: 10px;
+        top: 10px;
+        max-height: 60vh;
+      }
+      .hud-panel {
+        padding: 8px 10px;
+        max-height: 28vh;
+        overflow-y: auto;
+      }
+      .members-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      .actions-bar button {
+        flex: 1;
+        min-height: 40px;
+        font-size: 0.78rem;
+      }
+    }
   </style>
 </head>
 <body>
+
+  <!-- Offline Network Banner -->
+  <div class="offline-banner" id="offline-banner" style="display: none;">
+    <span>🔴 Offline Mode</span> • Showing last known squad state
+  </div>
 
   <!-- Top Navigation Bar -->
   <header>
@@ -1724,9 +1925,12 @@
     </div>
 
     <div style="display: flex; align-items: center; gap: 8px;">
-      <div class="ai-pill" onclick="openKeyModal()" title="Google AI / Map API Key Active • Click to manage">
+      <button id="btn-header-squad" onclick="handleSquadHeaderClick()" style="display: flex; align-items: center; gap: 5px; background: #2563eb; font-weight: 600;">
+        <span id="header-squad-icon">👑</span> <span id="header-squad-text">Create Squad</span>
+      </button>
+      <div class="ai-pill" onclick="openKeyModal()" title="Cloud, Google Maps & AI Settings">
         <span class="ai-dot"></span>
-        <span>AI Copilot Active</span>
+        <span>Settings</span>
         <span style="font-size: 0.7rem; opacity: 0.75;">⚙️</span>
       </div>
       <button id="btn-toggle-chat" onclick="toggleChat()" style="display: flex; align-items: center; gap: 5px;">
@@ -1950,13 +2154,51 @@
         <button class="primary" onclick="sendMessage()">Send</button>
       </div>
     </div>
+
+    <!-- Regroup Proposed Card (Real-Time Meet Here Prompt) -->
+    <div class="regroup-prompt-card" id="regroup-prompt-card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.8rem; font-weight: 700; color: #f59e0b; display: flex; align-items: center; gap: 5px;">
+          <span>📍</span> Proposed Meeting Point
+        </span>
+        <span id="regroup-proposer" style="font-size: 0.7rem; color: #94a3b8;">Proposed by Host</span>
+      </div>
+      <div id="regroup-place-name" style="font-size: 0.88rem; font-weight: 600; color: #fff;">Highway Regroup Location</div>
+      <div id="regroup-dist-info" style="font-size: 0.74rem; color: #94a3b8;">Ahead along route corridor</div>
+      <div style="display: flex; gap: 8px; margin-top: 4px;">
+        <button class="primary" style="flex: 1; background: #22c55e;" onclick="respondToRegroup(true)">✅ Accept</button>
+        <button style="flex: 1; background: #475569;" onclick="respondToRegroup(false)">❌ Reject</button>
+      </div>
+    </div>
+
+    <!-- Stop Poll Prompt Card -->
+    <div class="regroup-prompt-card" id="poll-prompt-card" style="border-color: #38bdf8;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.8rem; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 5px;">
+          <span>🗳️</span> Squad Stop Poll
+        </span>
+        <span id="poll-proposer" style="font-size: 0.7rem; color: #94a3b8;">Highway Discovery</span>
+      </div>
+      <div id="poll-title" style="font-size: 0.88rem; font-weight: 600; color: #fff;">Should we stop here?</div>
+      <div style="font-size: 0.72rem; color: #94a3b8;" id="poll-votes-tally">Votes: 👍 1 Yes • 👎 0 No</div>
+      <div style="display: flex; gap: 8px; margin-top: 4px;">
+        <button class="primary" style="flex: 1; background: #0284c7;" onclick="castPollVote(true)">👍 Yes</button>
+        <button style="flex: 1; background: #475569;" onclick="castPollVote(false)">👎 No</button>
+      </div>
+    </div>
   </div>
 
   <!-- Bottom HUD Panel -->
-  <div class="hud-panel">
+  <div class="hud-panel" id="hud-panel">
     <div class="hud-top">
-      <span style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 600;">Active Convoy Telemetry</span>
-      <span id="squad-counter" style="font-size: 0.75rem; color: #4ade80;">1 Member</span>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 600;">Active Convoy Telemetry</span>
+        <span id="convoy-status-pill" class="convoy-badge leader">🟢 Convoy In Sync</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <span id="arrival-counter-badge" style="font-size: 0.7rem; color: #38bdf8; font-weight: 600;">0/1 Arrived</span>
+        <span id="squad-counter" style="font-size: 0.75rem; color: #4ade80;">1 Member</span>
+      </div>
     </div>
 
     <!-- Member Roster -->
@@ -1965,13 +2207,142 @@
     <!-- Convoy Action Buttons -->
     <div class="actions-bar">
       <button class="primary" id="btn-movement" onclick="toggleNavigationOrMovement()">▶ Start Navigation</button>
+      <button id="btn-share-squad" onclick="openShareSquadModal()" style="display: flex; align-items: center; gap: 4px; background: #0284c7;">
+        <span>🔗</span> Share Squad
+      </button>
+      <button onclick="proposeMeetHerePrompt()" style="display: flex; align-items: center; gap: 4px;">
+        <span>📍</span> Meet Here
+      </button>
       <button onclick="switchNavTab('stops')" style="display: flex; align-items: center; gap: 4px;">➕ Add Stop</button>
       <button onclick="switchNavTab('steps')" style="display: flex; align-items: center; gap: 4px;">🧭 Directions</button>
       <button onclick="fitAllDrivers()">🔍 Center Map</button>
+      <button id="btn-stop-sharing" onclick="toggleShareLocationPrivacy()" style="display: flex; align-items: center; gap: 4px; background: #475569;" title="Pause or Resume Live GPS Broadcast">
+        <span>📍</span> <span id="privacy-sharing-text">Sharing On</span>
+      </button>
     </div>
   </div>
 
-  <!-- Add Friend Modal -->
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-nav">
+    <button class="nav-item active" id="bnav-map" onclick="switchMobileTab('map')">
+      <span class="nav-icon">🗺️</span>
+      <span class="nav-label">Map</span>
+    </button>
+    <button class="nav-item" id="bnav-squad" onclick="switchMobileTab('squad')">
+      <span class="nav-icon">👥</span>
+      <span class="nav-label">Squad</span>
+      <span class="nav-badge" id="bnav-member-count">1</span>
+    </button>
+    <button class="nav-item" id="bnav-history" onclick="switchMobileTab('history')">
+      <span class="nav-icon">📜</span>
+      <span class="nav-label">History</span>
+    </button>
+  </nav>
+
+  <!-- Location Permission Modal -->
+  <div class="modal-overlay" id="location-permission-modal">
+    <div class="modal" style="width: 360px;">
+      <div style="font-size: 1.8rem; text-align: center; margin-bottom: 6px;">📍</div>
+      <h4 style="font-size: 1rem; text-align: center; margin-bottom: 6px;">Enable Live Location</h4>
+      <p style="font-size: 0.78rem; color: #94a3b8; line-height: 1.45; text-align: center; margin-bottom: 14px;">
+        SquadNav needs your live GPS location to show your vehicle on the shared map, compute real road directions, and keep you synchronized with your convoy.
+      </p>
+      <div id="permission-denied-help" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 8px 10px; margin-bottom: 12px; font-size: 0.74rem; color: #fca5a5;">
+        <b>Location was blocked:</b> Please tap the lock/settings icon in your browser address bar and set Location to <b>Allow</b>, then tap retry.
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button onclick="dismissLocationPermissionPrompt()" style="flex: 1;">Not Now</button>
+        <button class="primary" onclick="requestGPSPermissionFromPrompt()" style="flex: 1;">Allow Location</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Join Squad Invitation Modal -->
+  <div class="modal-overlay" id="join-squad-modal">
+    <div class="modal" style="width: 380px;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+        <span style="font-size: 1.4rem;">🎉</span>
+        <div>
+          <h4 style="font-size: 0.95rem; margin: 0;">You're Invited to Join a Squad!</h4>
+          <span style="font-size: 0.72rem; color: #38bdf8;" id="join-invite-host-label">Convoy hosted by Sai</span>
+        </div>
+      </div>
+      <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-bottom: 12px;">
+        <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Destination</div>
+        <div style="font-size: 0.92rem; font-weight: 700; color: #4ade80;" id="join-invite-dest-name">Goa, India</div>
+        <div style="font-size: 0.74rem; color: #cbd5e1; margin-top: 2px;" id="join-invite-route-meta">Loading route info...</div>
+      </div>
+      <div class="modal-field">
+        <label>Your Name</label>
+        <input type="text" id="join-user-name" placeholder="Enter your name (e.g. Rahul)">
+      </div>
+      <div class="modal-field">
+        <label>Your Vehicle / Travel Mode</label>
+        <select id="join-user-vehicle">
+          <option value="car">🚗 Car / Driving</option>
+          <option value="bike">🏍️ Bike / Motorcycle</option>
+          <option value="train">🚆 Transit / Train</option>
+          <option value="walk">🚶 Walking</option>
+        </select>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px;">
+        <button onclick="dismissJoinModal()">Decline</button>
+        <button class="primary" onclick="confirmJoinSquad()" style="background: #16a34a; font-weight: 700;">Join Squad</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Squad Modal -->
+  <div class="modal-overlay" id="share-squad-modal">
+    <div class="modal" style="width: 380px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <h4 style="font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+          <span>🔗</span> Share Squad Invite Link
+        </h4>
+        <button onclick="closeShareSquadModal()" style="background: transparent; border: none; font-size: 1.1rem; color: #94a3b8; cursor: pointer;">✕</button>
+      </div>
+      <p style="font-size: 0.76rem; color: #94a3b8; line-height: 1.4; margin-bottom: 10px;">
+        Send this link to your friends. When they open it, their vehicle will join your live squad map with their own GPS location and route.
+      </p>
+      <div class="modal-field">
+        <label>Squad Code</label>
+        <input type="text" id="share-squad-id-display" readonly style="font-family: monospace; font-weight: 700; color: #38bdf8;">
+      </div>
+      <div class="modal-field">
+        <label>Invite URL</label>
+        <input type="text" id="share-squad-url-display" readonly style="font-family: monospace; font-size: 0.75rem;">
+      </div>
+      <div style="display: flex; gap: 8px; margin-top: 8px;">
+        <button class="primary" style="flex: 1; background: #2563eb;" onclick="shareViaNativeWebShare()">
+          <span>📲 Share via Apps</span>
+        </button>
+        <button style="flex: 1;" onclick="copySquadInviteLink()">
+          <span>📋 Copy Link</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trip History Modal -->
+  <div class="modal-overlay" id="trip-history-modal">
+    <div class="modal" style="width: 420px; max-height: 80vh; display: flex; flex-direction: column;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h4 style="font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
+          <span>📜</span> Squad Trip History
+        </h4>
+        <button onclick="closeHistoryModal()" style="background: transparent; border: none; font-size: 1.1rem; color: #94a3b8; cursor: pointer;">✕</button>
+      </div>
+      <div id="history-trips-list" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+        <div style="font-size: 0.78rem; color: #94a3b8; text-align: center; padding: 20px;">No completed trips yet. Start navigation to record your convoy journeys!</div>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #334155; padding-top: 8px;">
+        <button onclick="clearTripHistory()" style="font-size: 0.72rem; color: #f87171; background: rgba(239, 68, 68, 0.1);">Clear History</button>
+        <button class="primary" onclick="closeHistoryModal()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Friend Modal (Manual Addition for demo/simulation) -->
   <div class="modal-overlay" id="add-friend-modal">
     <div class="modal">
       <h4 style="font-size: 0.95rem;">Add a Friend</h4>
@@ -1983,25 +2354,51 @@
     </div>
   </div>
 
-  <!-- API Key Modal -->
+  <!-- Cloud, Google Maps & AI Settings Modal -->
   <div class="modal-overlay" id="api-key-modal">
-    <div class="modal" style="width: 360px;">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="modal" style="width: 400px; max-height: 85vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
         <h4 style="font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">
-          <span>🤖</span> AI & Map API Key
+          <span>⚙️</span> Cloud & API Settings
         </h4>
-        <span style="font-size: 0.68rem; background: rgba(34, 197, 94, 0.15); color: #4ade80; padding: 2px 7px; border-radius: 9999px; border: 1px solid rgba(34, 197, 94, 0.3);">Active</span>
+        <button onclick="closeKeyModal()" style="background: transparent; border: none; font-size: 1.1rem; color: #94a3b8; cursor: pointer;">✕</button>
       </div>
-      <p style="font-size: 0.76rem; color: #94a3b8; line-height: 1.4;">
-        Powers intelligent convoy road trip planning, live route briefings, and smart highway food stops using Google Gemini AI.
+      <p style="font-size: 0.74rem; color: #94a3b8; line-height: 1.4; margin-bottom: 12px;">
+        Configure your Google Maps Platform, Firebase Realtime Database, and Gemini AI keys. Settings are stored safely in your browser.
       </p>
-      <div style="display: flex; flex-direction: column; gap: 4px;">
-        <label style="font-size: 0.72rem; color: #cbd5e1; font-weight: 500;">API Key</label>
-        <input type="text" id="api-key-input" spellcheck="false" style="font-family: monospace; font-size: 0.75rem;">
+
+      <!-- Section: Google Maps API -->
+      <div style="border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <label style="font-size: 0.74rem; color: #cbd5e1; font-weight: 600;">Google Maps API Key</label>
+          <span id="cfg-status-gmaps" style="font-size: 0.65rem; padding: 1px 6px; border-radius: 999px; background: rgba(56, 189, 248, 0.15); color: #38bdf8;">OSRM Active (No key needed)</span>
+        </div>
+        <input type="text" id="gmaps-api-key-input" placeholder="AIzaSy... (Optional: enables Places Autocomplete)" spellcheck="false" style="font-family: monospace; font-size: 0.75rem; width: 100%; background: #0f172a; border: 1px solid #334155; color: #fff; padding: 6px 8px; border-radius: 4px;">
       </div>
-      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px;">
+
+      <!-- Section: Firebase Realtime Database -->
+      <div style="border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <label style="font-size: 0.74rem; color: #cbd5e1; font-weight: 600;">Firebase Realtime Sync</label>
+          <span id="cfg-status-firebase" style="font-size: 0.65rem; padding: 1px 6px; border-radius: 999px; background: rgba(34, 197, 94, 0.15); color: #4ade80;">Peer Sync Active</span>
+        </div>
+        <div style="font-size: 0.7rem; color: #94a3b8; margin-bottom: 6px;">Paste your Firebase Database URL or JSON config for multi-device internet sync:</div>
+        <input type="text" id="firebase-db-url-input" placeholder="https://YOUR-PROJECT-default-rtdb.firebaseio.com" spellcheck="false" style="font-family: monospace; font-size: 0.75rem; width: 100%; background: #0f172a; border: 1px solid #334155; color: #fff; padding: 6px 8px; border-radius: 4px; margin-bottom: 6px;">
+        <input type="text" id="firebase-api-key-input" placeholder="Firebase API Key (AIzaSy...)" spellcheck="false" style="font-family: monospace; font-size: 0.75rem; width: 100%; background: #0f172a; border: 1px solid #334155; color: #fff; padding: 6px 8px; border-radius: 4px;">
+      </div>
+
+      <!-- Section: Google Gemini AI -->
+      <div style="border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <label style="font-size: 0.74rem; color: #cbd5e1; font-weight: 600;">Gemini AI Copilot Key</label>
+          <span style="font-size: 0.65rem; padding: 1px 6px; border-radius: 999px; background: rgba(34, 197, 94, 0.15); color: #4ade80;">Active</span>
+        </div>
+        <input type="text" id="api-key-input" spellcheck="false" style="font-family: monospace; font-size: 0.75rem; width: 100%; background: #0f172a; border: 1px solid #334155; color: #fff; padding: 6px 8px; border-radius: 4px;">
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 8px;">
         <button onclick="closeKeyModal()">Cancel</button>
-        <button class="primary" onclick="saveApiKey()">Save Key</button>
+        <button class="primary" onclick="saveApiKey()">Save Settings</button>
       </div>
     </div>
   </div>
@@ -2014,17 +2411,51 @@
 
   <script>
     // ============================================================
-    // 0. API KEY CONFIGURATION (Google AI / Map Assistant API Key)
+    // 0. PWA, CLOUD SETTINGS & REALTIME CONVOY SYNC ENGINE
     // ============================================================
-    const CONFIG_KEY = (window.SQUADNAV_CONFIG && window.SQUADNAV_CONFIG.GEMINI_API_KEY) ? window.SQUADNAV_CONFIG.GEMINI_API_KEY : "";
-    let MAPS_AI_API_KEY = localStorage.getItem('squadnav_api_key') || CONFIG_KEY || "";
 
-    // Expose globally for map / external integrations
+    // 0.1 Service Worker Registration for PWA & Offline Caching
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then((reg) => {
+          console.log('SquadNav PWA Service Worker active:', reg.scope);
+        }).catch((err) => {
+          console.warn('PWA Service Worker note:', err);
+        });
+      });
+    }
+
+    // 0.2 Network Online/Offline Monitor
+    function updateNetworkStatus() {
+      const banner = document.getElementById('offline-banner');
+      if (banner) {
+        banner.style.display = navigator.onLine ? 'none' : 'flex';
+      }
+    }
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+    updateNetworkStatus();
+
+    // 0.3 Credentials & Cloud Configuration
+    const CONFIG_OBJ = window.SQUADNAV_CONFIG || {};
+    let MAPS_AI_API_KEY = localStorage.getItem('squadnav_api_key') || CONFIG_OBJ.GEMINI_API_KEY || "";
+    let GOOGLE_MAPS_KEY = localStorage.getItem('squadnav_gmaps_key') || CONFIG_OBJ.GOOGLE_MAPS_API_KEY || "";
+    let FIREBASE_CFG_STORED = localStorage.getItem('squadnav_firebase_config');
+    let FIREBASE_CONFIG = null;
+    try {
+      FIREBASE_CONFIG = FIREBASE_CFG_STORED ? JSON.parse(FIREBASE_CFG_STORED) : (CONFIG_OBJ.FIREBASE_CONFIG || null);
+    } catch(e) { FIREBASE_CONFIG = null; }
+
     window.MAPS_API_KEY = MAPS_AI_API_KEY;
     window.GEMINI_API_KEY = MAPS_AI_API_KEY;
 
     function openKeyModal() {
-      document.getElementById('api-key-input').value = MAPS_AI_API_KEY;
+      document.getElementById('api-key-input').value = MAPS_AI_API_KEY || '';
+      document.getElementById('gmaps-api-key-input').value = GOOGLE_MAPS_KEY || '';
+      if (FIREBASE_CONFIG) {
+        document.getElementById('firebase-db-url-input').value = FIREBASE_CONFIG.databaseURL || '';
+        document.getElementById('firebase-api-key-input').value = FIREBASE_CONFIG.apiKey || '';
+      }
       document.getElementById('api-key-modal').style.display = 'flex';
     }
 
@@ -2033,15 +2464,244 @@
     }
 
     function saveApiKey() {
-      const val = document.getElementById('api-key-input').value.trim();
-      if (val) {
-        MAPS_AI_API_KEY = val;
-        window.MAPS_API_KEY = val;
-        window.GEMINI_API_KEY = val;
-        localStorage.setItem('squadnav_api_key', val);
-        addChatMessage('🤖 Squad AI', 'API key updated and applied!', '#818cf8', true);
+      const geminiVal = document.getElementById('api-key-input').value.trim();
+      const gmapsVal = document.getElementById('gmaps-api-key-input').value.trim();
+      const fbUrl = document.getElementById('firebase-db-url-input').value.trim();
+      const fbKey = document.getElementById('firebase-api-key-input').value.trim();
+
+      if (geminiVal) {
+        MAPS_AI_API_KEY = geminiVal;
+        window.MAPS_API_KEY = geminiVal;
+        window.GEMINI_API_KEY = geminiVal;
+        localStorage.setItem('squadnav_api_key', geminiVal);
       }
+      if (gmapsVal) {
+        GOOGLE_MAPS_KEY = gmapsVal;
+        localStorage.setItem('squadnav_gmaps_key', gmapsVal);
+        document.getElementById('cfg-status-gmaps').textContent = 'Google Maps Active';
+        document.getElementById('cfg-status-gmaps').style.color = '#4ade80';
+      }
+      if (fbUrl) {
+        FIREBASE_CONFIG = {
+          databaseURL: fbUrl,
+          apiKey: fbKey || 'AIzaSyDemoKey',
+          projectId: fbUrl.replace('https://', '').split(/[-.]/)[0] || 'squadnav'
+        };
+        localStorage.setItem('squadnav_firebase_config', JSON.stringify(FIREBASE_CONFIG));
+        initFirebaseSync();
+      }
+
+      addChatMessage('🤖 Squad AI', 'Cloud & API settings updated!', '#818cf8', true);
       closeKeyModal();
+    }
+
+    // 0.4 User Identity & Squad Session State
+    let myUserId = localStorage.getItem('squadnav_user_id');
+    if (!myUserId) {
+      myUserId = 'usr_' + Math.random().toString(36).substring(2, 9);
+      localStorage.setItem('squadnav_user_id', myUserId);
+    }
+    let myUserName = localStorage.getItem('squadnav_user_name') || 'You (Host)';
+    let myUserColor = '#22c55e';
+    let isSquadHost = true;
+    let isSharingLocation = true;
+    let currentSquadId = '';
+    let squadRemoteMembers = {}; // Keyed by userId
+    let squadMeetingPoints = [];
+    let squadPolls = [];
+
+    // Throttling for battery & quota conservation (15m or 8s)
+    let lastBroadcastTime = 0;
+    let lastBroadcastLat = 0;
+    let lastBroadcastLng = 0;
+
+    // 0.5 Realtime Synchronization Engine (Firebase Realtime Database + BroadcastChannel)
+    let firebaseDb = null;
+    let peerBroadcastChannel = null;
+
+    function initFirebaseSync() {
+      if (window.firebase && FIREBASE_CONFIG && FIREBASE_CONFIG.databaseURL) {
+        try {
+          if (!firebase.apps.length) {
+            firebase.initializeApp(FIREBASE_CONFIG);
+          }
+          firebaseDb = firebase.database();
+          const statusEl = document.getElementById('cfg-status-firebase');
+          if (statusEl) {
+            statusEl.textContent = 'Firebase Cloud Connected';
+            statusEl.style.color = '#4ade80';
+          }
+          console.log('Firebase Realtime Database initialized:', FIREBASE_CONFIG.databaseURL);
+          if (currentSquadId) {
+            subscribeToSquad(currentSquadId);
+          }
+        } catch(err) {
+          console.warn('Firebase init error, using Peer Sync fallback:', err);
+          initPeerSync();
+        }
+      } else {
+        initPeerSync();
+      }
+    }
+
+    function initPeerSync() {
+      try {
+        if (!peerBroadcastChannel) {
+          peerBroadcastChannel = new BroadcastChannel('squadnav_peer_sync');
+          peerBroadcastChannel.onmessage = (event) => {
+            const data = event.data;
+            if (!data || !data.squadId) return;
+            if (currentSquadId && data.squadId === currentSquadId) {
+              handleIncomingSyncPayload(data);
+            }
+          };
+        }
+      } catch (e) {
+        console.warn('BroadcastChannel not supported in this browser environment:', e);
+      }
+    }
+
+    function broadcastSquadPayload(type, payload) {
+      if (!currentSquadId || !isSharingLocation) return;
+      const packet = {
+        squadId: currentSquadId,
+        type: type,
+        senderId: myUserId,
+        senderName: myUserName,
+        timestamp: Date.now(),
+        payload: payload
+      };
+
+      // 1. Send via Firebase Realtime Database if connected
+      if (firebaseDb && currentSquadId) {
+        try {
+          if (type === 'location') {
+            firebaseDb.ref(`squads/${currentSquadId}/members/${myUserId}`).set(payload);
+          } else if (type === 'destination') {
+            firebaseDb.ref(`squads/${currentSquadId}/destination`).set(payload);
+          } else if (type === 'meetingPoint') {
+            firebaseDb.ref(`squads/${currentSquadId}/meetingPoints`).push(payload);
+          } else if (type === 'poll') {
+            firebaseDb.ref(`squads/${currentSquadId}/polls`).push(payload);
+          }
+        } catch (e) {
+          console.warn('Firebase write failed:', e);
+        }
+      }
+
+      // 2. Always send via BroadcastChannel for multi-tab / local network sync
+      if (peerBroadcastChannel) {
+        peerBroadcastChannel.postMessage(packet);
+      }
+
+      // 3. Keep local mirror in localStorage for persistence across reloads
+      try {
+        localStorage.setItem(`squadnav_cache_${currentSquadId}`, JSON.stringify({
+          destination: destinationCoord ? { lat: destinationCoord[0], lng: destinationCoord[1], name: currentDestShortName } : null,
+          lastUpdated: Date.now()
+        }));
+      } catch(e) {}
+    }
+
+    function subscribeToSquad(squadId) {
+      if (!squadId) return;
+      currentSquadId = squadId;
+
+      if (firebaseDb) {
+        const squadRef = firebaseDb.ref(`squads/${squadId}`);
+        squadRef.on('value', (snapshot) => {
+          const val = snapshot.val();
+          if (val) handleFullSquadSnapshot(val);
+        });
+
+        // Set up automatic offline detection on disconnect
+        const myRef = firebaseDb.ref(`squads/${squadId}/members/${myUserId}`);
+        myRef.onDisconnect().update({
+          status: 'offline',
+          lastUpdated: firebase.database.ServerValue.TIMESTAMP
+        });
+      }
+    }
+
+    function handleIncomingSyncPayload(packet) {
+      if (!packet || packet.senderId === myUserId) return;
+
+      if (packet.type === 'location') {
+        const memberData = packet.payload;
+        if (memberData && memberData.id) {
+          squadRemoteMembers[memberData.id] = memberData;
+          updateRemoteMemberOnMap(memberData);
+          recomputeConvoyAnalytics();
+          renderRoster();
+        }
+      } else if (packet.type === 'destination') {
+        if (!isSquadHost && packet.payload && packet.payload.lat) {
+          setRemoteDestination(packet.payload);
+        }
+      } else if (packet.type === 'meetingPoint') {
+        showRegroupProposalCard(packet.payload);
+      } else if (packet.type === 'poll') {
+        showPollCard(packet.payload);
+      }
+    }
+
+    function handleFullSquadSnapshot(data) {
+      if (!data) return;
+
+      // Sync Destination if not host
+      if (!isSquadHost && data.destination && data.destination.lat) {
+        if (!destinationCoord || destinationCoord[0] !== data.destination.lat || destinationCoord[1] !== data.destination.lng) {
+          setRemoteDestination(data.destination);
+        }
+      }
+
+      // Sync Members
+      if (data.members) {
+        Object.keys(data.members).forEach(uid => {
+          if (uid !== myUserId) {
+            const m = data.members[uid];
+            squadRemoteMembers[uid] = m;
+            updateRemoteMemberOnMap(m);
+          }
+        });
+        recomputeConvoyAnalytics();
+        renderRoster();
+      }
+
+      // Sync Meeting Points
+      if (data.meetingPoints) {
+        const points = Object.values(data.meetingPoints);
+        const latest = points[points.length - 1];
+        if (latest && latest.status === 'pending' && latest.proposedBy !== myUserName) {
+          showRegroupProposalCard(latest);
+        }
+      }
+    }
+
+    function setRemoteDestination(destObj) {
+      destinationCoord = [destObj.lat, destObj.lng];
+      currentDestShortName = destObj.name || 'Shared Destination';
+      currentDestFullName = destObj.address || currentDestShortName;
+
+      document.getElementById('destination-label').textContent = `Destination: ${currentDestShortName}`;
+      document.getElementById('destination-search').value = currentDestShortName;
+
+      if (!destinationMarker) {
+        const destIcon = L.divIcon({
+          className: 'custom-icon',
+          html: '<div class="custom-avatar" style="background-color: #ef4444; font-size: 14px;">🏁</div>',
+          iconSize: [34, 34],
+          iconAnchor: [17, 17]
+        });
+        destinationMarker = L.marker(destinationCoord, { icon: destIcon }).addTo(map).bindPopup(`<b>🏁 ${currentDestShortName}</b>`);
+      } else {
+        destinationMarker.setLatLng(destinationCoord);
+      }
+
+      const myLat = squad[0].lat;
+      const myLng = squad[0].lng;
+      loadRoadRoutes(myLat, myLng, destObj.lat, destObj.lng, currentDestShortName);
+      addChatMessage('🚩 Convoy Sync', `Destination updated to **${currentDestShortName}** by Host!`, '#38bdf8', true);
     }
 
     // ============================================================
@@ -2197,34 +2857,192 @@
       });
     }
 
-    // Render Members & Cards
+    // Render Members, Vehicle Badges & Convoy Telemetry Roster
     function renderRoster() {
       const grid = document.getElementById('members-grid');
+      if (!grid) return;
       grid.innerHTML = '';
 
-      squad.forEach((m) => {
+      const allMembers = [
+        {
+          id: squad[0].id,
+          name: squad[0].name,
+          color: squad[0].color,
+          lat: squad[0].lat,
+          lng: squad[0].lng,
+          speed: squad[0].speed || 0,
+          vehicle: currentTravelMode,
+          distanceRemainingKm: availableRoutes[selectedRouteIndex]?.distanceKm || null,
+          etaMinutes: availableRoutes[selectedRouteIndex]?.durationMin || null,
+          status: isGPSTracking ? 'traveling' : 'online',
+          lastUpdated: Date.now()
+        },
+        ...Object.values(squadRemoteMembers)
+      ];
+
+      const vehicleIcons = { car: '🚗', bike: '🏍️', train: '🚆', walk: '🚶' };
+
+      allMembers.forEach((m) => {
+        const isStale = (Date.now() - (m.lastUpdated || 0)) > 120000;
+        let statusBadge = '';
+
+        if (m.status === 'arrived') {
+          statusBadge = '<span class="convoy-badge arrived">✅ Arrived</span>';
+        } else if (isStale) {
+          const minsAgo = Math.max(2, Math.round((Date.now() - (m.lastUpdated || 0)) / 60000));
+          statusBadge = `<span class="convoy-badge offline">⚠️ Last seen ${minsAgo}m ago</span>`;
+        } else if (m.status === 'traveling' || (m.speed && m.speed > 0)) {
+          statusBadge = `<span class="convoy-badge leader">🟢 Live • ${m.speed || 0} km/h</span>`;
+        } else {
+          statusBadge = '<span class="convoy-badge leader">🟢 In Squad</span>';
+        }
+
+        const vIcon = vehicleIcons[m.vehicle] || '🚗';
+        const distText = m.distanceRemainingKm ? `${m.distanceRemainingKm} km` : 'Route loading...';
+        const etaText = m.etaMinutes ? formatMinutes(m.etaMinutes) : '--';
+
         const card = document.createElement('div');
         card.className = 'member-card';
         card.innerHTML = `
-          <div class="member-name">
-            <span style="color: ${m.color};">●</span> ${m.name}
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="member-name">
+              <span style="color: ${m.color};">●</span>
+              <span>${vIcon} ${m.name}</span>
+            </div>
+            ${statusBadge}
           </div>
-          <div class="member-metrics">
-            <span id="speed-${m.id}">Speed: ${m.speed} km/h</span>
-            <span id="status-${m.id}">Online</span>
+          <div class="member-metrics" style="margin-top: 4px;">
+            <span>📏 ${distText}</span>
+            <span>⏱️ ETA: ${etaText}</span>
           </div>
         `;
         grid.appendChild(card);
+      });
 
-        // Add Marker to map if not present
-        if (!markers[m.id]) {
-          markers[m.id] = L.marker([m.lat, m.lng], {
-            icon: createIcon(m.color, m.name.charAt(0))
-          }).addTo(map).bindPopup(`<b>${m.name}</b>`);
+      const squadCounterEl = document.getElementById('squad-counter');
+      if (squadCounterEl) {
+        squadCounterEl.textContent = `${allMembers.length} Member${allMembers.length > 1 ? 's' : ''}`;
+      }
+
+      const bnavCountEl = document.getElementById('bnav-member-count');
+      if (bnavCountEl) {
+        bnavCountEl.textContent = allMembers.length;
+      }
+    }
+
+    function formatMinutes(min) {
+      const m = parseInt(min, 10);
+      if (isNaN(m) || m <= 0) return '--';
+      if (m < 60) return `${m} min`;
+      const hrs = Math.floor(m / 60);
+      const rem = m % 60;
+      return `${hrs}h ${rem}m`;
+    }
+
+    function updateRemoteMemberOnMap(m) {
+      if (!m || !m.lat || !m.lng) return;
+      const vehicleIcons = { car: '🚗', bike: '🏍️', train: '🚆', walk: '🚶' };
+      const vIcon = vehicleIcons[m.vehicle] || '🚗';
+
+      const isStale = (Date.now() - (m.lastUpdated || 0)) > 120000;
+      const opacity = isStale ? 0.6 : 1.0;
+
+      if (!markers[m.id]) {
+        const icon = L.divIcon({
+          className: 'custom-icon',
+          html: `<div class="custom-avatar" style="background-color: ${m.color || '#38bdf8'}; opacity: ${opacity}; font-size: 13px;">${vIcon}</div>`,
+          iconSize: [32, 32],
+          iconAnchor: [16, 16]
+        });
+        markers[m.id] = L.marker([m.lat, m.lng], { icon: icon }).addTo(map);
+      } else {
+        markers[m.id].setLatLng([m.lat, m.lng]);
+        markers[m.id].setOpacity(opacity);
+      }
+
+      const distStr = m.distanceRemainingKm ? `${m.distanceRemainingKm} km` : 'N/A';
+      const etaStr = m.etaMinutes ? formatMinutes(m.etaMinutes) : 'N/A';
+      markers[m.id].bindPopup(`
+        <div style="font-size: 0.85rem;">
+          <b>${vIcon} ${m.name}</b><br>
+          <span>Vehicle: <b>${m.vehicle || 'Car'}</b></span><br>
+          <span>Distance to Dest: <b>${distStr}</b></span><br>
+          <span>ETA: <b>${etaStr}</b></span>
+        </div>
+      `);
+    }
+
+    function recomputeConvoyAnalytics() {
+      const allMembers = [
+        {
+          id: squad[0].id,
+          name: squad[0].name,
+          distanceRemainingKm: availableRoutes[selectedRouteIndex]?.distanceKm || null,
+          etaMinutes: availableRoutes[selectedRouteIndex]?.durationMin || null,
+          lat: squad[0].lat,
+          lng: squad[0].lng,
+          status: squad[0].status || 'traveling'
+        },
+        ...Object.values(squadRemoteMembers)
+      ];
+
+      if (allMembers.length === 0) return;
+
+      let arrivedCount = 0;
+      let minDistance = Infinity;
+      let maxDistance = -Infinity;
+      let leader = null;
+      let tail = null;
+      let sumEta = 0;
+      let validEtaCount = 0;
+
+      allMembers.forEach(m => {
+        const dist = parseFloat(m.distanceRemainingKm || 0);
+        const eta = parseInt(m.etaMinutes || 0, 10);
+
+        if (m.status === 'arrived' || (destinationCoord && Math.hypot(m.lat - destinationCoord[0], m.lng - destinationCoord[1]) * 111 < 0.15)) {
+          m.status = 'arrived';
+          arrivedCount++;
+        }
+
+        if (dist > 0) {
+          if (dist < minDistance) { minDistance = dist; leader = m; }
+          if (dist > maxDistance) { maxDistance = dist; tail = m; }
+        }
+        if (eta > 0) {
+          sumEta += eta;
+          validEtaCount++;
         }
       });
 
-      document.getElementById('squad-counter').textContent = `${squad.length} Member${squad.length > 1 ? 's' : ''}`;
+      const counterEl = document.getElementById('arrival-counter-badge');
+      if (counterEl) {
+        counterEl.textContent = `${arrivedCount}/${allMembers.length} Arrived`;
+      }
+
+      const statusPill = document.getElementById('convoy-status-pill');
+      if (statusPill) {
+        if (allMembers.length > 1 && tail && leader && tail.id !== leader.id) {
+          const deltaKm = (maxDistance - minDistance).toFixed(1);
+          const tailEta = tail.etaMinutes || 0;
+          const avgEta = validEtaCount > 0 ? Math.round(sumEta / validEtaCount) : 0;
+          const diffEta = Math.max(0, tailEta - avgEta);
+
+          if (diffEta >= 15) {
+            statusPill.className = 'convoy-badge behind';
+            statusPill.textContent = `⚠️ ${tail.name} is ${diffEta}m behind average`;
+          } else if (parseFloat(deltaKm) >= 10) {
+            statusPill.className = 'convoy-badge behind';
+            statusPill.textContent = `⚠️ ${tail.name} is ${deltaKm} km behind ${leader.name}`;
+          } else {
+            statusPill.className = 'convoy-badge leader';
+            statusPill.textContent = `🟢 Convoy in close formation (±${deltaKm} km)`;
+          }
+        } else {
+          statusPill.className = 'convoy-badge leader';
+          statusPill.textContent = '🟢 Convoy in Sync';
+        }
+      }
     }
 
     // ============================================================
@@ -3087,8 +3905,30 @@
       if (isGPSTracking) {
         stopGPSTracking();
       } else {
-        startGPSTracking();
+        promptLocationPermissionIfNeeded();
       }
+    }
+
+    function promptLocationPermissionIfNeeded() {
+      if (!('geolocation' in navigator)) {
+        alert('Geolocation is not supported by your browser.');
+        return;
+      }
+      if (localStorage.getItem('squadnav_gps_granted')) {
+        startGPSTracking();
+      } else {
+        document.getElementById('location-permission-modal').style.display = 'flex';
+      }
+    }
+
+    function requestGPSPermissionFromPrompt() {
+      document.getElementById('location-permission-modal').style.display = 'none';
+      startGPSTracking();
+    }
+
+    function dismissLocationPermissionPrompt() {
+      document.getElementById('location-permission-modal').style.display = 'none';
+      addChatMessage('⚠️ GPS Notice', 'Live GPS sharing not enabled. You can start it anytime with the ⌖ crosshair.', '#f59e0b', true);
     }
 
     function startGPSTracking() {
@@ -3105,15 +3945,17 @@
 
       gpsWatchId = navigator.geolocation.watchPosition(
         (pos) => {
+          localStorage.setItem('squadnav_gps_granted', 'true');
           const lat = pos.coords.latitude;
           const lng = pos.coords.longitude;
           const accuracy = pos.coords.accuracy || 25;
+          const speedKmh = pos.coords.speed !== null && !isNaN(pos.coords.speed) ? Math.round(pos.coords.speed * 3.6) : (squad[0].speed || 0);
 
-          // Update host driver coordinates in squad
           squad[0].lat = lat;
           squad[0].lng = lng;
+          squad[0].speed = speedKmh;
 
-          // Update or create pulsing Google Maps GPS blue dot marker
+          // Update pulsing marker
           if (!userGPSMarker) {
             const pulsingIcon = L.divIcon({
               className: 'gps-pulsing-marker',
@@ -3124,9 +3966,8 @@
             userGPSMarker = L.marker([lat, lng], {
               icon: pulsingIcon,
               zIndexOffset: 1000
-            }).addTo(map).bindPopup('<b>You (Host)</b><br>Live GPS Location');
+            }).addTo(map).bindPopup(`<b>${myUserName}</b><br>Live GPS Location`);
 
-            // Hide initial static marker for host to prevent duplication
             if (markers[squad[0].id]) {
               map.removeLayer(markers[squad[0].id]);
             }
@@ -3134,7 +3975,7 @@
             userGPSMarker.setLatLng([lat, lng]);
           }
 
-          // Accuracy halo circle
+          // Accuracy halo
           if (!gpsAccuracyCircle) {
             gpsAccuracyCircle = L.circle([lat, lng], {
               radius: accuracy,
@@ -3148,7 +3989,7 @@
             gpsAccuracyCircle.setRadius(accuracy);
           }
 
-          // Initial GPS Lock: fly to user and recalculate routes if destination active
+          // First lock centering
           if (!hasFirstGPSLock) {
             hasFirstGPSLock = true;
             map.flyTo([lat, lng], 16, { animate: true, duration: 1.2 });
@@ -3159,16 +4000,41 @@
             }
           }
 
+          // Off-route check
+          checkOffRoute(lat, lng);
+
+          // Arrival Geofencing (< 150m)
+          if (destinationCoord) {
+            const distToDest = Math.hypot(lat - destinationCoord[0], lng - destinationCoord[1]) * 111;
+            if (distToDest <= 0.15 && squad[0].status !== 'arrived') {
+              onUserArrivedAtDestination();
+            }
+          }
+
+          // Throttled Real-Time Broadcast (every 15m or 8 seconds)
+          const distMovedKm = Math.hypot(lat - lastBroadcastLat, lng - lastBroadcastLng) * 111;
+          const timeElapsed = Date.now() - lastBroadcastTime;
+          if (distMovedKm >= 0.015 || timeElapsed >= 8000) {
+            broadcastSquadMemberUpdate();
+          }
+
           if (isNavigating) {
             updateDrivingNavigationUI();
           }
+          renderRoster();
         },
         (err) => {
           console.warn('Geolocation error:', err);
           let msg = 'Could not access GPS.';
-          if (err.code === 1) msg = 'Location permission denied by user.';
-          else if (err.code === 2) msg = 'Location unavailable or no GPS signal.';
-          else if (err.code === 3) msg = 'Location request timed out.';
+          if (err.code === 1) {
+            msg = 'Location permission denied by user.';
+            document.getElementById('permission-denied-help').style.display = 'block';
+            document.getElementById('location-permission-modal').style.display = 'flex';
+          } else if (err.code === 2) {
+            msg = 'Location unavailable or no GPS signal.';
+          } else if (err.code === 3) {
+            msg = 'Location request timed out.';
+          }
           addChatMessage('⚠️ GPS Notice', `${msg} Using map default origin.`, '#f59e0b', true);
           if (btn) btn.classList.remove('active');
           isGPSTracking = false;
@@ -3176,7 +4042,7 @@
         {
           enableHighAccuracy: true,
           timeout: 20000,
-          maximumAge: 4000
+          maximumAge: 5000
         }
       );
     }
@@ -3198,6 +4064,50 @@
       }
 
       addChatMessage('🎯 GPS Tracking', 'Live GPS tracking stopped.', '#94a3b8', true);
+    }
+
+    function checkOffRoute(lat, lng) {
+      if (!isNavigating || availableRoutes.length === 0) return;
+      const activeRoute = availableRoutes[selectedRouteIndex];
+      if (!activeRoute || !activeRoute.coordinates || activeRoute.coordinates.length < 2) return;
+
+      const coords = activeRoute.coordinates;
+      let minDistanceKm = Infinity;
+
+      for (let i = 0; i < coords.length; i += 3) {
+        const d = Math.hypot(coords[i][0] - lat, coords[i][1] - lng) * 111;
+        if (d < minDistanceKm) minDistanceKm = d;
+      }
+
+      if (minDistanceKm > 0.12) {
+        if (!window.offRouteCount) window.offRouteCount = 1;
+        else window.offRouteCount++;
+
+        if (window.offRouteCount >= 2) {
+          window.offRouteCount = 0;
+          triggerAutoReroute(lat, lng);
+        }
+      } else {
+        window.offRouteCount = 0;
+      }
+    }
+
+    function triggerAutoReroute(lat, lng) {
+      if (!destinationCoord) return;
+      const banner = document.getElementById('driving-step-road');
+      if (banner) banner.textContent = '🔄 Rerouting... Finding optimal corridor';
+      addChatMessage('🔄 Reroute', 'Detected off-route movement. Recalculating path to destination...', '#38bdf8', true);
+      loadRoadRoutes(lat, lng, destinationCoord[0], destinationCoord[1], currentDestShortName);
+    }
+
+    function onUserArrivedAtDestination() {
+      squad[0].status = 'arrived';
+      squad[0].speed = 0;
+      broadcastSquadMemberUpdate();
+      saveTripToHistory();
+      addChatMessage('🎉 Destination Reached', `Congratulations! You have safely arrived at **${currentDestShortName}**!`, '#22c55e', true);
+      recomputeConvoyAnalytics();
+      renderRoster();
     }
 
     // ============================================================
@@ -4301,7 +5211,361 @@
       map.panTo([stopLat, stopLng]);
     }
 
-    // Initial render (Clean map: no bunks or POIs until a destination is searched)
+    // ============================================================
+    // 9. Squad Coordination, Sharing, Regrouping & History Functions
+    // ============================================================
+    function broadcastSquadMemberUpdate() {
+      if (!currentSquadId || !isSharingLocation) return;
+      const activeRoute = availableRoutes[selectedRouteIndex] || availableRoutes[0];
+
+      const memberPayload = {
+        id: myUserId,
+        name: myUserName,
+        color: myUserColor,
+        vehicle: currentTravelMode,
+        lat: squad[0].lat,
+        lng: squad[0].lng,
+        speed: squad[0].speed || 0,
+        distanceRemainingKm: activeRoute ? activeRoute.distanceKm : null,
+        etaMinutes: activeRoute ? activeRoute.durationMin : null,
+        status: squad[0].status || (isGPSTracking ? 'traveling' : 'online'),
+        lastUpdated: Date.now()
+      };
+
+      broadcastSquadPayload('location', memberPayload);
+      lastBroadcastTime = Date.now();
+      lastBroadcastLat = squad[0].lat;
+      lastBroadcastLng = squad[0].lng;
+    }
+
+    function handleSquadHeaderClick() {
+      if (!currentSquadId) {
+        createSquad();
+      } else {
+        openShareSquadModal();
+      }
+    }
+
+    function createSquad() {
+      currentSquadId = 'squad_' + Math.random().toString(36).substring(2, 8);
+      isSquadHost = true;
+
+      const customName = prompt('Enter your name as Squad Host:', myUserName.replace(' (Host)', '').replace(' (You)', ''));
+      if (customName && customName.trim()) {
+        myUserName = customName.trim();
+        localStorage.setItem('squadnav_user_name', myUserName);
+      }
+
+      squad[0].name = `${myUserName} (Host)`;
+      squad[0].vehicle = currentTravelMode;
+
+      const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?squad=${currentSquadId}`;
+      window.history.replaceState({ path: newUrl }, '', newUrl);
+
+      const hdrText = document.getElementById('header-squad-text');
+      const hdrIcon = document.getElementById('header-squad-icon');
+      const hdrBtn = document.getElementById('btn-header-squad');
+      if (hdrText) hdrText.textContent = 'Share Squad';
+      if (hdrIcon) hdrIcon.textContent = '🔗';
+      if (hdrBtn) hdrBtn.style.background = '#0284c7';
+
+      subscribeToSquad(currentSquadId);
+
+      if (destinationCoord) {
+        broadcastSquadPayload('destination', {
+          name: currentDestShortName,
+          lat: destinationCoord[0],
+          lng: destinationCoord[1],
+          address: currentDestFullName
+        });
+      }
+
+      broadcastSquadMemberUpdate();
+      openShareSquadModal();
+      addChatMessage('👑 Squad Created', `Squad **${currentSquadId}** created! Share the invite link with your friends.`, '#22c55e', true);
+    }
+
+    function openShareSquadModal() {
+      if (!currentSquadId) {
+        createSquad();
+        return;
+      }
+      const inviteUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?squad=${currentSquadId}`;
+      document.getElementById('share-squad-id-display').value = currentSquadId;
+      document.getElementById('share-squad-url-display').value = inviteUrl;
+      document.getElementById('share-squad-modal').style.display = 'flex';
+    }
+
+    function closeShareSquadModal() {
+      document.getElementById('share-squad-modal').style.display = 'none';
+    }
+
+    async function shareViaNativeWebShare() {
+      const inviteUrl = document.getElementById('share-squad-url-display').value;
+      const shareData = {
+        title: 'Join my SquadNav Convoy!',
+        text: `Join our road trip squad to ${currentDestShortName || 'our destination'} on SquadNav!`,
+        url: inviteUrl
+      };
+
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+          addChatMessage('🔗 Share', 'Squad invite shared successfully!', '#22c55e', true);
+          closeShareSquadModal();
+          return;
+        } catch (err) {
+          if (err.name !== 'AbortError') console.warn('Web Share fallback:', err);
+        }
+      }
+      copySquadInviteLink();
+    }
+
+    function copySquadInviteLink() {
+      const inviteUrl = document.getElementById('share-squad-url-display').value;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(inviteUrl).then(() => {
+          alert('Invite link copied to clipboard! Share it on WhatsApp, Telegram, or SMS.');
+        }).catch(() => {
+          prompt('Copy this invite link:', inviteUrl);
+        });
+      } else {
+        prompt('Copy this invite link:', inviteUrl);
+      }
+    }
+
+    function checkInviteUrlOnLoad() {
+      const urlParams = new URLSearchParams(window.location.search);
+      let inviteSquadId = urlParams.get('squad');
+      if (!inviteSquadId && window.location.hash.includes('squad=')) {
+        inviteSquadId = window.location.hash.split('squad=')[1]?.split('&')[0];
+      }
+
+      if (inviteSquadId) {
+        currentSquadId = inviteSquadId;
+        isSquadHost = false;
+
+        const hdrText = document.getElementById('header-squad-text');
+        const hdrIcon = document.getElementById('header-squad-icon');
+        const hdrBtn = document.getElementById('btn-header-squad');
+        if (hdrText) hdrText.textContent = 'Share Squad';
+        if (hdrIcon) hdrIcon.textContent = '🔗';
+        if (hdrBtn) hdrBtn.style.background = '#0284c7';
+
+        const savedName = localStorage.getItem('squadnav_user_name');
+        if (savedName) document.getElementById('join-user-name').value = savedName;
+        document.getElementById('join-invite-host-label').textContent = `Invited to Squad: ${inviteSquadId}`;
+        document.getElementById('join-squad-modal').style.display = 'flex';
+
+        subscribeToSquad(inviteSquadId);
+      }
+    }
+
+    function confirmJoinSquad() {
+      const nameInput = document.getElementById('join-user-name').value.trim();
+      const vehicleSelect = document.getElementById('join-user-vehicle').value;
+
+      if (!nameInput) {
+        alert('Please enter your name to join the squad.');
+        return;
+      }
+
+      myUserName = nameInput;
+      localStorage.setItem('squadnav_user_name', myUserName);
+      squad[0].name = `${myUserName} (You)`;
+      setTravelMode(vehicleSelect);
+
+      document.getElementById('join-squad-modal').style.display = 'none';
+
+      startGPSTracking();
+      broadcastSquadMemberUpdate();
+      addChatMessage('🎉 Squad Joined', `You joined squad **${currentSquadId}** as **${myUserName}**!`, '#22c55e', true);
+    }
+
+    function dismissJoinModal() {
+      document.getElementById('join-squad-modal').style.display = 'none';
+    }
+
+    function proposeMeetHerePrompt() {
+      const placeName = prompt('Propose a meeting point for the squad (e.g. Sri Sai Dhaba, HP Petrol Bunk):');
+      if (!placeName) return;
+
+      const meetingPoint = {
+        id: 'meet_' + Date.now(),
+        name: placeName,
+        lat: squad[0].lat,
+        lng: squad[0].lng,
+        proposedBy: myUserName,
+        status: 'pending',
+        timestamp: Date.now()
+      };
+
+      broadcastSquadPayload('meetingPoint', meetingPoint);
+      addChatMessage('📍 Regroup Point', `You proposed meeting point: **${placeName}**! Waiting for squad acceptance.`, '#f59e0b', true);
+      pinRegroupMarker(meetingPoint);
+    }
+
+    function showRegroupProposalCard(meetingPoint) {
+      document.getElementById('regroup-proposer').textContent = `Proposed by ${meetingPoint.proposedBy}`;
+      document.getElementById('regroup-place-name').textContent = meetingPoint.name;
+      const distKm = (Math.hypot(meetingPoint.lat - squad[0].lat, meetingPoint.lng - squad[0].lng) * 111).toFixed(1);
+      document.getElementById('regroup-dist-info').textContent = `📍 ${distKm} km away from your position`;
+      document.getElementById('regroup-prompt-card').style.display = 'flex';
+      window.activePendingRegroup = meetingPoint;
+    }
+
+    function respondToRegroup(accepted) {
+      document.getElementById('regroup-prompt-card').style.display = 'none';
+      if (accepted && window.activePendingRegroup) {
+        pinRegroupMarker(window.activePendingRegroup);
+        addStop(window.activePendingRegroup.lat, window.activePendingRegroup.lng, `Regroup: ${window.activePendingRegroup.name}`, 'custom');
+        addChatMessage('✅ Regroup Accepted', `Squad accepted meeting at **${window.activePendingRegroup.name}**! Added to route stops.`, '#22c55e', true);
+      } else {
+        addChatMessage('❌ Regroup', 'Declined proposed meeting point.', '#94a3b8', true);
+      }
+      window.activePendingRegroup = null;
+    }
+
+    function pinRegroupMarker(mp) {
+      const icon = L.divIcon({
+        className: 'custom-icon',
+        html: '<div class="custom-avatar" style="background-color: #f59e0b; font-size: 14px; box-shadow: 0 0 14px #f59e0b;">📍</div>',
+        iconSize: [34, 34],
+        iconAnchor: [17, 17]
+      });
+      L.marker([mp.lat, mp.lng], { icon: icon }).addTo(map).bindPopup(`<b>📍 Regroup Point: ${mp.name}</b><br>Proposed by ${mp.proposedBy}`).openPopup();
+    }
+
+    function showPollCard(pollData) {
+      document.getElementById('poll-proposer').textContent = `Suggested by ${pollData.proposedBy || 'Squad'}`;
+      document.getElementById('poll-title').textContent = pollData.title;
+      document.getElementById('poll-votes-tally').textContent = `Votes: 👍 ${pollData.yesCount || 1} Yes • 👎 ${pollData.noCount || 0} No`;
+      document.getElementById('poll-prompt-card').style.display = 'flex';
+      window.activeStopPoll = pollData;
+    }
+
+    function castPollVote(isYes) {
+      document.getElementById('poll-prompt-card').style.display = 'none';
+      if (isYes && window.activeStopPoll) {
+        addStop(window.activeStopPoll.lat, window.activeStopPoll.lng, window.activeStopPoll.title.replace('Stop at ', '').replace('?', ''), 'custom');
+        addChatMessage('🗳️ Stop Approved', `Squad voted YES on stop: **${window.activeStopPoll.title}**! Added to itinerary.`, '#22c55e', true);
+      }
+      window.activeStopPoll = null;
+    }
+
+    function toggleShareLocationPrivacy() {
+      isSharingLocation = !isSharingLocation;
+      const textEl = document.getElementById('privacy-sharing-text');
+      const btn = document.getElementById('btn-stop-sharing');
+
+      if (isSharingLocation) {
+        textEl.textContent = 'Sharing On';
+        btn.style.background = '#475569';
+        broadcastSquadMemberUpdate();
+        addChatMessage('📍 Location Privacy', 'Live location sharing resumed with your squad.', '#22c55e', true);
+      } else {
+        textEl.textContent = 'Sharing Paused';
+        btn.style.background = '#b91c1c';
+        broadcastSquadPayload('location', {
+          id: myUserId,
+          name: myUserName,
+          status: 'paused',
+          lastUpdated: Date.now()
+        });
+        addChatMessage('🛑 Location Privacy', 'Live location sharing paused. Your squad will see your last known position.', '#f59e0b', true);
+      }
+    }
+
+    function switchMobileTab(tab) {
+      ['map', 'squad', 'history'].forEach(t => {
+        const btn = document.getElementById(`bnav-${t}`);
+        if (btn) btn.classList.toggle('active', t === tab);
+      });
+
+      if (tab === 'map') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (tab === 'squad') {
+        const hud = document.getElementById('hud-panel');
+        if (hud) hud.scrollIntoView({ behavior: 'smooth' });
+      } else if (tab === 'history') {
+        openHistoryModal();
+      }
+    }
+
+    function saveTripToHistory() {
+      if (!destinationCoord) return;
+      const historyList = JSON.parse(localStorage.getItem('squadnav_trip_history') || '[]');
+      const activeRoute = availableRoutes[selectedRouteIndex] || availableRoutes[0];
+
+      const tripRecord = {
+        id: 'trip_' + Date.now(),
+        destination: currentDestShortName,
+        destinationCoords: destinationCoord,
+        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        memberCount: 1 + Object.keys(squadRemoteMembers).length,
+        distanceKm: activeRoute ? activeRoute.distanceKm : '0',
+        durationMin: activeRoute ? activeRoute.durationMin : '0',
+        travelMode: currentTravelMode,
+        stopsCount: routeStops.length
+      };
+
+      if (historyList.length === 0 || historyList[0].destination !== tripRecord.destination) {
+        historyList.unshift(tripRecord);
+        localStorage.setItem('squadnav_trip_history', JSON.stringify(historyList.slice(0, 20)));
+      }
+    }
+
+    function openHistoryModal() {
+      const modal = document.getElementById('trip-history-modal');
+      const container = document.getElementById('history-trips-list');
+      const historyList = JSON.parse(localStorage.getItem('squadnav_trip_history') || '[]');
+
+      if (historyList.length === 0) {
+        container.innerHTML = '<div style="font-size: 0.78rem; color: #94a3b8; text-align: center; padding: 24px;">No completed trips yet. Start navigation to save your journeys!</div>';
+      } else {
+        container.innerHTML = '';
+        historyList.forEach(t => {
+          const item = document.createElement('div');
+          item.style.cssText = 'background: rgba(30, 41, 59, 0.7); border: 1px solid #334155; border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; align-items: center;';
+          item.innerHTML = `
+            <div>
+              <div style="font-weight: 700; font-size: 0.88rem; color: #f8fafc;">📍 ${t.destination}</div>
+              <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 2px;">
+                ${t.date} • ${t.memberCount} members • ${t.distanceKm} km • ${formatMinutes(t.durationMin)}
+              </div>
+            </div>
+            <button class="primary" style="font-size: 0.72rem; padding: 4px 10px;" onclick="replayHistoricalTrip('${t.id}')">View</button>
+          `;
+          container.appendChild(item);
+        });
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function closeHistoryModal() {
+      document.getElementById('trip-history-modal').style.display = 'none';
+    }
+
+    function clearTripHistory() {
+      if (confirm('Delete all trip history?')) {
+        localStorage.removeItem('squadnav_trip_history');
+        openHistoryModal();
+      }
+    }
+
+    function replayHistoricalTrip(tripId) {
+      const historyList = JSON.parse(localStorage.getItem('squadnav_trip_history') || '[]');
+      const trip = historyList.find(t => t.id === tripId);
+      if (trip && trip.destinationCoords) {
+        closeHistoryModal();
+        selectDestination(trip.destinationCoords[0], trip.destinationCoords[1], trip.destination);
+      }
+    }
+
+    // 10. Initial App Initialization
+    initFirebaseSync();
+    checkInviteUrlOnLoad();
     renderRoster();
   </script>
 </body>
