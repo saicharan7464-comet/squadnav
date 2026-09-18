@@ -27,15 +27,24 @@
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+      height: 100dvh;
+      min-height: -webkit-fill-available;
+      overflow: hidden;
+      touch-action: manipulation;
     }
 
     body {
       display: flex;
       flex-direction: column;
-      height: 100vh;
       background: #0f172a;
       color: #f8fafc;
-      overflow: hidden;
+      width: 100%;
+      position: fixed;
     }
 
     /* Top Navigation */
@@ -1845,43 +1854,329 @@
       gap: 8px;
     }
 
-    /* Mobile Responsive Optimizations */
+    /* Bottom Sheet Drag Handle & Toggle Icon */
+    .bottom-sheet-drag-handle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 0 8px 0;
+      cursor: pointer;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .drag-pill {
+      width: 44px;
+      height: 5px;
+      background: #475569;
+      border-radius: 999px;
+      transition: background 0.2s ease;
+    }
+
+    .bottom-sheet-drag-handle:active .drag-pill {
+      background: #38bdf8;
+    }
+
+    .sheet-toggle-icon {
+      display: none;
+      font-size: 0.72rem;
+      color: #94a3b8;
+      margin-left: 4px;
+      transition: transform 0.25s ease;
+    }
+
+    /* Desktop View: Keep bottom nav & drag handle hidden */
+    @media (min-width: 769px) {
+      .mobile-bottom-nav {
+        display: none !important;
+      }
+      .bottom-sheet-drag-handle {
+        display: none !important;
+      }
+      .sheet-toggle-icon {
+        display: none !important;
+      }
+    }
+
+    /* Mobile Responsive Optimizations (< 768px Phones & Small Tablets) */
     @media (max-width: 768px) {
+      html, body {
+        height: 100% !important;
+        height: 100dvh !important;
+        min-height: -webkit-fill-available;
+      }
+
+      body {
+        position: fixed;
+        width: 100%;
+      }
+
+      /* Compact, Single-Row Brand + Actions Header on Mobile */
       header {
-        padding: 8px 10px;
+        padding: max(8px, env(safe-area-inset-top)) 12px 8px 12px;
+        gap: 6px;
+        flex-wrap: wrap;
+        background: #0f172a;
+        border-bottom: 1px solid #1e293b;
+      }
+
+      .brand {
+        font-size: 0.95rem;
         gap: 6px;
       }
-      .brand span:last-child {
+
+      .brand #destination-label {
         display: none;
       }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-left: auto;
+      }
+
+      .header-settings-text,
+      .header-chat-text {
+        display: none;
+      }
+
+      #btn-header-squad {
+        padding: 6px 10px;
+        min-height: 38px;
+        border-radius: 8px;
+        font-size: 0.78rem;
+      }
+
+      .ai-pill {
+        padding: 6px 10px;
+        min-height: 38px;
+        border-radius: 8px;
+      }
+
+      #btn-toggle-chat {
+        padding: 6px 10px;
+        min-height: 38px;
+        border-radius: 8px;
+        font-size: 0.78rem;
+      }
+
+      /* Full-width Search Bar with 16px font to prevent iOS zoom */
       .search-box {
-        max-width: none;
         order: 3;
         width: 100%;
-        margin-top: 4px;
+        max-width: 100%;
+        margin-top: 2px;
+        padding: 4px 6px 4px 10px;
+        border-radius: 10px;
+        background: #1e293b;
+        border: 1px solid #334155;
       }
+
+      .search-box input {
+        font-size: 16px !important; /* Prevents auto zoom in iOS Safari */
+        height: 32px;
+      }
+
+      .search-box button.primary {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        min-height: 34px;
+        border-radius: 6px;
+      }
+
       .header-travel-modes {
-        display: none; /* Visible inside Navigation HUD */
+        display: none; /* Accessible inside Navigation HUD */
       }
+
+      /* Autocomplete Dropdown on Mobile */
+      .search-results {
+        max-height: 250px;
+        z-index: 3500;
+      }
+
+      /* Navigation HUD on Mobile (Google Maps Overview Card) */
       .nav-hud {
-        width: calc(100vw - 20px);
-        left: 10px;
-        top: 10px;
-        max-height: 60vh;
+        width: calc(100vw - 16px);
+        left: 8px;
+        right: 8px;
+        top: 8px;
+        max-height: 52vh;
+        border-radius: 14px;
+        padding: 10px;
+        z-index: 1250;
       }
+
+      .nav-hud-mini-btn {
+        top: 8px;
+        left: 8px;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        z-index: 1250;
+      }
+
+      /* Driving Mode Banners on Mobile */
+      .nav-driving-banner {
+        top: max(8px, env(safe-area-inset-top));
+        left: 8px;
+        right: 8px;
+        width: auto;
+        transform: none;
+        padding: 10px 14px;
+        border-radius: 12px;
+        z-index: 1600;
+      }
+
+      .nav-driving-dock {
+        bottom: calc(56px + env(safe-area-inset-bottom) + 8px);
+        left: 8px;
+        right: 8px;
+        width: auto;
+        transform: none;
+        padding: 8px 12px;
+        border-radius: 14px;
+        z-index: 1600;
+      }
+
+      /* Floating GPS Locate Button on Mobile */
+      .btn-gps-locate {
+        bottom: calc(72px + 54px + env(safe-area-inset-bottom));
+        right: 14px;
+        width: 48px;
+        height: 48px;
+        font-size: 1.35rem;
+        z-index: 1100;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+      }
+
+      /* Full Screen Chat Drawer on Mobile */
+      .chat-drawer {
+        width: 100vw;
+        max-width: 100vw;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: calc(54px + env(safe-area-inset-bottom));
+        border-left: none;
+        border-top: 1px solid #334155;
+        z-index: 2100;
+      }
+
+      .chat-input-bar input {
+        font-size: 16px !important; /* Prevents auto zoom */
+        padding: 10px 12px;
+      }
+
+      .chat-input-bar button {
+        min-height: 44px;
+        padding: 8px 16px;
+      }
+
+      /* Google-Maps-Style Swipeable Bottom Sheet for Squad & Convoy */
       .hud-panel {
-        padding: 8px 10px;
-        max-height: 28vh;
+        position: absolute;
+        bottom: calc(54px + env(safe-area-inset-bottom));
+        left: 0;
+        right: 0;
+        width: 100%;
+        background: rgba(15, 23, 42, 0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid rgba(51, 65, 85, 0.9);
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.65);
+        z-index: 1200;
+        padding: 4px 14px 14px 14px;
+        transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
-      .members-grid {
+
+      .bottom-sheet-drag-handle {
+        display: flex;
+      }
+
+      .sheet-toggle-icon {
+        display: inline-block;
+      }
+
+      .hud-top {
+        cursor: pointer;
+        user-select: none;
+        padding: 2px 0 4px 0;
+      }
+
+      /* Peek State (Default): 62px high, Map takes 80%+ screen */
+      .hud-panel.mobile-peek {
+        max-height: 62px;
+        overflow: hidden;
+      }
+
+      .hud-panel.mobile-peek .members-grid,
+      .hud-panel.mobile-peek .actions-bar {
+        display: none !important;
+      }
+
+      /* Expanded State: 68vh high, full roster & 2-column actions */
+      .hud-panel.mobile-expanded {
+        max-height: 68vh;
+      }
+
+      .hud-panel.mobile-expanded .sheet-toggle-icon {
+        transform: rotate(180deg);
+      }
+
+      .hud-panel.mobile-expanded .members-grid {
+        display: grid !important;
         grid-template-columns: 1fr;
-        gap: 6px;
+        gap: 8px;
+        margin-top: 8px;
+        margin-bottom: 12px;
       }
-      .actions-bar button {
-        flex: 1;
-        min-height: 40px;
-        font-size: 0.78rem;
+
+      .hud-panel.mobile-expanded .actions-bar {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .hud-panel.mobile-expanded .actions-bar button {
+        min-height: 44px;
+        font-size: 0.8rem;
+        padding: 8px 10px;
+      }
+
+      /* Mobile Bottom Navigation Bar */
+      .mobile-bottom-nav {
+        display: flex !important;
+        height: calc(54px + env(safe-area-inset-bottom));
+        padding: 4px 8px env(safe-area-inset-bottom) 8px;
+        border-top: 1px solid #334155;
+        background: #090d16;
+        z-index: 1500;
+        position: relative;
+      }
+
+      .mobile-bottom-nav .nav-item {
+        min-height: 48px;
+        touch-action: manipulation;
+      }
+
+      /* Modals on Mobile */
+      .modal {
+        width: min(94vw, 420px) !important;
+        max-height: 85dvh !important;
+        padding: 16px !important;
+      }
+
+      .modal input,
+      .modal select,
+      .modal textarea {
+        font-size: 16px !important; /* Prevents auto zoom */
+      }
+
+      .modal-field input {
+        font-size: 16px !important;
       }
     }
   </style>
@@ -1924,17 +2219,17 @@
       </button>
     </div>
 
-    <div style="display: flex; align-items: center; gap: 8px;">
+    <div class="header-actions">
       <button id="btn-header-squad" onclick="handleSquadHeaderClick()" style="display: flex; align-items: center; gap: 5px; background: #2563eb; font-weight: 600;">
         <span id="header-squad-icon">👑</span> <span id="header-squad-text">Create Squad</span>
       </button>
       <div class="ai-pill" onclick="openKeyModal()" title="Cloud, Google Maps & AI Settings">
         <span class="ai-dot"></span>
-        <span>Settings</span>
+        <span class="header-settings-text">Settings</span>
         <span style="font-size: 0.7rem; opacity: 0.75;">⚙️</span>
       </div>
       <button id="btn-toggle-chat" onclick="toggleChat()" style="display: flex; align-items: center; gap: 5px;">
-        <span>💬</span> <span>Chat</span>
+        <span>💬</span> <span class="header-chat-text">Chat</span>
       </button>
     </div>
   </header>
@@ -2188,9 +2483,12 @@
     </div>
   </div>
 
-  <!-- Bottom HUD Panel -->
-  <div class="hud-panel" id="hud-panel">
-    <div class="hud-top">
+  <!-- Bottom HUD Panel (Collapsible Bottom Sheet on Mobile) -->
+  <div class="hud-panel mobile-peek" id="hud-panel">
+    <div class="bottom-sheet-drag-handle" id="bottom-sheet-drag-handle" onclick="toggleMobileBottomSheet()" title="Swipe or tap to expand squad">
+      <div class="drag-pill"></div>
+    </div>
+    <div class="hud-top" onclick="toggleMobileBottomSheet()">
       <div style="display: flex; align-items: center; gap: 8px;">
         <span style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 600;">Active Convoy Telemetry</span>
         <span id="convoy-status-pill" class="convoy-badge leader">🟢 Convoy In Sync</span>
@@ -2198,6 +2496,7 @@
       <div style="display: flex; align-items: center; gap: 6px;">
         <span id="arrival-counter-badge" style="font-size: 0.7rem; color: #38bdf8; font-weight: 600;">0/1 Arrived</span>
         <span id="squad-counter" style="font-size: 0.75rem; color: #4ade80;">1 Member</span>
+        <span class="sheet-toggle-icon" id="sheet-toggle-icon">▲</span>
       </div>
     </div>
 
@@ -2792,11 +3091,14 @@
 
     L.control.layers(baseLayers, null, { position: 'topright' }).addTo(map);
 
-    // Map Click Listener (dismisses chat drawer and handles Pick on Map mode)
+    // Map Click Listener (dismisses chat drawer, collapses bottom sheet to peek on mobile, handles Pick on Map mode)
     map.on('click', async function(e) {
       const drawer = document.getElementById('chat-drawer');
       if (drawer && drawer.style.display === 'flex') {
         drawer.style.display = 'none';
+      }
+      if (window.innerWidth <= 768) {
+        toggleMobileBottomSheet(false);
       }
 
       if (!isPickingOnMap) return;
@@ -2817,6 +3119,13 @@
       }
 
       addStop(lat, lng, placeName, 'custom');
+    });
+
+    // Map Drag Listener (collapses bottom sheet to peek on mobile so user has full map visibility)
+    map.on('dragstart', function() {
+      if (window.innerWidth <= 768) {
+        toggleMobileBottomSheet(false);
+      }
     });
 
     function createIcon(color, text) {
@@ -5545,6 +5854,12 @@
 
     function closeHistoryModal() {
       document.getElementById('trip-history-modal').style.display = 'none';
+      const panel = document.getElementById('hud-panel');
+      if (panel && panel.classList.contains('mobile-expanded')) {
+        updateMobileNavTab('squad');
+      } else {
+        updateMobileNavTab('map');
+      }
     }
 
     function clearTripHistory() {
@@ -5563,10 +5878,107 @@
       }
     }
 
+    // ============================================================
+    // 11. MOBILE BOTTOM SHEET, GESTURES & TAB NAVIGATION
+    // ============================================================
+
+    let isMobileSheetExpanded = false;
+
+    function toggleMobileBottomSheet(forceState) {
+      const panel = document.getElementById('hud-panel');
+      const icon = document.getElementById('sheet-toggle-icon');
+      if (!panel) return;
+
+      if (typeof forceState === 'boolean') {
+        isMobileSheetExpanded = forceState;
+      } else {
+        isMobileSheetExpanded = !panel.classList.contains('mobile-expanded');
+      }
+
+      if (isMobileSheetExpanded) {
+        panel.classList.remove('mobile-peek');
+        panel.classList.add('mobile-expanded');
+        if (icon) icon.textContent = '▼';
+        updateMobileNavTab('squad');
+      } else {
+        panel.classList.remove('mobile-expanded');
+        panel.classList.add('mobile-peek');
+        if (icon) icon.textContent = '▲';
+        updateMobileNavTab('map');
+      }
+    }
+
+    function updateMobileNavTab(activeTab) {
+      const bnavMap = document.getElementById('bnav-map');
+      const bnavSquad = document.getElementById('bnav-squad');
+      const bnavHistory = document.getElementById('bnav-history');
+
+      if (bnavMap) bnavMap.classList.toggle('active', activeTab === 'map');
+      if (bnavSquad) bnavSquad.classList.toggle('active', activeTab === 'squad');
+      if (bnavHistory) bnavHistory.classList.toggle('active', activeTab === 'history');
+    }
+
+    function switchMobileTab(tab) {
+      if (tab === 'map') {
+        toggleMobileBottomSheet(false);
+        toggleChat(false);
+        closeHistoryModal();
+        if (typeof fitAllDrivers === 'function') {
+          fitAllDrivers();
+        }
+        updateMobileNavTab('map');
+      } else if (tab === 'squad') {
+        toggleMobileBottomSheet(true);
+        toggleChat(false);
+        closeHistoryModal();
+        updateMobileNavTab('squad');
+      } else if (tab === 'history') {
+        toggleMobileBottomSheet(false);
+        toggleChat(false);
+        openHistoryModal();
+        updateMobileNavTab('history');
+      }
+    }
+
+    // Touch gesture swipe support on bottom sheet handle
+    function initMobileGestures() {
+      const handle = document.getElementById('bottom-sheet-drag-handle');
+      const hudTop = document.querySelector('.hud-top');
+      let touchStartY = 0;
+
+      function onTouchStart(e) {
+        if (e.touches && e.touches.length > 0) {
+          touchStartY = e.touches[0].clientY;
+        }
+      }
+
+      function onTouchEnd(e) {
+        if (e.changedTouches && e.changedTouches.length > 0) {
+          const touchEndY = e.changedTouches[0].clientY;
+          const diff = touchEndY - touchStartY;
+          // Swipe up (diff < -25) -> expand
+          if (diff < -25) {
+            toggleMobileBottomSheet(true);
+          } else if (diff > 25) {
+            // Swipe down (diff > 25) -> collapse to peek
+            toggleMobileBottomSheet(false);
+          }
+        }
+      }
+
+      [handle, hudTop].forEach(el => {
+        if (el) {
+          el.addEventListener('touchstart', onTouchStart, { passive: true });
+          el.addEventListener('touchend', onTouchEnd, { passive: true });
+        }
+      });
+    }
+
     // 10. Initial App Initialization
     initFirebaseSync();
     checkInviteUrlOnLoad();
     renderRoster();
+    initMobileGestures();
   </script>
 </body>
 </html>
