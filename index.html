@@ -218,15 +218,23 @@
       background: #0f172a;
     }
 
-    /* Group Chat Drawer */
+    /* Group Chat Drawer (Disappeared/hidden by default) */
     .chat-drawer {
-      width: 280px;
-      background: #1e293b;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 320px;
+      max-width: 88vw;
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border-left: 1px solid #334155;
-      display: flex;
+      display: none; /* Disappeared by default */
       flex-direction: column;
-      transition: transform 0.3s ease;
-      z-index: 1000;
+      box-shadow: -12px 0 32px rgba(0, 0, 0, 0.7);
+      z-index: 2000;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .chat-header {
@@ -1721,7 +1729,7 @@
         <span>AI Copilot Active</span>
         <span style="font-size: 0.7rem; opacity: 0.75;">⚙️</span>
       </div>
-      <button onclick="toggleChat()" style="display: flex; align-items: center; gap: 5px;">
+      <button id="btn-toggle-chat" onclick="toggleChat()" style="display: flex; align-items: center; gap: 5px;">
         <span>💬</span> <span>Chat</span>
       </button>
     </div>
@@ -1907,14 +1915,14 @@
       </div>
     </div>
 
-    <!-- Group Chat Sidebar -->
-    <div class="chat-drawer" id="chat-drawer">
+    <!-- Group Chat Sidebar (Disappeared / Hidden by default) -->
+    <div class="chat-drawer" id="chat-drawer" style="display: none;">
       <div class="chat-header">
         <span style="display: flex; align-items: center; gap: 6px;">
-          <span>Group Chat</span>
+          <span>💬 Group Chat</span>
           <span style="font-size: 0.68rem; background: rgba(99, 102, 241, 0.2); color: #a5b4fc; padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(129, 140, 248, 0.3);">AI Enabled</span>
         </span>
-        <span style="font-size: 0.7rem; color: #4ade80;">Active</span>
+        <button onclick="toggleChat(false)" style="background: transparent; border: none; color: #94a3b8; font-size: 1.1rem; cursor: pointer; padding: 0 4px;" title="Close Chat">✕</button>
       </div>
 
       <!-- Quick AI Action Chips -->
@@ -2124,8 +2132,13 @@
 
     L.control.layers(baseLayers, null, { position: 'topright' }).addTo(map);
 
-    // Map Click Listener (for Pick on Map mode)
+    // Map Click Listener (dismisses chat drawer and handles Pick on Map mode)
     map.on('click', async function(e) {
+      const drawer = document.getElementById('chat-drawer');
+      if (drawer && drawer.style.display === 'flex') {
+        drawer.style.display = 'none';
+      }
+
       if (!isPickingOnMap) return;
       togglePickOnMap();
 
@@ -4149,10 +4162,30 @@
       container.scrollTop = container.scrollHeight;
     }
 
-    function toggleChat() {
+    function toggleChat(forceState) {
       const drawer = document.getElementById('chat-drawer');
-      drawer.style.display = drawer.style.display === 'none' ? 'flex' : 'none';
+      if (!drawer) return;
+      if (typeof forceState === 'boolean') {
+        drawer.style.display = forceState ? 'flex' : 'none';
+      } else {
+        const isHidden = drawer.style.display === 'none' || !drawer.style.display;
+        drawer.style.display = isHidden ? 'flex' : 'none';
+      }
     }
+
+    // Dismiss group chat whenever clicking, tapping, or interacting with anything on the website or map
+    function dismissChatIfOutside(e) {
+      const drawer = document.getElementById('chat-drawer');
+      const chatBtn = document.getElementById('btn-toggle-chat');
+      if (drawer && drawer.style.display === 'flex') {
+        if (!drawer.contains(e.target) && (!chatBtn || !chatBtn.contains(e.target))) {
+          drawer.style.display = 'none';
+        }
+      }
+    }
+    // Listen in capture phase (true) so it intercepts clicks on buttons, cards, map tiles, and inputs
+    document.addEventListener('pointerdown', dismissChatIfOutside, true);
+    document.addEventListener('click', dismissChatIfOutside, true);
 
     async function sendMessage() {
       const input = document.getElementById('chat-input');
