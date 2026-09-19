@@ -38,26 +38,75 @@
       touch-action: manipulation;
     }
 
+    /* CSS Variables for Light & Dark Mode */
+    :root, [data-theme="dark"] {
+      --bg-primary: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-surface-translucent: rgba(15, 23, 42, 0.94);
+      --bg-input: #0f172a;
+      --border-color: #334155;
+      --border-light: #475569;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --card-hover: #334155;
+      --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.6);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+      --nav-green: #0a4f44;
+      --nav-green-dark: #064e3b;
+      --accent-cyan: #22d3ee;
+      --accent-cyan-bg: #67e8f9;
+      --accent-blue: #2563eb;
+      --accent-green: #22c55e;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f1f5f9;
+      --bg-surface: #ffffff;
+      --bg-surface-translucent: rgba(255, 255, 255, 0.96);
+      --bg-input: #f8fafc;
+      --border-color: #e2e8f0;
+      --border-light: #cbd5e1;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --card-hover: #f1f5f9;
+      --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.12);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+      --nav-green: #0d9488;
+      --nav-green-dark: #0f766e;
+      --accent-cyan: #0891b2;
+      --accent-cyan-bg: #22d3ee;
+      --accent-blue: #1a73e8;
+      --accent-green: #16a34a;
+    }
+
     body {
       display: flex;
       flex-direction: column;
-      background: #0f172a;
-      color: #f8fafc;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       width: 100%;
       position: fixed;
+      transition: background-color 0.25s ease, color 0.25s ease;
     }
 
     /* Top Navigation */
     header {
       padding: 10px 16px;
-      background: #1e293b;
+      background: var(--bg-surface);
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      border-bottom: 1px solid #334155;
+      border-bottom: 1px solid var(--border-color);
       z-index: 1000;
       flex-wrap: wrap;
+      transition: background-color 0.25s ease, border-color 0.25s ease;
     }
 
     .brand {
@@ -66,41 +115,46 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      color: var(--text-primary);
     }
 
     /* Search Bar */
     .search-box {
       display: flex;
       align-items: center;
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 4px 8px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 4px 8px 4px 14px;
       position: relative;
       flex: 1;
-      max-width: 400px;
+      max-width: 440px;
       transition: all 0.2s ease;
     }
 
     .search-box:focus-within {
       border-color: #3b82f6;
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     }
 
     .search-box input {
       background: transparent;
       border: none;
-      color: #f8fafc;
-      font-size: 0.85rem;
+      color: var(--text-primary);
+      font-size: 0.88rem;
       width: 100%;
       outline: none;
       padding-right: 4px;
     }
 
+    .search-box input::placeholder {
+      color: var(--text-secondary);
+    }
+
     .search-clear-btn {
       background: transparent;
       border: none;
-      color: #94a3b8;
+      color: var(--text-secondary);
       cursor: pointer;
       font-size: 0.8rem;
       padding: 2px 6px;
@@ -110,49 +164,100 @@
     }
 
     .search-clear-btn:hover {
-      color: #f8fafc;
-      background: #334155;
+      color: var(--text-primary);
+      background: var(--card-hover);
     }
 
     .search-box button.primary {
-      padding: 5px 10px;
-      font-size: 0.75rem;
-      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      border-radius: 18px;
       white-space: nowrap;
     }
 
+    /* Theme Toggle Button */
+    .btn-theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-theme-toggle:hover {
+      background: var(--card-hover);
+      transform: scale(1.08);
+      border-color: #3b82f6;
+    }
+
+    /* Search Results & Recent Search Dropdown */
     .search-results {
       position: absolute;
-      top: calc(100% + 6px);
+      top: calc(100% + 8px);
       left: 0;
       right: 0;
-      background: rgba(30, 41, 59, 0.98);
+      background: var(--bg-surface-translucent);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid #475569;
-      border-radius: 8px;
-      max-height: 290px;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      max-height: 340px;
       overflow-y: auto;
       z-index: 3000;
       display: none;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .recent-searches-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px 6px 14px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+    }
+
+    .recent-searches-clear {
+      background: transparent;
+      border: none;
+      color: #ef4444;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .recent-searches-clear:hover {
+      background: rgba(239, 68, 68, 0.12);
     }
 
     .search-results::-webkit-scrollbar {
       width: 5px;
     }
     .search-results::-webkit-scrollbar-thumb {
-      background: #475569;
+      background: var(--border-light);
       border-radius: 4px;
     }
 
     .search-item {
-      padding: 9px 12px;
+      padding: 10px 14px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       cursor: pointer;
-      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+      border-bottom: 1px solid var(--border-color);
       transition: background 0.15s ease;
     }
 
@@ -161,12 +266,13 @@
     }
 
     .search-item:hover, .search-item.highlighted {
-      background: #334155;
+      background: var(--card-hover);
     }
 
     .search-item-icon {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       flex-shrink: 0;
+      color: var(--text-secondary);
     }
 
     .search-item-content {
@@ -175,17 +281,17 @@
     }
 
     .search-item-title {
-      font-size: 0.84rem;
+      font-size: 0.86rem;
       font-weight: 600;
-      color: #f8fafc;
+      color: var(--text-primary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .search-item-sub {
-      font-size: 0.72rem;
-      color: #94a3b8;
+      font-size: 0.74rem;
+      color: var(--text-secondary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -193,19 +299,36 @@
     }
 
     .search-item-dist {
-      font-size: 0.7rem;
-      color: #60a5fa;
+      font-size: 0.72rem;
+      color: #3b82f6;
       font-weight: 600;
-      background: rgba(37, 99, 235, 0.15);
-      padding: 2px 6px;
-      border-radius: 4px;
+      background: rgba(37, 99, 235, 0.12);
+      padding: 2px 8px;
+      border-radius: 999px;
       flex-shrink: 0;
     }
 
+    .search-item-remove {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 4px;
+      border-radius: 4px;
+      opacity: 0.7;
+    }
+
+    .search-item-remove:hover {
+      opacity: 1;
+      color: #ef4444;
+      background: var(--card-hover);
+    }
+
     .search-item-loading, .search-item-empty {
-      padding: 12px;
-      font-size: 0.78rem;
-      color: #94a3b8;
+      padding: 14px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
       text-align: center;
       display: flex;
       align-items: center;
@@ -216,7 +339,7 @@
     .search-spinner {
       width: 14px;
       height: 14px;
-      border: 2px solid #64748b;
+      border: 2px solid var(--border-color);
       border-top-color: #38bdf8;
       border-radius: 50%;
       animation: spin 0.6s linear infinite;
@@ -237,7 +360,7 @@
     #map {
       flex: 1;
       height: 100%;
-      background: #0f172a;
+      background: var(--bg-primary);
     }
 
     /* Group Chat Drawer (Disappeared/hidden by default) */
@@ -248,26 +371,27 @@
       bottom: 0;
       width: 320px;
       max-width: 88vw;
-      background: rgba(15, 23, 42, 0.96);
+      background: var(--bg-surface-translucent);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
-      border-left: 1px solid #334155;
+      border-left: 1px solid var(--border-color);
       display: none; /* Disappeared by default */
       flex-direction: column;
-      box-shadow: -12px 0 32px rgba(0, 0, 0, 0.7);
+      box-shadow: -12px 0 32px rgba(0, 0, 0, 0.5);
       z-index: 2000;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .chat-header {
       padding: 10px 14px;
-      background: #0f172a;
+      background: var(--bg-surface);
       font-size: 0.85rem;
       font-weight: 600;
-      border-bottom: 1px solid #334155;
+      border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      color: var(--text-primary);
     }
 
     .chat-messages {
@@ -283,8 +407,9 @@
       padding: 6px 10px;
       border-radius: 6px;
       font-size: 0.8rem;
-      background: #0f172a;
-      border: 1px solid #334155;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
     }
 
     .message .sender {
@@ -297,15 +422,15 @@
       padding: 8px;
       display: flex;
       gap: 6px;
-      background: #0f172a;
-      border-top: 1px solid #334155;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
     }
 
     .chat-input-bar input {
       flex: 1;
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #fff;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
       padding: 6px 8px;
       border-radius: 4px;
       font-size: 0.8rem;
@@ -314,10 +439,12 @@
 
     /* Bottom HUD */
     .hud-panel {
-      background: #1e293b;
-      border-top: 1px solid #334155;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
       padding: 10px 16px;
       z-index: 1000;
+      color: var(--text-primary);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
     }
 
     .hud-top {
@@ -335,13 +462,14 @@
     }
 
     .member-card {
-      background: #0f172a;
-      border: 1px solid #334155;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
       padding: 8px 12px;
       border-radius: 6px;
       display: flex;
       flex-direction: column;
       gap: 4px;
+      color: var(--text-primary);
     }
 
     .member-name {
@@ -354,29 +482,32 @@
 
     .member-metrics {
       font-size: 0.75rem;
-      color: #94a3b8;
+      color: var(--text-secondary);
       display: flex;
       justify-content: space-between;
     }
 
     /* Buttons */
     button {
-      background: #334155;
-      color: #f8fafc;
-      border: none;
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
       padding: 6px 12px;
       border-radius: 6px;
       font-size: 0.8rem;
       font-weight: 500;
       cursor: pointer;
+      transition: all 0.15s ease;
     }
 
     button:hover {
-      background: #475569;
+      background: var(--card-hover);
     }
 
     button.primary {
       background: #2563eb;
+      color: #ffffff;
+      border: none;
     }
 
     button.primary:hover {
@@ -514,134 +645,504 @@
       background: #0f172a !important;
     }
 
-    /* Google Maps Navigation Card */
-    .nav-hud {
+    /* ============================================================
+       Google Maps Left-Side Navigation Panel (Images 1-4)
+       ============================================================ */
+    .gmaps-left-nav {
       position: absolute;
       top: 14px;
       left: 14px;
-      width: 360px;
-      max-height: calc(100vh - 185px);
-      background: rgba(15, 23, 42, 0.94);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(51, 65, 85, 0.85);
-      border-radius: 14px;
-      padding: 12px;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
-      z-index: 1000;
-      display: none;
+      width: 410px;
+      max-width: calc(100vw - 28px);
+      max-height: calc(100vh - 125px);
+      background: var(--bg-surface-translucent);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      z-index: 1200;
+      display: flex;
       flex-direction: column;
-      gap: 10px;
-      overflow-y: auto;
-      overflow-x: hidden;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+      color: var(--text-primary);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
     }
 
-    .nav-hud::-webkit-scrollbar {
+    /* Top Origin & Destination Search Card */
+    .gmaps-origin-dest-card {
+      padding: 14px 16px 12px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+    }
+
+    .gmaps-points-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 62px;
+      width: 14px;
+      flex-shrink: 0;
+      padding: 4px 0;
+    }
+
+    .gmaps-point-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 3px solid #38bdf8;
+      background: #ffffff;
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
+    }
+
+    .gmaps-point-line {
+      flex: 1;
+      width: 2px;
+      border-left: 2px dotted var(--text-muted);
+      margin: 3px 0;
+    }
+
+    .gmaps-point-pin {
+      width: 12px;
+      height: 12px;
+      background: #ef4444;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+    }
+
+    .gmaps-inputs-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      min-width: 0;
+    }
+
+    .gmaps-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .gmaps-input-wrap input {
+      width: 100%;
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-size: 0.86rem;
+      font-weight: 500;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .gmaps-input-wrap input:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    .gmaps-card-actions-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .gmaps-icon-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.15rem;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .gmaps-icon-btn:hover {
+      background: var(--card-hover);
+      color: var(--text-primary);
+      transform: scale(1.1);
+    }
+
+    /* Travel Mode Tabs (Drive, Two-wheeler, Public transport, Walk) */
+    .gmaps-mode-tabs {
+      display: flex;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+      padding: 0 4px;
+    }
+
+    .gmaps-mode-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 4px 12px 4px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .gmaps-mode-tab:hover {
+      color: var(--text-primary);
+      background: var(--card-hover);
+    }
+
+    .gmaps-mode-tab.active {
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+
+    .gmaps-mode-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 12%;
+      right: 12%;
+      height: 3px;
+      background: var(--accent-cyan);
+      border-radius: 3px 3px 0 0;
+      box-shadow: 0 -2px 6px rgba(34, 211, 238, 0.4);
+    }
+
+    .gmaps-mode-icon {
+      font-size: 1.1rem;
+    }
+
+    .gmaps-mode-time {
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Panel Body */
+    .gmaps-panel-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .gmaps-panel-body::-webkit-scrollbar {
       width: 5px;
     }
-    .nav-hud::-webkit-scrollbar-thumb {
-      background: #334155;
+    .gmaps-panel-body::-webkit-scrollbar-thumb {
+      background: var(--border-light);
       border-radius: 4px;
     }
 
-    .nav-eta-row {
+    .gmaps-panel-header {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
+      align-items: center;
     }
 
-    .nav-eta {
-      font-size: 1.55rem;
+    .gmaps-panel-header h3 {
+      font-size: 1.25rem;
       font-weight: 800;
-      color: #22c55e;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+
+    .gmaps-panel-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    /* Mode Content Views */
+    .gmaps-mode-content {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .gmaps-mode-content.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ETA Headline & Distance Rows */
+    .gmaps-eta-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .gmaps-eta-val {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--accent-green);
       letter-spacing: -0.5px;
       line-height: 1.1;
     }
 
-    .nav-status-badge {
-      font-size: 0.7rem;
+    .gmaps-eta-val.warn {
+      color: #f97316;
+    }
+
+    .gmaps-dist-val {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .gmaps-elev-val {
+      font-size: 0.8rem;
       font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: rgba(34, 197, 94, 0.15);
-      color: #4ade80;
-      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: var(--text-muted);
+      margin-left: 4px;
     }
 
-    .nav-distance-row {
+    .gmaps-status-sub {
       font-size: 0.82rem;
-      color: #94a3b8;
+      color: var(--text-secondary);
+      line-height: 1.35;
+    }
+
+    .gmaps-badges-row {
       display: flex;
-      gap: 6px;
       align-items: center;
-      margin-top: 3px;
+      gap: 8px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
     }
 
-    .nav-via-road {
-      font-size: 0.78rem;
-      color: #cbd5e1;
-      font-weight: 500;
+    .gmaps-toll-badge {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+
+    .gmaps-eco-badge {
+      color: #22c55e;
+      font-weight: 700;
+    }
+
+    /* Action Pills (Start, Add stops, Share, Save) */
+    .gmaps-action-pills {
+      display: flex;
+      gap: 8px;
       margin-top: 4px;
+      flex-wrap: wrap;
     }
 
-    /* Drive Progress bar */
-    .nav-progress-bar {
-      height: 4px;
-      background: #334155;
-      border-radius: 2px;
-      overflow: hidden;
-      margin-top: 4px;
-      display: none;
+    .gmaps-pill-btn {
+      flex: 1;
+      min-width: 75px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
 
-    .nav-progress-fill {
-      height: 100%;
-      background: #22c55e;
-      width: 0%;
-      transition: width 0.25s linear;
+    .gmaps-pill-btn:hover {
+      background: var(--card-hover);
+      border-color: var(--border-light);
+      transform: translateY(-1px);
     }
 
-    .nav-routes-container {
+    .gmaps-pill-btn.start {
+      background: var(--accent-cyan-bg) !important;
+      color: #0f172a !important;
+      border-color: transparent !important;
+      box-shadow: 0 4px 14px rgba(34, 211, 238, 0.4) !important;
+      font-weight: 800 !important;
+      font-size: 0.86rem !important;
+    }
+
+    .gmaps-pill-btn.start:hover {
+      background: var(--accent-cyan) !important;
+      transform: scale(1.04) !important;
+      box-shadow: 0 6px 20px rgba(34, 211, 238, 0.55) !important;
+    }
+
+    /* Route Choices Cards */
+    .gmaps-route-choices {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      margin-top: 4px;
+      gap: 8px;
+      margin-top: 6px;
     }
 
     .route-card {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 9px 12px;
-      background: #1e293b;
-      border: 1.5px solid #334155;
-      border-radius: 9px;
+      padding: 10px 14px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
       cursor: pointer;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      font-size: 0.78rem;
+      font-size: 0.82rem;
+      color: var(--text-primary);
     }
 
     .route-card:hover {
-      background: #283548;
-      border-color: #64748b;
+      background: var(--card-hover);
+      border-color: var(--border-light);
       transform: translateY(-1px);
     }
 
     .route-card.selected {
-      background: rgba(37, 99, 235, 0.18);
+      background: rgba(37, 99, 235, 0.12);
       border-color: #3b82f6;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
     }
 
     .route-card.selected .route-title {
-      color: #93c5fd;
+      color: #3b82f6;
       font-weight: 700;
     }
 
     .route-card .route-meta {
-      font-size: 0.73rem;
-      color: #94a3b8;
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+    }
+
+    /* Public Transport (Transit) Styles */
+    .gmaps-transit-filters {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .gmaps-transit-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .gmaps-filter-chip {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .gmaps-filter-chip:hover {
+      background: var(--card-hover);
+      color: var(--text-primary);
+      border-color: var(--border-light);
+    }
+
+    .gmaps-transit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .gmaps-transit-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .gmaps-transit-card:hover {
+      background: var(--card-hover);
+      border-color: #3b82f6;
+    }
+
+    .gmaps-transit-card.selected {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .transit-legs-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .transit-bus-pill {
+      background: #0284c7;
+      color: #ffffff;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 800;
+    }
+
+    .transit-walk-info {
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .transit-time-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .transit-duration {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .transit-schedule-span {
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+    }
+
+    .transit-schedule-note {
+      font-size: 0.7rem;
+      color: var(--text-muted);
     }
 
     /* Google Maps Route Pills on Leaflet Map */
@@ -654,36 +1155,35 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 5px 12px;
+      padding: 6px 14px;
       border-radius: 999px;
-      font-size: 0.76rem;
-      font-weight: 700;
+      font-size: 0.8rem;
+      font-weight: 800;
       white-space: nowrap;
       cursor: pointer;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.12);
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.15);
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       user-select: none;
     }
 
     .map-route-pill.active {
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      background: #2563eb;
       color: #ffffff;
-      border: 1.5px solid #ffffff;
-      box-shadow: 0 6px 22px rgba(37, 99, 235, 0.65), 0 0 0 2px rgba(255, 255, 255, 0.25);
+      border: 2px solid #ffffff;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.7);
     }
 
     .map-route-pill.inactive {
-      background: #1e293b;
-      color: #cbd5e1;
-      border: 1.5px solid #64748b;
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border: 1.5px solid var(--border-color);
     }
 
     .map-route-pill.inactive:hover {
-      background: #334155;
+      background: var(--card-hover);
       border-color: #38bdf8;
-      color: #ffffff;
       transform: scale(1.08);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 12px rgba(56, 189, 248, 0.4);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
     }
 
     .route-pill-time {
@@ -691,232 +1191,347 @@
     }
 
     .route-pill-diff {
-      font-size: 0.68rem;
-      opacity: 0.9;
+      font-size: 0.7rem;
+      opacity: 0.95;
     }
 
-    /* Top Navigation Travel Modes Bar */
-    .header-travel-modes {
-      display: flex;
+    .map-route-pill.active.bike {
+      background: #0d9488;
+      box-shadow: 0 8px 24px rgba(13, 148, 136, 0.7);
+    }
+    .map-route-pill.active.train {
+      background: #7c3aed;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.7);
+    }
+    .map-route-pill.active.walk {
+      background: #0284c7;
+      box-shadow: 0 8px 24px rgba(2, 132, 199, 0.7);
+    }
+
+    .gmaps-incident-marker {
+      background: transparent !important;
+      border: none !important;
+    }
+
+    .gmaps-incident-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
       background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 3px;
-      gap: 3px;
+      color: #f87171;
+      border: 1.5px solid #ef4444;
+      font-size: 0.74rem;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+      user-select: none;
     }
 
-    .header-mode-btn {
+    /* 3 Lines Hamburger Menu Button in Header */
+    .btn-hamburger {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
       display: flex;
       align-items: center;
-      gap: 5px;
-      padding: 5px 10px;
-      border-radius: 6px;
-      background: transparent;
-      border: none;
-      color: #94a3b8;
-      font-size: 0.76rem;
-      font-weight: 600;
+      justify-content: center;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      white-space: nowrap;
+      font-size: 1.25rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .header-mode-btn:hover {
-      background: rgba(51, 65, 85, 0.6);
-      color: #f8fafc;
+    .btn-hamburger:hover {
+      background: var(--card-hover);
+      border-color: var(--border-light);
+      transform: scale(1.06);
     }
 
-    .header-mode-btn.active {
-      background: #2563eb;
-      color: #ffffff;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
-    }
-
-    .header-mode-btn.active[data-mode="bike"] {
-      background: #0d9488;
-      box-shadow: 0 2px 8px rgba(13, 148, 136, 0.4);
-    }
-    .header-mode-btn.active[data-mode="train"] {
-      background: #7c3aed;
-      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
-    }
-    .header-mode-btn.active[data-mode="walk"] {
-      background: #0284c7;
-      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
-    }
-
-    @media (max-width: 820px) {
-      .header-mode-btn .mode-text {
-        display: none;
-      }
-      .header-travel-modes {
-        padding: 2px;
-        gap: 2px;
-      }
-      .header-mode-btn {
-        padding: 5px 8px;
-      }
-    }
-
-    .nav-quick-actions {
+    /* Google Maps Side Drawer (Squad, History & Settings) */
+    .gmaps-side-drawer {
+      position: fixed;
+      top: 0;
+      right: -420px;
+      width: min(390px, 92vw);
+      height: 100vh;
+      height: 100dvh;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border-color);
+      box-shadow: -12px 0 40px rgba(0, 0, 0, 0.6);
+      z-index: 3500;
       display: flex;
-      gap: 8px;
-      margin-top: 4px;
+      flex-direction: column;
+      transition: right 0.32s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .nav-btn {
+    .gmaps-side-drawer.open {
+      right: 0;
+    }
+
+    .gmaps-drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 3400;
+      display: none;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .gmaps-drawer-backdrop.open {
+      display: block;
+    }
+
+    .gmaps-drawer-header {
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .drawer-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-primary);
+    }
+
+    .gmaps-drawer-content {
       flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .drawer-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .drawer-section-title {
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .drawer-squad-meta {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .drawer-members-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .drawer-member-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.8rem;
+    }
+
+    .drawer-actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .drawer-actions-grid button {
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 6px 10px;
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 6px;
-      font-size: 0.74rem;
-      color: #cbd5e1;
-      cursor: pointer;
-      transition: all 0.2s ease;
     }
 
-    .nav-btn:hover {
-      background: #334155;
-      color: #fff;
-    }
-
-    .nav-btn.active {
-      background: rgba(245, 158, 11, 0.2);
-      border-color: #f59e0b;
-      color: #fbbf24;
-    }
-
-    .nav-badge {
-      background: #334155;
-      color: #e2e8f0;
-      padding: 1px 6px;
-      border-radius: 999px;
-      font-size: 0.68rem;
-    }
-
-    .nav-btn.active .nav-badge {
-      background: #f59e0b;
-      color: #000;
-      font-weight: 700;
-    }
-
-    /* Google Maps Tab Switcher */
-    .nav-tabs {
-      display: flex;
-      background: #0f172a;
-      border-radius: 8px;
-      padding: 3px;
-      gap: 4px;
-      border: 1px solid #334155;
-    }
-
-    .nav-tab-btn {
-      flex: 1;
-      padding: 5px 6px;
-      font-size: 0.74rem;
-      font-weight: 600;
-      color: #94a3b8;
+    .drawer-clear-btn {
       background: transparent;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      transition: all 0.2s ease;
-    }
-
-    .nav-tab-btn:hover {
-      color: #f8fafc;
-      background: rgba(51, 65, 85, 0.5);
-    }
-
-    .nav-tab-btn.active {
-      background: #2563eb;
-      color: #ffffff;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
-    }
-
-    .nav-tab-badge {
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      padding: 0 5px;
-      border-radius: 999px;
-      font-size: 0.65rem;
-    }
-
-    .nav-tab-minimize-btn {
-      width: 28px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(51, 65, 85, 0.5);
-      border: 1px solid rgba(100, 116, 139, 0.4);
-      color: #94a3b8;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.82rem;
-      transition: all 0.2s ease;
-      flex-shrink: 0;
-    }
-
-    .nav-tab-minimize-btn:hover {
-      background: rgba(239, 68, 68, 0.2);
-      border-color: rgba(239, 68, 68, 0.4);
-      color: #fca5a5;
-      transform: scale(1.05);
-    }
-
-    /* Miniature Floating Icon/Pill when Overview HUD is collapsed */
-    .nav-hud-mini-btn {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      background: rgba(15, 23, 42, 0.94);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1.5px solid #3b82f6;
-      border-radius: 999px;
-      color: #f8fafc;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6), 0 0 16px rgba(59, 130, 246, 0.35);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      animation: miniPulse 3s infinite ease-in-out;
-    }
-
-    @keyframes miniPulse {
-      0%, 100% { box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6), 0 0 14px rgba(59, 130, 246, 0.3); }
-      50% { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), 0 0 24px rgba(59, 130, 246, 0.6); }
-    }
-
-    .nav-hud-mini-btn:hover {
-      background: #1e293b;
-      border-color: #60a5fa;
-      transform: scale(1.05);
-    }
-
-    .nav-hud-mini-btn .mini-eta {
-      color: #22c55e;
-      background: rgba(34, 197, 94, 0.15);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      padding: 2px 8px;
-      border-radius: 999px;
+      color: #ef4444;
       font-size: 0.74rem;
       font-weight: 700;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .drawer-clear-btn:hover {
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    .drawer-history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .drawer-history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .drawer-history-item:hover {
+      background: var(--card-hover);
+      border-color: var(--accent-cyan);
+    }
+
+    .drawer-settings-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+    }
+
+    .drawer-settings-row:hover {
+      background: var(--card-hover);
+      border-color: var(--border-light);
+    }
+
+    /* Google Maps Road Closure Incident Banner (Matching Image 1) */
+    .gmaps-closure-banner {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(500px, 92vw);
+      background: #000000;
+      color: #ffffff;
+      border-radius: 999px;
+      padding: 6px 8px 6px 14px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      z-index: 1550;
+      animation: navDockSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .gmaps-closure-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .gmaps-closure-icon {
+      width: 24px;
+      height: 24px;
+      background: #ef4444;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .gmaps-closure-dismiss {
+      background: #67e8f9;
+      color: #0f172a;
+      border: none;
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .gmaps-closure-dismiss:hover {
+      background: #22d3ee;
+      transform: scale(1.04);
+    }
+
+    /* Google Maps Floating Vertical Right Action Stack (Image 1) */
+    .gmaps-nav-right-controls {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 1100;
+    }
+
+    .gmaps-circle-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #000000;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .gmaps-circle-btn:hover {
+      transform: scale(1.1);
+      background: #1e293b;
+      border-color: #38bdf8;
+    }
+
+    .compass-needle-n {
+      color: #ef4444;
+      font-weight: 900;
+      font-size: 0.9rem;
+      position: relative;
     }
 
     .nav-hud-mini-btn .mini-expand {
@@ -1516,22 +2131,22 @@
       100% { transform: scale(1.8); opacity: 0; }
     }
 
-    /* Google Maps Turn-by-Turn Driving Navigation Header Banner */
+    /* Google Maps Turn-by-Turn Driving Navigation Header Banner (Image 1) */
     .nav-driving-banner {
       position: absolute;
       top: 14px;
       left: 50%;
       transform: translateX(-50%);
       width: min(520px, 92vw);
-      background: #0f9d58;
+      background: var(--nav-green);
       color: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.15);
       z-index: 1500;
-      padding: 12px 16px;
+      padding: 14px 18px;
       display: none;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
       animation: navBannerSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -1543,20 +2158,21 @@
     .driving-banner-main {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
     }
 
     .driving-maneuver-icon {
-      width: 44px;
-      height: 44px;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
+      width: 48px;
+      height: 48px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
+      font-size: 2rem;
       font-weight: 800;
       flex-shrink: 0;
+      color: #ffffff;
     }
 
     .driving-maneuver-text {
@@ -1565,30 +2181,35 @@
     }
 
     .driving-maneuver-dist {
-      font-size: 1.35rem;
+      font-size: 1.15rem;
       font-weight: 800;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.3px;
       line-height: 1.1;
+      opacity: 0.95;
     }
 
     .driving-maneuver-road {
-      font-size: 0.88rem;
-      font-weight: 600;
-      opacity: 0.95;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #ffffff;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       margin-top: 2px;
+      letter-spacing: -0.3px;
     }
 
     .driving-banner-sub {
-      font-size: 0.76rem;
-      background: rgba(0, 0, 0, 0.15);
-      padding: 4px 8px;
-      border-radius: 6px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #ffffff;
+      width: fit-content;
     }
 
     /* Google Maps Turn-by-Turn Driving Bottom Dock */
@@ -1598,12 +2219,12 @@
       left: 50%;
       transform: translateX(-50%);
       width: min(520px, 92vw);
-      background: rgba(15, 23, 42, 0.96);
+      background: var(--bg-surface-translucent);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(51, 65, 85, 0.9);
+      border: 1px solid var(--border-color);
       border-radius: 16px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+      box-shadow: var(--shadow-lg);
       z-index: 1500;
       padding: 10px 16px;
       display: none;
@@ -2191,45 +2812,20 @@
   <!-- Top Navigation Bar -->
   <header>
     <div class="brand">
-      <span>🚗 SquadNav</span>
-      <span id="destination-label" style="font-size: 0.75rem; color: #94a3b8;">Destination: Not Selected</span>
-    </div>
-
-    <!-- Search Input with Live Suggestions -->
-    <div class="search-box">
-      <input type="text" id="destination-search" placeholder="Search destination..." autocomplete="off" oninput="handleSearchInput(event)" onkeydown="handleSearchKey(event)">
-      <button id="search-clear-btn" class="search-clear-btn" onclick="clearSearchInput()" style="display:none;" title="Clear search">✕</button>
-      <button class="primary" onclick="searchDestination()">Search</button>
-      <div id="search-results" class="search-results"></div>
-    </div>
-
-    <!-- Google Maps Vehicle Modes Switcher -->
-    <div class="header-travel-modes" id="header-travel-modes">
-      <button class="header-mode-btn active" data-mode="car" onclick="setTravelMode('car')" title="Car / Driving Route">
-        <span>🚗</span> <span class="mode-text">Drive</span>
-      </button>
-      <button class="header-mode-btn" data-mode="bike" onclick="setTravelMode('bike')" title="Two-Wheeler / Bike Route">
-        <span>🏍️</span> <span class="mode-text">Bike</span>
-      </button>
-      <button class="header-mode-btn" data-mode="train" onclick="setTravelMode('train')" title="Transit / Train / Metro Route">
-        <span>🚆</span> <span class="mode-text">Transit</span>
-      </button>
-      <button class="header-mode-btn" data-mode="walk" onclick="setTravelMode('walk')" title="Walking / Pedestrian Route">
-        <span>🚶</span> <span class="mode-text">Walk</span>
-      </button>
+      <span style="font-size: 1.25rem;">🚗</span>
+      <span style="font-weight: 800; letter-spacing: -0.3px;">SquadNav</span>
+      <span id="destination-label" style="font-size: 0.75rem; color: var(--text-secondary); margin-left: 8px;">Explore & Navigate</span>
     </div>
 
     <div class="header-actions">
-      <button id="btn-header-squad" onclick="handleSquadHeaderClick()" style="display: flex; align-items: center; gap: 5px; background: #2563eb; font-weight: 600;">
-        <span id="header-squad-icon">👑</span> <span id="header-squad-text">Create Squad</span>
+      <!-- Light / Dark Mode Toggle Button -->
+      <button id="btn-theme-toggle" class="btn-theme-toggle" onclick="toggleTheme()" title="Switch between Light and Dark mode">
+        <span id="theme-toggle-icon">☀️</span>
       </button>
-      <div class="ai-pill" onclick="openKeyModal()" title="Cloud, Google Maps & AI Settings">
-        <span class="ai-dot"></span>
-        <span class="header-settings-text">Settings</span>
-        <span style="font-size: 0.7rem; opacity: 0.75;">⚙️</span>
-      </div>
-      <button id="btn-toggle-chat" onclick="toggleChat()" style="display: flex; align-items: center; gap: 5px;">
-        <span>💬</span> <span class="header-chat-text">Chat</span>
+
+      <!-- 3 Lines Hamburger Menu Button (Opens Google Maps Drawer for Squad, History & Settings) -->
+      <button id="btn-hamburger-menu" class="btn-hamburger" onclick="toggleMainMenu(true)" title="Menu (Squad, History, Settings)">
+        <span style="font-size: 1.2rem; line-height: 1;">☰</span>
       </button>
     </div>
   </header>
@@ -2262,22 +2858,47 @@
       </button>
     </div>
 
+    <!-- Google Maps Floating Right Action Stack (Image 1) -->
+    <div class="gmaps-nav-right-controls" id="gmaps-nav-right-controls">
+      <button class="gmaps-circle-btn" onclick="resetCompassNorth()" title="Reorient to North">
+        <span class="compass-needle-n">▲</span>
+      </button>
+      <button class="gmaps-circle-btn" onclick="focusDestinationSearch()" title="Search along route">
+        <span>🔍</span>
+      </button>
+      <button class="gmaps-circle-btn" id="btn-toggle-voice" onclick="toggleAudioMute()" title="Mute/Unmute audio guidance">
+        <span id="voice-mute-icon">🔊</span>
+      </button>
+      <button class="gmaps-circle-btn" onclick="toggleAlternateRouteSplit()" title="Show alternate routes">
+        <span>🔀</span>
+      </button>
+    </div>
+
+    <!-- Google Maps Road Closure Incident Banner (Image 1) -->
+    <div class="gmaps-closure-banner" id="gmaps-closure-banner">
+      <div class="gmaps-closure-info">
+        <span class="gmaps-closure-icon">⛔</span>
+        <span>Avoiding road closures</span>
+      </div>
+      <button class="gmaps-closure-dismiss" onclick="dismissClosureAlert()">✕ Dismiss</button>
+    </div>
+
     <!-- Floating Google Maps GPS Location Button -->
     <button id="btn-gps-locate" class="btn-gps-locate" onclick="toggleGPSLocation()" title="Track My Location with Live GPS">
       <span class="gps-crosshair-icon">⌖</span>
     </button>
 
-    <!-- Google Maps Turn-by-Turn Driving Navigation Header Banner -->
+    <!-- Google Maps Turn-by-Turn Driving Navigation Header Banner (Image 1) -->
     <div class="nav-driving-banner" id="nav-driving-banner">
       <div class="driving-banner-main">
-        <div class="driving-maneuver-icon" id="driving-step-icon">↱</div>
+        <div class="driving-maneuver-icon" id="driving-step-icon">⬆</div>
         <div class="driving-maneuver-text">
+          <div class="driving-maneuver-road" id="driving-step-road">Head south</div>
           <div class="driving-maneuver-dist" id="driving-step-dist">In 200 m</div>
-          <div class="driving-maneuver-road" id="driving-step-road">Turn right onto NH 163</div>
         </div>
       </div>
       <div class="driving-banner-sub" id="driving-step-next">
-        <span style="opacity: 0.7;">Then:</span> <span id="driving-step-next-text">Continue straight</span>
+        <span style="opacity: 0.85;">Then</span> <span id="driving-step-next-text">↱ Turn right</span>
       </div>
     </div>
 
@@ -2309,110 +2930,259 @@
       <span class="mini-expand">⤢</span>
     </button>
 
-    <!-- Google Maps-Style Navigation HUD -->
-    <div class="nav-hud" id="nav-hud">
-      <!-- Navigation Tabs (Overview / Stops / Steps) -->
-      <div class="nav-tabs">
-        <button class="nav-tab-btn active" id="tab-btn-overview" onclick="switchNavTab('overview')">🗺️ Overview</button>
-        <button class="nav-tab-btn" id="tab-btn-stops" onclick="switchNavTab('stops')">📍 Stops <span class="nav-tab-badge" id="stops-count-badge">0</span></button>
-        <button class="nav-tab-btn" id="tab-btn-steps" onclick="switchNavTab('steps')">🧭 Steps</button>
-        <button class="nav-tab-minimize-btn" id="btn-minimize-hud" onclick="toggleNavHud(false)" title="Minimize Overview to small icon">🗕</button>
-      </div>
-
-      <!-- Google Maps Travel Mode Switcher (Car, Bike, Train, Walk) -->
-      <div class="travel-mode-bar" id="travel-mode-bar">
-        <button class="mode-pill active" id="mode-btn-car" data-mode="car" onclick="setTravelMode('car')" title="Car / Driving Route">
-          <span class="mode-icon">🚗</span>
-          <span class="mode-label">Car</span>
-        </button>
-        <button class="mode-pill" id="mode-btn-bike" data-mode="bike" onclick="setTravelMode('bike')" title="Two-Wheeler / Bike Route">
-          <span class="mode-icon">🏍️</span>
-          <span class="mode-label">Bike</span>
-        </button>
-        <button class="mode-pill" id="mode-btn-train" data-mode="train" onclick="setTravelMode('train')" title="Transit / Train / Metro Route">
-          <span class="mode-icon">🚆</span>
-          <span class="mode-label">Train</span>
-        </button>
-        <button class="mode-pill" id="mode-btn-walk" data-mode="walk" onclick="setTravelMode('walk')" title="Walking / Pedestrian Route">
-          <span class="mode-icon">🚶</span>
-          <span class="mode-label">Walk</span>
-        </button>
-      </div>
-
-      <!-- Tab 1: Overview Panel -->
-      <div class="nav-tab-panel active" id="tab-panel-overview">
-        <div class="nav-eta-row">
-          <div class="nav-eta" id="nav-eta">-- min</div>
-          <div class="nav-status-badge" id="nav-status-badge">Fastest route</div>
+    <!-- Google Maps Left-Side Navigation & Directions Card (Images 1-4) -->
+    <div class="gmaps-left-nav" id="gmaps-left-nav">
+      <!-- Origin & Destination Search Card -->
+      <div class="gmaps-origin-dest-card">
+        <div class="gmaps-points-col">
+          <span class="gmaps-point-dot" title="Starting Point"></span>
+          <span class="gmaps-point-line"></span>
+          <span class="gmaps-point-pin" title="Destination"></span>
         </div>
-        <div class="nav-distance-row">
-          <span id="nav-distance">-- km</span>
-          <span style="opacity: 0.5;">•</span>
-          <span id="nav-arrival">Arrive --:--</span>
-        </div>
-        <div class="nav-via-road" id="nav-via-road">via Highway</div>
-        
-        <!-- Convoy Progress bar (during movement) -->
-        <div class="nav-progress-bar" id="nav-progress-bar">
-          <div class="nav-progress-fill" id="nav-progress-fill"></div>
-        </div>
-
-        <!-- Route Choices (Primary & Alternate) -->
-        <div class="nav-routes-container" id="nav-routes-container"></div>
-
-        <!-- Quick Summary Action -->
-        <div class="nav-quick-actions">
-          <button class="nav-btn start-nav-btn" onclick="startNavigation()" title="Start Turn-by-Turn Navigation with Camera Zoom">
-            <span>▶ Start</span>
-          </button>
-          <button class="nav-btn" onclick="switchNavTab('stops')">
-            <span>➕ Add Stop</span>
-          </button>
-          <button class="nav-btn" onclick="switchNavTab('steps')">
-            <span>📋 Steps</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Tab 2: Stops / Itinerary Panel -->
-      <div class="nav-tab-panel" id="tab-panel-stops">
-        <div style="font-size: 0.74rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">
-          Convoy Itinerary & Stops
-        </div>
-        <div class="itinerary-container" id="itinerary-container">
-          <!-- Populated dynamically -->
-        </div>
-
-        <!-- Add Stop Search & Tools -->
-        <div class="add-stop-panel">
-          <div class="add-stop-input-row">
-            <input type="text" id="stop-search-input" placeholder="Search town, dhaba, pump to add stop..." onkeyup="handleStopSearchKey(event)">
-            <button class="primary" onclick="searchNewStop()">Find</button>
+        <div class="gmaps-inputs-col">
+          <div class="gmaps-input-wrap">
+            <input type="text" id="route-origin-input" value="Your location" placeholder="Starting point..." readonly>
           </div>
-          <div class="stop-search-dropdown" id="stop-search-dropdown"></div>
+          <div class="gmaps-input-wrap">
+            <input type="text" id="destination-search" placeholder="Search destination..." autocomplete="off" oninput="handleSearchInput(event)" onfocus="handleSearchFocus()" onkeydown="handleSearchKey(event)">
+            <button id="search-clear-btn" class="search-clear-btn" onclick="clearSearchInput()" style="display:none;" title="Clear search">✕</button>
+          </div>
+          <!-- Live Search Suggestions & Recent Searches Dropdown -->
+          <div id="search-results" class="search-results"></div>
+        </div>
+        <div class="gmaps-card-actions-col">
+          <button class="gmaps-icon-btn" onclick="swapOriginDestination()" title="Swap starting point and destination">⇅</button>
+          <button class="gmaps-icon-btn" onclick="openKeyModal()" title="Settings">⋮</button>
+        </div>
+      </div>
 
-          <div style="display: flex; gap: 6px; margin-top: 4px;">
-            <button class="nav-btn" id="btn-pick-map" onclick="togglePickOnMap()" style="flex: 1; font-size: 0.72rem;">
-              <span>📍 Click on Map to Add</span>
-            </button>
-            <button class="nav-btn" onclick="clearAllStops()" style="font-size: 0.72rem; color: #f87171;">
-              <span>🗑️ Clear</span>
-            </button>
+      <!-- Travel Mode Selector Tabs (Drive, Two-wheeler, Public transport, Walk) -->
+      <div class="gmaps-mode-tabs" id="gmaps-mode-tabs">
+        <button class="gmaps-mode-tab active" id="mode-tab-car" onclick="setTravelMode('car')" data-mode="car" title="Drive (Car)">
+          <span class="gmaps-mode-icon">🚗</span>
+          <span class="gmaps-mode-time" id="mode-time-car">-- min</span>
+        </button>
+        <button class="gmaps-mode-tab" id="mode-tab-bike" onclick="setTravelMode('bike')" data-mode="bike" title="Two-wheeler (Bike)">
+          <span class="gmaps-mode-icon">🏍️</span>
+          <span class="gmaps-mode-time" id="mode-time-bike">-- min</span>
+        </button>
+        <button class="gmaps-mode-tab" id="mode-tab-train" onclick="setTravelMode('train')" data-mode="train" title="Public transport (Transit)">
+          <span class="gmaps-mode-icon">🚆</span>
+          <span class="gmaps-mode-time" id="mode-time-train">-- min</span>
+        </button>
+        <button class="gmaps-mode-tab" id="mode-tab-walk" onclick="setTravelMode('walk')" data-mode="walk" title="Walk (Pedestrian)">
+          <span class="gmaps-mode-icon">🚶</span>
+          <span class="gmaps-mode-time" id="mode-time-walk">-- min</span>
+        </button>
+      </div>
+
+      <!-- Mode Details Scrollable Panel -->
+      <div class="gmaps-panel-body" id="gmaps-panel-body">
+        <!-- Panel Header -->
+        <div class="gmaps-panel-header">
+          <h3 id="gmaps-mode-title">Drive</h3>
+          <div class="gmaps-panel-actions">
+            <button class="gmaps-icon-btn" onclick="switchNavTab('stops')" title="Stops & Itinerary">📍</button>
+            <button class="gmaps-icon-btn" onclick="switchNavTab('steps')" title="Turn-by-turn steps">🧭</button>
+            <button class="gmaps-icon-btn" onclick="openShareSquadModal()" title="Share route">🔗</button>
+            <button class="gmaps-icon-btn" onclick="closeRoutePanel()" title="Close route">✕</button>
           </div>
         </div>
-      </div>
 
-      <!-- Tab 3: Turn-by-Turn Steps Panel -->
-      <div class="nav-tab-panel" id="tab-panel-steps">
-        <div style="font-size: 0.74rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center;">
-          <span>Turn-by-Turn Maneuvers</span>
-          <span id="steps-total-dist" style="color: #4ade80; font-weight: 700;">-- km</span>
+        <!-- Mode View 1: Drive (Car) -->
+        <div class="gmaps-mode-content active" id="mode-view-car">
+          <div class="gmaps-eta-row">
+            <span class="gmaps-eta-val" id="car-eta-val">1 hr 7 min</span>
+            <span class="gmaps-dist-val" id="car-dist-val">(75 km)</span>
+          </div>
+          <div class="gmaps-status-sub" id="car-status-sub">Fastest route now due to traffic conditions</div>
+          <div class="gmaps-badges-row" id="car-badges-row">
+            <span class="gmaps-toll-badge" id="car-toll-badge">🏷️ ₹160.00</span>
+            <span>•</span>
+            <span class="gmaps-eco-badge" id="car-eco-badge">🍃 Saves 4% petrol</span>
+          </div>
+          <div class="gmaps-action-pills">
+            <button class="gmaps-pill-btn start" onclick="startNavigation()"><span>▲</span> Start</button>
+            <button class="gmaps-pill-btn" onclick="switchNavTab('stops')"><span>➕</span> Add stops</button>
+            <button class="gmaps-pill-btn" onclick="openShareSquadModal()"><span>🔗</span> Share</button>
+            <button class="gmaps-pill-btn" onclick="saveTripToHistory()"><span>🔖</span> Save</button>
+          </div>
+          <div class="gmaps-route-choices" id="car-routes-container"></div>
         </div>
-        <div class="steps-container" id="steps-container">
-          <div style="font-size: 0.75rem; color: #94a3b8; text-align: center; padding: 16px;">Pick a destination to load driving maneuvers.</div>
+
+        <!-- Mode View 2: Two-wheeler (Bike) -->
+        <div class="gmaps-mode-content" id="mode-view-bike">
+          <div class="gmaps-eta-row">
+            <span class="gmaps-eta-val warn" id="bike-eta-val">1 hr 55 min</span>
+            <span class="gmaps-dist-val" id="bike-dist-val">(47 km)</span>
+          </div>
+          <div class="gmaps-status-sub" id="bike-status-sub">Best route now, avoids road closure on NH 44</div>
+          <div class="gmaps-badges-row" id="bike-badges-row">
+            <span class="gmaps-eco-badge" id="bike-eco-badge">🍃 Saves 18% fuel</span>
+          </div>
+          <div class="gmaps-action-pills">
+            <button class="gmaps-pill-btn start" onclick="startNavigation()"><span>▲</span> Start</button>
+            <button class="gmaps-pill-btn" onclick="switchNavTab('stops')"><span>➕</span> Add stops</button>
+            <button class="gmaps-pill-btn" onclick="openShareSquadModal()"><span>🔗</span> Share</button>
+            <button class="gmaps-pill-btn" onclick="saveTripToHistory()"><span>🔖</span> Save</button>
+          </div>
+          <div class="gmaps-route-choices" id="bike-routes-container"></div>
+        </div>
+
+        <!-- Mode View 3: Public transport (Transit) -->
+        <div class="gmaps-mode-content" id="mode-view-train">
+          <div class="gmaps-transit-filters">
+            <button class="gmaps-filter-chip">🔄</button>
+            <button class="gmaps-filter-chip">Leave 7:50 pm ▼</button>
+            <button class="gmaps-filter-chip">Modes ▼</button>
+            <button class="gmaps-filter-chip">Filter by ▼</button>
+          </div>
+          <div class="gmaps-transit-list" id="transit-itineraries-list">
+            <!-- Populated dynamically with itineraries from Image 2 -->
+          </div>
+        </div>
+
+        <!-- Mode View 4: Walk -->
+        <div class="gmaps-mode-content" id="mode-view-walk">
+          <div class="gmaps-eta-row">
+            <span class="gmaps-eta-val" id="walk-eta-val">10 hr 49 min</span>
+            <span class="gmaps-dist-val" id="walk-dist-val">(47 km)</span>
+            <span class="gmaps-elev-val">↑ 159 m ↓ 151 m</span>
+          </div>
+          <div class="gmaps-status-sub" id="walk-status-sub">via NH 44</div>
+          <div class="gmaps-action-pills">
+            <button class="gmaps-pill-btn start" onclick="startNavigation()"><span>▲</span> Start</button>
+            <button class="gmaps-pill-btn" onclick="switchNavTab('stops')"><span>➕</span> Add stops</button>
+            <button class="gmaps-pill-btn" onclick="openShareSquadModal()"><span>🔗</span> Share</button>
+          </div>
+          <div class="gmaps-route-choices" id="walk-routes-container"></div>
+        </div>
+
+        <!-- Intermediate Stops / Itinerary Subpanel -->
+        <div class="gmaps-mode-content" id="panel-view-stops" style="display: none;">
+          <div style="font-size: 0.76rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase;">
+            Convoy Itinerary & Stops
+          </div>
+          <div class="itinerary-container" id="itinerary-container"></div>
+          <div class="add-stop-panel">
+            <div class="add-stop-input-row">
+              <input type="text" id="stop-search-input" placeholder="Search town, dhaba, pump to add stop..." onkeyup="handleStopSearchKey(event)">
+              <button class="primary" onclick="searchNewStop()">Find</button>
+            </div>
+            <div class="stop-search-dropdown" id="stop-search-dropdown"></div>
+            <div style="display: flex; gap: 6px; margin-top: 4px;">
+              <button class="nav-btn" id="btn-pick-map" onclick="togglePickOnMap()" style="flex: 1; font-size: 0.72rem;">
+                <span>📍 Click Map to Add</span>
+              </button>
+              <button class="nav-btn" onclick="clearAllStops()" style="font-size: 0.72rem; color: #f87171;">
+                <span>🗑️ Clear</span>
+              </button>
+            </div>
+          </div>
+          <button class="gmaps-pill-btn" onclick="switchNavTab('overview')" style="margin-top: 6px;">
+            <span>◀ Back to Route</span>
+          </button>
+        </div>
+
+        <!-- Turn-by-Turn Steps Subpanel -->
+        <div class="gmaps-mode-content" id="panel-view-steps" style="display: none;">
+          <div style="font-size: 0.76rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; display: flex; justify-content: space-between;">
+            <span>Turn-by-Turn Steps</span>
+            <span id="steps-total-dist" style="color: var(--accent-green);">-- km</span>
+          </div>
+          <div class="steps-container" id="steps-container">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; padding: 16px;">Pick a destination to load maneuvers.</div>
+          </div>
+          <button class="gmaps-pill-btn" onclick="switchNavTab('overview')" style="margin-top: 6px;">
+            <span>◀ Back to Route</span>
+          </button>
         </div>
       </div>
     </div>
+
+    <!-- Google Maps Side Drawer Backdrop -->
+    <div class="gmaps-drawer-backdrop" id="gmaps-drawer-backdrop" onclick="toggleMainMenu(false)"></div>
+
+    <!-- Google Maps Side Drawer (Squad Convoy, Trip History & Settings) -->
+    <aside class="gmaps-side-drawer" id="gmaps-side-drawer">
+      <div class="gmaps-drawer-header">
+        <div class="drawer-title">
+          <span style="font-size: 1.25rem;">🚗</span>
+          <span style="font-weight: 800; font-size: 1.1rem; color: var(--text-primary);">SquadNav</span>
+        </div>
+        <button class="gmaps-icon-btn" onclick="toggleMainMenu(false)" title="Close menu">✕</button>
+      </div>
+
+      <div class="gmaps-drawer-content">
+        <!-- Section 1: Squad Convoy -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>👥</span> Squad Convoy
+            <span id="drawer-convoy-badge" class="convoy-badge leader">🟢 In Sync</span>
+          </div>
+          <div class="drawer-squad-meta">
+            <div style="font-size: 0.8rem; color: var(--text-secondary); display: flex; justify-content: space-between;">
+              <span>Active Members: <b id="drawer-member-count" style="color: var(--accent-green);">1</b></span>
+              <span id="drawer-arrival-counter" style="color: var(--accent-cyan); font-weight: 600;">0/1 Arrived</span>
+            </div>
+            <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">
+              Squad Code: <code id="drawer-squad-code" style="color: var(--accent-cyan); font-weight: 700;">DEFAULT</code>
+            </div>
+          </div>
+          <div class="drawer-members-list" id="drawer-members-list">
+            <!-- Populated dynamically with active squad members -->
+          </div>
+          <div class="drawer-actions-grid">
+            <button class="primary" onclick="handleSquadHeaderClick(); toggleMainMenu(false);">
+              <span id="drawer-squad-btn-icon">👑</span> <span id="drawer-squad-btn-text">Create Squad</span>
+            </button>
+            <button onclick="openShareSquadModal(); toggleMainMenu(false);">
+              <span>🔗</span> Share Invite
+            </button>
+            <button onclick="proposeMeetHerePrompt(); toggleMainMenu(false);">
+              <span>📍</span> Meet Here
+            </button>
+            <button onclick="toggleChat(true); toggleMainMenu(false);">
+              <span>💬</span> Convoy Chat
+            </button>
+          </div>
+        </div>
+
+        <!-- Section 2: Trip History -->
+        <div class="drawer-section">
+          <div class="drawer-section-title" style="justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 6px;">
+              <span>📜</span> Trip History
+            </span>
+            <button class="drawer-clear-btn" onclick="clearTripHistory()">Clear All</button>
+          </div>
+          <div class="drawer-history-list" id="drawer-history-list">
+            <div style="font-size: 0.76rem; color: var(--text-muted); text-align: center; padding: 12px;">
+              No past trips recorded yet.
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Theme & Settings -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>⚙️</span> Preferences & Controls
+          </div>
+          <div class="drawer-settings-row" onclick="toggleTheme()">
+            <span>🎨 Display Theme</span>
+            <span id="drawer-theme-label" style="font-size: 0.8rem; font-weight: 600; color: var(--accent-cyan);">Dark Mode 🌙</span>
+          </div>
+          <div class="drawer-settings-row" onclick="toggleAudioMute()">
+            <span>🔊 Voice Guidance</span>
+            <span id="drawer-voice-label" style="font-size: 0.8rem; font-weight: 600; color: var(--accent-green);">Enabled</span>
+          </div>
+          <div class="drawer-settings-row" onclick="openKeyModal(); toggleMainMenu(false);">
+            <span>🔑 Cloud & AI Settings</span>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Configure ➔</span>
+          </div>
+        </div>
+      </div>
+    </aside>
 
     <!-- Group Chat Sidebar (Disappeared / Hidden by default) -->
     <div class="chat-drawer" id="chat-drawer" style="display: none;">
@@ -3156,8 +3926,53 @@
       });
     }
 
-    // Tab Switcher for Navigation HUD
+    // Tab Switcher for Navigation HUD & Google Maps Left Panel
     function switchNavTab(tabName) {
+      const modeViews = ['car', 'bike', 'train', 'walk'];
+      const stopsView = document.getElementById('panel-view-stops');
+      const stepsView = document.getElementById('panel-view-steps');
+      const titleEl = document.getElementById('gmaps-mode-title');
+
+      const modeTitles = {
+        car: 'Drive',
+        bike: 'Two-wheeler',
+        train: 'Public transport',
+        walk: 'Walk'
+      };
+
+      if (tabName === 'stops') {
+        modeViews.forEach(m => {
+          const v = document.getElementById(`mode-view-${m}`);
+          if (v) v.style.display = 'none';
+        });
+        if (stepsView) stepsView.style.display = 'none';
+        if (stopsView) stopsView.style.display = 'block';
+        if (titleEl) titleEl.textContent = 'Convoy Stops & Itinerary';
+        renderStopsList();
+      } else if (tabName === 'steps') {
+        modeViews.forEach(m => {
+          const v = document.getElementById(`mode-view-${m}`);
+          if (v) v.style.display = 'none';
+        });
+        if (stopsView) stopsView.style.display = 'none';
+        if (stepsView) stepsView.style.display = 'block';
+        if (titleEl) titleEl.textContent = 'Turn-by-Turn Steps';
+        renderTurnByTurnSteps();
+      } else {
+        // Overview mode: restore active travel mode view
+        if (stopsView) stopsView.style.display = 'none';
+        if (stepsView) stepsView.style.display = 'none';
+        modeViews.forEach(m => {
+          const v = document.getElementById(`mode-view-${m}`);
+          if (v) {
+            v.style.display = m === currentTravelMode ? 'block' : 'none';
+            v.classList.toggle('active', m === currentTravelMode);
+          }
+        });
+        if (titleEl) titleEl.textContent = modeTitles[currentTravelMode] || 'Drive';
+      }
+
+      // Legacy HUD tabs support
       ['overview', 'stops', 'steps'].forEach(t => {
         const btn = document.getElementById(`tab-btn-${t}`);
         const panel = document.getElementById(`tab-panel-${t}`);
@@ -3355,8 +4170,209 @@
     }
 
     // ============================================================
-    // 2. Global Destination Search & Live Autocomplete
+    // 1.5 Light and Dark Mode Engine
     // ============================================================
+    let currentTheme = localStorage.getItem('squadnav_theme') || 'dark';
+
+    function applyTheme(theme) {
+      currentTheme = theme;
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('squadnav_theme', theme);
+
+      const iconEl = document.getElementById('theme-toggle-icon');
+      if (iconEl) {
+        iconEl.textContent = theme === 'light' ? '🌙' : '☀️';
+      }
+
+      const btnEl = document.getElementById('btn-theme-toggle');
+      if (btnEl) {
+        btnEl.title = theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+      }
+
+      const drawerThemeLabel = document.getElementById('drawer-theme-label');
+      if (drawerThemeLabel) {
+        drawerThemeLabel.textContent = theme === 'light' ? 'Light Mode ☀️' : 'Dark Mode 🌙';
+      }
+
+      // Dynamically switch Leaflet map tiles
+      if (window.map) {
+        if (theme === 'light') {
+          if (window.map.hasLayer(satellite)) window.map.removeLayer(satellite);
+          if (!window.map.hasLayer(osmStreets)) window.map.addLayer(osmStreets);
+        } else {
+          if (window.map.hasLayer(osmStreets)) window.map.removeLayer(osmStreets);
+          if (!window.map.hasLayer(satellite)) window.map.addLayer(satellite);
+        }
+      }
+    }
+
+    function toggleTheme() {
+      const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+      applyTheme(nextTheme);
+      addChatMessage('🎨 Theme Updated', `Switched to **${nextTheme === 'light' ? 'Light Mode ☀️' : 'Dark Mode 🌙'}**.`, '#38bdf8', true);
+    }
+
+    // Google Maps Image 1 Control Functions
+    function resetCompassNorth() {
+      if (window.map) {
+        window.map.setView(window.map.getCenter(), window.map.getZoom(), { animate: true });
+        addChatMessage('🧭 Compass', 'Map re-centered and oriented to True North (0°).', '#38bdf8', true);
+      }
+    }
+
+    function focusDestinationSearch() {
+      const input = document.getElementById('destination-search');
+      if (input) {
+        input.focus();
+        handleSearchFocus();
+      }
+    }
+
+    let isAudioMuted = false;
+    function toggleAudioMute() {
+      isAudioMuted = !isAudioMuted;
+      const icon = document.getElementById('voice-mute-icon');
+      if (icon) icon.textContent = isAudioMuted ? '🔇' : '🔊';
+
+      const drawerVoiceLabel = document.getElementById('drawer-voice-label');
+      if (drawerVoiceLabel) {
+        drawerVoiceLabel.textContent = isAudioMuted ? 'Muted' : 'Enabled';
+        drawerVoiceLabel.style.color = isAudioMuted ? '#f87171' : 'var(--accent-green)';
+      }
+
+      addChatMessage('🔊 Voice Guidance', isAudioMuted ? 'Navigation voice alerts muted.' : 'Navigation voice alerts unmuted.', '#22c55e', true);
+    }
+
+    function toggleAlternateRouteSplit() {
+      if (availableRoutes.length > 1) {
+        const nextIndex = selectedRouteIndex === 0 ? 1 : 0;
+        selectRoute(nextIndex);
+      } else {
+        addChatMessage('🔀 Alternate Routes', 'Showing primary route corridor.', '#94a3b8', true);
+      }
+    }
+
+    function dismissClosureAlert() {
+      const banner = document.getElementById('gmaps-closure-banner');
+      if (banner) banner.style.display = 'none';
+    }
+
+    // ============================================================
+    // 2. Global Destination Search & Recent Searches
+    // ============================================================
+    const DEFAULT_RECENT_SEARCHES = [
+      { name: "Goa", sub: "Goa, India", lat: 15.2993, lon: 74.1240 },
+      { name: "Rajiv Gandhi International Airport", sub: "Shamshabad, Hyderabad, Telangana", lat: 17.2403, lon: 78.4294 },
+      { name: "Bengaluru", sub: "Karnataka, India", lat: 12.9716, lon: 77.5946 },
+      { name: "Mumbai", sub: "Maharashtra, India", lat: 19.0760, lon: 72.8777 }
+    ];
+
+    function getRecentSearches() {
+      try {
+        const stored = localStorage.getItem('squadnav_recent_searches');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {}
+      return DEFAULT_RECENT_SEARCHES;
+    }
+
+    function saveRecentSearch(item) {
+      if (!item || !item.name) return;
+      let recents = getRecentSearches();
+      recents = recents.filter(r => r.name.toLowerCase() !== item.name.toLowerCase());
+      recents.unshift({
+        name: item.name,
+        sub: item.sub || item.displayName || 'Recent Location',
+        lat: item.lat,
+        lon: item.lon
+      });
+      if (recents.length > 10) recents = recents.slice(0, 10);
+      try {
+        localStorage.setItem('squadnav_recent_searches', JSON.stringify(recents));
+      } catch (e) {}
+    }
+
+    function removeRecentSearch(idx, ev) {
+      if (ev) ev.stopPropagation();
+      let recents = getRecentSearches();
+      if (idx >= 0 && idx < recents.length) {
+        recents.splice(idx, 1);
+        localStorage.setItem('squadnav_recent_searches', JSON.stringify(recents));
+        showRecentSearches();
+      }
+    }
+
+    function clearAllRecentSearches(ev) {
+      if (ev) ev.stopPropagation();
+      localStorage.setItem('squadnav_recent_searches', JSON.stringify([]));
+      showRecentSearches();
+    }
+
+    function handleSearchFocus() {
+      const input = document.getElementById('destination-search');
+      if (!input.value.trim() || input.value.trim().length < 2) {
+        showRecentSearches();
+      }
+    }
+
+    function showRecentSearches() {
+      const dropdown = document.getElementById('search-results');
+      const recents = getRecentSearches();
+      searchSuggestionsList = [];
+      searchHighlightIndex = -1;
+
+      if (!recents || recents.length === 0) {
+        dropdown.innerHTML = `
+          <div class="recent-searches-header">
+            <span>🕒 Recent Searches</span>
+          </div>
+          <div class="search-item-empty">No recent searches</div>
+        `;
+        dropdown.style.display = 'block';
+        return;
+      }
+
+      dropdown.innerHTML = `
+        <div class="recent-searches-header">
+          <span>🕒 Recent Searches</span>
+          <button class="recent-searches-clear" onmousedown="clearAllRecentSearches(event)">Clear All</button>
+        </div>
+      `;
+
+      recents.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'search-item';
+        div.dataset.index = idx;
+        div.innerHTML = `
+          <div class="search-item-icon">🕒</div>
+          <div class="search-item-content">
+            <div class="search-item-title">${escapeHtml(item.name)}</div>
+            <div class="search-item-sub">${escapeHtml(item.sub || '')}</div>
+          </div>
+          <button class="search-item-remove" title="Remove from recents" onmousedown="removeRecentSearch(${idx}, event)">✕</button>
+        `;
+        div.onmousedown = (ev) => {
+          if (ev.target.classList.contains('search-item-remove')) return;
+          ev.preventDefault();
+          selectRecentSearch(item);
+        };
+        dropdown.appendChild(div);
+      });
+
+      dropdown.style.display = 'block';
+    }
+
+    function selectRecentSearch(item) {
+      const input = document.getElementById('destination-search');
+      input.value = item.name;
+      const clearBtn = document.getElementById('search-clear-btn');
+      if (clearBtn) clearBtn.style.display = 'block';
+      document.getElementById('search-results').style.display = 'none';
+      selectDestination(item.lat, item.lon, item.name + (item.sub ? ', ' + item.sub : ''));
+    }
+
     let searchDebounceTimer = null;
     let searchSuggestionsList = [];
     let searchHighlightIndex = -1;
@@ -3387,9 +4403,7 @@
 
       clearTimeout(searchDebounceTimer);
       if (query.length < 2) {
-        document.getElementById('search-results').style.display = 'none';
-        searchSuggestionsList = [];
-        searchHighlightIndex = -1;
+        showRecentSearches();
         return;
       }
 
@@ -3404,9 +4418,7 @@
       input.focus();
       const clearBtn = document.getElementById('search-clear-btn');
       if (clearBtn) clearBtn.style.display = 'none';
-      document.getElementById('search-results').style.display = 'none';
-      searchSuggestionsList = [];
-      searchHighlightIndex = -1;
+      showRecentSearches();
     }
 
     async function fetchSearchSuggestions(query) {
@@ -3650,6 +4662,19 @@
       currentDestFullName = name;
       currentDestShortName = name.split(',')[0];
 
+      // Update search input and persist in recent searches
+      const searchInput = document.getElementById('destination-search');
+      if (searchInput) searchInput.value = currentDestShortName;
+      const clearBtn = document.getElementById('search-clear-btn');
+      if (clearBtn) clearBtn.style.display = 'block';
+
+      saveRecentSearch({
+        name: currentDestShortName,
+        sub: name,
+        lat: parseFloat(lat),
+        lon: parseFloat(lng)
+      });
+
       document.getElementById('destination-label').textContent = `Destination: ${currentDestShortName}`;
 
       if (destinationMarker) map.removeLayer(destinationMarker);
@@ -3665,19 +4690,17 @@
       }
       convoyProgressIndex = 0;
 
-      // Automatically open the Google Maps Overview & Directions HUD
+      // Automatically open the Google Maps Overview & Directions Panel
       isHudMinimized = false;
+      const gmapsNav = document.getElementById('gmaps-left-nav');
       const navHud = document.getElementById('nav-hud');
       const miniBtn = document.getElementById('nav-hud-mini-btn');
-      if (navHud) navHud.style.display = 'flex';
+      if (gmapsNav) gmapsNav.style.display = 'flex';
+      if (navHud) navHud.style.display = 'none';
       if (miniBtn) miniBtn.style.display = 'none';
       switchNavTab('overview');
 
-      document.getElementById('nav-eta').textContent = 'Calculating...';
-      document.getElementById('nav-distance').textContent = '-- km';
-      document.getElementById('nav-arrival').textContent = 'Finding optimal routes...';
-
-      // Load primary and alternative routes
+      // Load primary and alternative routes for all travel modes
       await loadRoadRoutes(squad[0].lat, squad[0].lng, destinationCoord[0], destinationCoord[1], currentDestShortName);
 
       // Render stops list in HUD
@@ -3698,18 +4721,47 @@
       if (!['car', 'bike', 'train', 'walk'].includes(mode)) return;
       currentTravelMode = mode;
 
+      // Update active tab in Google Maps mode bar
+      ['car', 'bike', 'train', 'walk'].forEach(m => {
+        const tab = document.getElementById(`mode-tab-${m}`);
+        if (tab) tab.classList.toggle('active', m === mode);
+      });
+
+      // Update mode title
+      const modeTitles = {
+        car: 'Drive',
+        bike: 'Two-wheeler',
+        train: 'Public transport',
+        walk: 'Walk'
+      };
+      const titleEl = document.getElementById('gmaps-mode-title');
+      if (titleEl) titleEl.textContent = modeTitles[mode] || 'Drive';
+
+      // Switch active mode content view
+      ['car', 'bike', 'train', 'walk'].forEach(m => {
+        const view = document.getElementById(`mode-view-${m}`);
+        if (view) {
+          view.classList.toggle('active', m === mode);
+          view.style.display = m === mode ? 'block' : 'none';
+        }
+      });
+      const stopsView = document.getElementById('panel-view-stops');
+      const stepsView = document.getElementById('panel-view-steps');
+      if (stopsView) stopsView.style.display = 'none';
+      if (stepsView) stepsView.style.display = 'none';
+
+      // Update legacy pills if present
       document.querySelectorAll('.mode-pill, .header-mode-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.mode === mode);
       });
 
-      const modeLabels = {
-        car: '🚗 Driving (Car)',
-        bike: '🏍️ Two-Wheeler (Bike)',
-        train: '🚆 Transit (Train/Metro)',
-        walk: '🚶 Walking (Walk)'
-      };
+      // Road closure banner handling: show for bike, hide otherwise
+      const closureBanner = document.getElementById('gmaps-closure-banner');
+      if (closureBanner) {
+        closureBanner.style.display = mode === 'bike' ? 'flex' : 'none';
+      }
 
-      addChatMessage('🤖 Squad AI Copilot', `Switched travel mode to **${modeLabels[mode]}**. Recalculating routes...`, '#38bdf8', true);
+      addChatMessage('🤖 Squad AI Copilot', `Switched travel mode to **${modeTitles[mode]}**. Updating route and schedule...`, '#38bdf8', true);
 
       if (destinationCoord) {
         loadRoadRoutes(squad[0].lat, squad[0].lng, destinationCoord[0], destinationCoord[1], currentDestShortName);
@@ -3717,6 +4769,18 @@
     }
 
     async function loadRoadRoutes(startLat, startLng, destLat, destLng, destName) {
+      // Ensure Google Maps left navigation is visible
+      const gmapsNav = document.getElementById('gmaps-left-nav');
+      const miniBtn = document.getElementById('nav-hud-mini-btn');
+      if (gmapsNav) gmapsNav.style.display = 'flex';
+      if (miniBtn) miniBtn.style.display = 'none';
+
+      // Sync Origin and Destination input cards
+      const originInput = document.getElementById('route-origin-input');
+      const destInput = document.getElementById('destination-search');
+      if (originInput) originInput.value = 'Your location';
+      if (destInput && destName) destInput.value = destName;
+
       // Build waypoint sequence: [Start, ...Stops, Destination]
       const waypoints = [
         [startLng, startLat],
@@ -3781,96 +4845,150 @@
       const fallbackCoords = generateSmoothRoadCoords([startLat, startLng], [destLat, destLng]);
       const stopsCount = routeStops.length;
 
-      // Base speeds per mode
-      let modeSpeed = 65; // car km/h
-      if (currentTravelMode === 'bike') modeSpeed = 38;
-      else if (currentTravelMode === 'train') modeSpeed = 55;
-      else if (currentTravelMode === 'walk') modeSpeed = 4.8;
+      // ============================================================
+      // Distinct Multi-Modal Metrics & Times for ALL 4 Modes (Images 1-4)
+      // ============================================================
+      // 1. CAR (Drive): Highway route, toll ₹160.00, fastest route, saves 4% petrol
+      const carDistKm = distKmNum.toFixed(1);
+      const carDurMin = primaryData ? Math.round(primaryData.duration / 60) : Math.max(5, Math.round((distKmNum / 68) * 60));
+      const carToll = distKmNum > 15 ? '₹' + Math.min(350, Math.max(80, Math.round(distKmNum * 2.15))).toFixed(2) : 'No toll';
 
-      let primaryDurMin = 0;
-      if (currentTravelMode === 'car') {
-        primaryDurMin = primaryData ? Math.round(primaryData.duration / 60) : Math.round((distKmNum / modeSpeed) * 60);
-      } else if (currentTravelMode === 'bike') {
-        primaryDurMin = Math.max(3, Math.round((distKmNum / modeSpeed) * 60));
-      } else if (currentTravelMode === 'train') {
-        primaryDurMin = Math.max(12, Math.round(distKmNum * 1.4 + 6));
-      } else if (currentTravelMode === 'walk') {
-        primaryDurMin = Math.max(4, Math.round(distKmNum * 12.5));
-      }
+      // 2. BIKE (Two-wheeler): Arterial route avoiding bike-restricted expressways, avoids road closure on NH 44, saves 18% fuel
+      const bikeDistKm = Math.max(1, Math.round(distKmNum * 0.63)).toFixed(0);
+      const bikeDurMin = Math.max(6, Math.round((parseFloat(bikeDistKm) / 25) * 60)); // ~1 hr 55 min for 47 km
 
-      const primaryCoords = primaryData 
+      // 3. TRAIN (Transit): Multi-modal schedule, e.g. ~3 hr 11 min
+      const trainDurMin = Math.max(25, Math.round(distKmNum * 2.5 + 45));
+
+      // 4. WALK (Pedestrian): Footpath route, ~4.4 km/h, elevation gain/loss
+      const walkDistKm = bikeDistKm;
+      const walkDurMin = Math.max(10, Math.round((parseFloat(walkDistKm) / 4.4) * 60)); // ~10 hr 49 min for 47 km
+      const walkElevGain = Math.round(parseFloat(walkDistKm) * 3.4);
+      const walkElevLoss = Math.round(parseFloat(walkDistKm) * 3.2);
+
+      // Update all 4 Mode Tab duration labels in the Google Maps top mode bar
+      const modeTimeCar = document.getElementById('mode-time-car');
+      const modeTimeBike = document.getElementById('mode-time-bike');
+      const modeTimeTrain = document.getElementById('mode-time-train');
+      const modeTimeWalk = document.getElementById('mode-time-walk');
+      if (modeTimeCar) modeTimeCar.textContent = formatModeDuration(carDurMin);
+      if (modeTimeBike) modeTimeBike.textContent = formatModeDuration(bikeDurMin);
+      if (modeTimeTrain) modeTimeTrain.textContent = formatModeDuration(trainDurMin);
+      if (modeTimeWalk) modeTimeWalk.textContent = formatModeDuration(walkDurMin);
+
+      // Update Drive View Details (Matching Image 4)
+      const carEta = document.getElementById('car-eta-val');
+      const carDist = document.getElementById('car-dist-val');
+      const carStatus = document.getElementById('car-status-sub');
+      const carTollBadge = document.getElementById('car-toll-badge');
+      const carEcoBadge = document.getElementById('car-eco-badge');
+      if (carEta) carEta.textContent = formatFullDuration(carDurMin);
+      if (carDist) carDist.textContent = `(${carDistKm} km)`;
+      if (carStatus) carStatus.textContent = 'Fastest route now due to traffic conditions';
+      if (carTollBadge) carTollBadge.textContent = carToll !== 'No toll' ? `🏷️ ${carToll}` : '🏷️ No toll';
+      if (carEcoBadge) carEcoBadge.textContent = '🍃 Saves 4% petrol';
+
+      // Update Bike View Details (Matching Image 1)
+      const bikeEta = document.getElementById('bike-eta-val');
+      const bikeDist = document.getElementById('bike-dist-val');
+      const bikeStatus = document.getElementById('bike-status-sub');
+      const bikeEcoBadge = document.getElementById('bike-eco-badge');
+      if (bikeEta) bikeEta.textContent = formatFullDuration(bikeDurMin);
+      if (bikeDist) bikeDist.textContent = `(${bikeDistKm} km)`;
+      if (bikeStatus) bikeStatus.textContent = 'Best route now, avoids road closure on NH 44';
+      if (bikeEcoBadge) bikeEcoBadge.textContent = '🍃 Saves 18% fuel';
+
+      // Update Walk View Details (Matching Image 3)
+      const walkEta = document.getElementById('walk-eta-val');
+      const walkDist = document.getElementById('walk-dist-val');
+      const walkElev = document.querySelector('#mode-view-walk .gmaps-elev-val');
+      const walkStatus = document.getElementById('walk-status-sub');
+      if (walkEta) walkEta.textContent = formatFullDuration(walkDurMin);
+      if (walkDist) walkDist.textContent = `(${walkDistKm} km)`;
+      if (walkElev) walkElev.textContent = `↑ ${walkElevGain} m ↓ ${walkElevLoss} m`;
+      if (walkStatus) walkStatus.textContent = 'via NH 44';
+
+      // Update Transit Itineraries List (Matching Image 2)
+      renderTransitItineraries(trainDurMin);
+
+      // Coordinates generation for current travel mode
+      let primaryCoords = primaryData 
         ? primaryData.geometry.coordinates.map(c => [c[1], c[0]]) 
         : fallbackCoords;
 
-      let primaryName = stopsCount > 0 ? `Convoy Route (${stopsCount} Stop${stopsCount > 1 ? 's' : ''})` : 'Fastest Route';
-      let primaryVia = stopsCount > 0 ? `via NH Corridor (${stopsCount} stops)` : 'via Main Highway Corridor';
+      let altCoords = alternateData 
+        ? alternateData.geometry.coordinates.map(c => [c[1], c[0]]) 
+        : generateBypassCoords([startLat, startLng], [destLat, destLng]);
+
+      // Mode-specific route geometries:
       if (currentTravelMode === 'bike') {
-        primaryName = stopsCount > 0 ? `Bike Route (${stopsCount} Stops)` : 'Fastest Bike Route';
-        primaryVia = 'via Arterial Road & Bike Corridor';
-      } else if (currentTravelMode === 'train') {
-        primaryName = '🚆 MMTS & South Central Railway';
-        primaryVia = 'via Mainline Rail Corridor';
+        primaryCoords = generateArterialCoords([startLat, startLng], [destLat, destLng]);
       } else if (currentTravelMode === 'walk') {
+        primaryCoords = generateFootpathCoords([startLat, startLng], [destLat, destLng]);
+        altCoords = generateBypassCoords([startLat, startLng], [destLat, destLng]);
+      }
+
+      // Configure Available Routes based on Current Mode
+      let currentDistKm = carDistKm;
+      let currentDurMin = carDurMin;
+      let primaryName = 'Fastest Route';
+      let primaryVia = 'via Main Highway Corridor';
+      let altName = 'Alternate Highway Route';
+      let altVia = 'via Ring Road / Bypass Corridor';
+      let altDistKm = (distKmNum * 1.12).toFixed(1);
+      let altDurMin = carDurMin + 14;
+
+      if (currentTravelMode === 'car') {
+        currentDistKm = carDistKm;
+        currentDurMin = carDurMin;
+        primaryName = stopsCount > 0 ? `Convoy Route (${stopsCount} Stops)` : 'Fastest Route';
+        primaryVia = 'via Outer Ring Road / NH Corridor';
+        altName = 'Alternate Highway Route';
+        altVia = 'via Ring Road / Bypass Corridor';
+        altDistKm = (distKmNum * 1.12).toFixed(1);
+        altDurMin = carDurMin + 14;
+      } else if (currentTravelMode === 'bike') {
+        currentDistKm = bikeDistKm;
+        currentDurMin = bikeDurMin;
+        primaryName = 'Best Two-Wheeler Route';
+        primaryVia = 'via Arterial Road & Bike Corridor (avoids NH 44 closure)';
+        altName = 'Scenic Two-Wheeler Route';
+        altVia = 'via Service Roads & Parkway';
+        altDistKm = (parseFloat(bikeDistKm) * 1.09).toFixed(1);
+        altDurMin = bikeDurMin + 9;
+      } else if (currentTravelMode === 'train') {
+        currentDistKm = distKmNum.toFixed(1);
+        currentDurMin = trainDurMin;
+        primaryName = '🚆 MMTS & South Central Railway';
+        primaryVia = 'via Mainline Rail & Bus Transit';
+        altName = '🚇 Metro Rail Express Line';
+        altVia = 'via Elevated Metro Red Line';
+        altDistKm = (distKmNum * 1.1).toFixed(1);
+        altDurMin = trainDurMin + 16;
+      } else if (currentTravelMode === 'walk') {
+        currentDistKm = walkDistKm;
+        currentDurMin = walkDurMin;
         primaryName = 'Pedestrian Sidewalk Route';
-        primaryVia = 'via Footpaths & Crosswalks';
+        primaryVia = 'via NH 44 Footpaths';
+        altName = 'Scenic Promenade Route';
+        altVia = 'via Park Walkways & Boulevard';
+        altDistKm = (parseFloat(walkDistKm) * 1.06).toFixed(1);
+        altDurMin = walkDurMin + 20;
       }
 
       availableRoutes.push({
         id: 'primary',
         name: primaryName,
         via: primaryVia,
-        distanceKm: rawDistKm,
-        durationMin: primaryDurMin,
-        tag: stopsCount > 0 ? `${stopsCount} Stop${stopsCount > 1 ? 's' : ''}` : 'Fastest route',
+        distanceKm: currentDistKm,
+        durationMin: currentDurMin,
+        tag: currentTravelMode === 'car' ? 'Fastest route' : (currentTravelMode === 'bike' ? 'Avoids NH 44' : (currentTravelMode === 'walk' ? 'via NH 44' : 'Fastest transit')),
         coordinates: primaryCoords,
+        toll: currentTravelMode === 'car' ? carToll : null,
         legs: primaryData?.legs || []
       });
 
-      // Parse step maneuvers
-      if (primaryData?.legs && primaryData.legs.length > 0) {
-        parseGuidanceSteps(primaryData.legs, destName, currentTravelMode);
-      } else {
-        generateModeSteps(currentTravelMode, destName, distKmNum, primaryDurMin);
-      }
-
-      // ALTERNATE ROUTE (Guaranteed for all modes)
-      let altDistKm = (distKmNum * 1.14).toFixed(1);
-      let altCoords = null;
-
-      if (alternateData) {
-        altDistKm = (alternateData.distance / 1000).toFixed(1);
-        altCoords = alternateData.geometry.coordinates.map(c => [c[1], c[0]]);
-      } else {
-        altCoords = generateBypassCoords([startLat, startLng], [destLat, destLng]);
-      }
-
-      const altDistNum = parseFloat(altDistKm);
-      let altDurMin = 0;
-      if (currentTravelMode === 'car') {
-        altDurMin = alternateData ? Math.round(alternateData.duration / 60) : Math.round((altDistNum / 58) * 60);
-      } else if (currentTravelMode === 'bike') {
-        altDurMin = Math.max(4, Math.round((altDistNum / 34) * 60));
-      } else if (currentTravelMode === 'train') {
-        altDurMin = Math.max(15, Math.round(altDistNum * 1.6 + 5));
-      } else if (currentTravelMode === 'walk') {
-        altDurMin = Math.max(5, Math.round(altDistNum * 13.5));
-      }
-
-      const diffMin = Math.max(1, altDurMin - primaryDurMin);
-
-      let altName = 'Alternate Highway Route';
-      let altVia = 'via Ring Road / Bypass Corridor';
-      if (currentTravelMode === 'bike') {
-        altName = 'Scenic Bike Boulevard';
-        altVia = 'via Service Roads & Parkway';
-      } else if (currentTravelMode === 'train') {
-        altName = '🚇 Metro Rail Express Line';
-        altVia = 'via Elevated Metro Corridor';
-      } else if (currentTravelMode === 'walk') {
-        altName = 'Scenic Promenade Route';
-        altVia = 'via Park Walkways & Boulevard';
-      }
-
+      const diffMin = Math.max(1, altDurMin - currentDurMin);
       availableRoutes.push({
         id: 'alternate',
         name: altName,
@@ -3879,18 +4997,202 @@
         durationMin: altDurMin,
         tag: `+${diffMin} min`,
         coordinates: altCoords,
+        toll: null,
         legs: alternateData?.legs || []
       });
+
+      // Parse step maneuvers
+      if (primaryData?.legs && primaryData.legs.length > 0 && currentTravelMode === 'car') {
+        parseGuidanceSteps(primaryData.legs, destName, currentTravelMode);
+      } else {
+        generateModeSteps(currentTravelMode, destName, currentDistKm, currentDurMin);
+      }
 
       selectedRouteIndex = 0;
       renderRoadRoutes();
       updateNavHUD();
       renderTurnByTurnSteps();
+      renderModeRouteChoices();
       fitAllDrivers();
 
-      // Automatically refresh corridor POIs for the active highway route
+      // Corridor POIs
       const activeCoords = availableRoutes[selectedRouteIndex]?.coordinates;
       fetchCorridorPOIs([startLat, startLng], [destLat, destLng], activeCoords);
+    }
+
+    // Render Public Transport / Transit Itineraries (Matching Image 2)
+    function renderTransitItineraries(baseDurMin) {
+      const container = document.getElementById('transit-itineraries-list');
+      if (!container) return;
+
+      const now = new Date();
+      function addMinutes(date, minutes) {
+        return new Date(date.getTime() + minutes * 60000);
+      }
+      function formatClock(d) {
+        let hours = d.getHours();
+        const mins = d.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        return `${hours}:${mins} ${ampm}`;
+      }
+
+      const t1Start = addMinutes(now, 3);
+      const t1End = addMinutes(t1Start, baseDurMin);
+      const t2Start = addMinutes(now, 1);
+      const t2End = addMinutes(t2Start, baseDurMin + 16);
+      const t3Start = addMinutes(now, 1);
+      const t3End = addMinutes(t3Start, baseDurMin + 36);
+
+      const itineraries = [
+        {
+          legs: [
+            '<span class="transit-walk-info">🚶 21</span>',
+            '<span style="color: var(--text-muted);">></span>',
+            '<span class="transit-bus-pill" style="background: #0284c7;">🚌 589</span>',
+            '<span style="color: var(--text-muted);">></span>',
+            '<span class="transit-bus-pill" style="background: #0d9488;">🚌 AL</span>'
+          ],
+          timeSpan: `${formatClock(t1Start)} – ${formatClock(t1End)}`,
+          duration: formatFullDuration(baseDurMin),
+          schedule: `Scheduled at ${formatClock(addMinutes(now, 24))} from Kandlakoya`
+        },
+        {
+          legs: [
+            '<span class="transit-walk-info">🚶 24</span>',
+            '<span style="color: var(--text-muted);">></span>',
+            '<span class="transit-bus-pill" style="background: #0284c7;">🚌 229</span>',
+            '<span style="color: var(--text-muted);">></span>',
+            '<span class="transit-bus-pill" style="background: #dc2626;">🚇 Red</span>',
+            '<span style="color: var(--text-muted);">></span>',
+            '<span class="transit-bus-pill" style="background: #0d9488;">🚌 AL</span>'
+          ],
+          timeSpan: `${formatClock(t2Start)} – ${formatClock(t2End)}`,
+          duration: formatFullDuration(baseDurMin + 16),
+          schedule: `Scheduled at ${formatClock(addMinutes(now, 17))} from Gundlapochampally X Road`
+        },
+        {
+          legs: [
+            '<span class="transit-walk-info">🚶 24</span>',
+            '<span style="color: var(--text-muted);">></span>',
+            '<span class="transit-bus-pill" style="background: #0284c7;">🚌 229</span>',
+            '<span style="color: var(--text-muted);">></span>',
+            '<span class="transit-bus-pill" style="background: #dc2626;">🚇 Red</span>',
+            '<span style="color: var(--text-muted);">></span>',
+            '<span class="transit-bus-pill" style="background: #7c3aed;">🚌 251</span>'
+          ],
+          timeSpan: `${formatClock(t3Start)} – ${formatClock(t3End)}`,
+          duration: formatFullDuration(baseDurMin + 36),
+          schedule: `Scheduled at ${formatClock(addMinutes(now, 17))} from Gundlapochampally X Road`
+        }
+      ];
+
+      container.innerHTML = '';
+      itineraries.forEach((it, idx) => {
+        const card = document.createElement('div');
+        card.className = `gmaps-transit-card ${idx === 0 ? 'selected' : ''}`;
+        card.onclick = () => {
+          document.querySelectorAll('.gmaps-transit-card').forEach((c, i) => c.classList.toggle('selected', i === idx));
+          addChatMessage('🚆 Public Transport', `Selected transit itinerary: ${it.legs.map(l => l.replace(/<[^>]*>/g, '')).join(' ')} (${it.duration}).`, '#7c3aed', true);
+        };
+        card.innerHTML = `
+          <div class="transit-legs-row">
+            ${it.legs.join(' ')}
+          </div>
+          <div class="transit-time-row">
+            <span class="transit-duration">${it.duration}</span>
+            <span class="transit-schedule-span">${it.timeSpan}</span>
+          </div>
+          <div class="transit-schedule-note">
+            ${it.schedule}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Render Mode Route Choice Cards inside Drive/Bike/Walk views
+    function renderModeRouteChoices() {
+      const containerId = currentTravelMode === 'car' 
+        ? 'car-routes-container' 
+        : (currentTravelMode === 'bike' ? 'bike-routes-container' : 'walk-routes-container');
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      container.innerHTML = '';
+      availableRoutes.forEach((route, idx) => {
+        const isSel = idx === selectedRouteIndex;
+        const card = document.createElement('div');
+        card.className = `route-card ${isSel ? 'selected' : ''}`;
+        card.onclick = () => selectRoute(idx);
+
+        const rHours = Math.floor(route.durationMin / 60);
+        const rMins = route.durationMin % 60;
+        const timeStr = rHours > 0 ? `${rHours} hr ${rMins} min` : `${rMins} min`;
+
+        card.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 9px;">
+            <div style="font-size: 1rem; color: ${isSel ? 'var(--accent-cyan)' : 'var(--text-muted)'};">${isSel ? '🔘' : '⚪'}</div>
+            <div>
+              <div class="route-title" style="font-weight: 700; color: ${isSel ? 'var(--accent-cyan)' : 'var(--text-primary)'}; font-size: 0.83rem;">
+                ${route.name}
+              </div>
+              <div class="route-meta" style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 1px;">
+                ${route.via}
+              </div>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-weight: 800; font-size: 0.94rem; color: ${isSel ? 'var(--accent-green)' : 'var(--text-primary)'};">
+              ${timeStr}
+            </div>
+            <div class="route-meta" style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 1px;">
+              ${route.distanceKm} km ${route.tag && route.tag !== 'Active route' ? `• <span style="color: ${isSel ? 'var(--accent-cyan)' : 'var(--text-secondary)'}; font-weight: 600;">${route.tag}</span>` : ''}
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Helper: Distinct arterial road corridor generator (avoiding expressways for bikes)
+    function generateArterialCoords(p1, p2) {
+      const pts = [];
+      const steps = 100;
+      const dx = p2[1] - p1[1];
+      const dy = p2[0] - p1[0];
+      const dist = Math.hypot(dx, dy) || 0.1;
+      const arc = Math.min(0.06, Math.max(0.02, dist * 0.12));
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const arcOffset = Math.sin(t * Math.PI) * arc;
+        const wobble = Math.sin(t * Math.PI * 6) * 0.008;
+        const baseLat = p1[0] + dy * t;
+        const baseLng = p1[1] + dx * t;
+        pts.push([
+          baseLat + (dx / dist) * arcOffset + wobble,
+          baseLng - (dy / dist) * arcOffset + wobble * 0.5
+        ]);
+      }
+      return pts;
+    }
+
+    // Helper: Pedestrian footpath coordinates generator
+    function generateFootpathCoords(p1, p2) {
+      const pts = [];
+      const steps = 120;
+      const dx = p2[1] - p1[1];
+      const dy = p2[0] - p1[0];
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const microTurn = Math.sin(t * Math.PI * 10) * 0.003;
+        pts.push([
+          p1[0] + dy * t + microTurn,
+          p1[1] + dx * t + microTurn * 0.8
+        ]);
+      }
+      return pts;
     }
 
     // Generate Transit or Mode Steps when OSRM steps are unavailable or mode-specific
@@ -3931,13 +5233,13 @@
       } else if (mode === 'bike') {
         stepManeuvers.push({
           icon: '🏍️',
-          text: `Head out on motorcycle / scooter along main road`,
+          text: `Head out on two-wheeler along arterial corridor`,
           distance: '300 m',
           isStop: false
         });
         stepManeuvers.push({
           icon: '⬆',
-          text: `Continue on two-wheeler lane towards ${destName}`,
+          text: `Continue on two-wheeler bypass avoiding NH 44 towards ${destName}`,
           distance: `${distKm} km`,
           isStop: false
         });
@@ -3956,7 +5258,7 @@
         });
         stepManeuvers.push({
           icon: '⬆',
-          text: `Continue walking along footpath towards ${destName}`,
+          text: `Continue walking along NH 44 footpath towards ${destName}`,
           distance: `${distKm} km`,
           isStop: false
         });
@@ -4078,11 +5380,12 @@
       });
     }
 
-    // Render Primary and Alternate Road Polylines
+    // Render Primary and Alternate Road Polylines & Floating Route Pills
     function renderRoadRoutes() {
       if (primaryPolyline) { map.removeLayer(primaryPolyline); primaryPolyline = null; }
       if (alternatePolyline) { map.removeLayer(alternatePolyline); alternatePolyline = null; }
       if (window.routeCasingPolyline) { map.removeLayer(window.routeCasingPolyline); window.routeCasingPolyline = null; }
+      if (window.incidentMarker) { map.removeLayer(window.incidentMarker); window.incidentMarker = null; }
 
       // Clear existing floating ETA route pills on map
       if (routeBadgeMarkers && routeBadgeMarkers.length > 0) {
@@ -4111,7 +5414,7 @@
       } else if (currentTravelMode === 'walk') {
         primaryColor = '#0284c7'; // Sky blue
         primaryWeight = 5;
-        primaryDash = '2, 6';
+        primaryDash = '2, 8';
       }
 
       // 1. Draw Inactive / Alternate Route underneath first
@@ -4124,7 +5427,7 @@
           lineJoin: 'round'
         }).addTo(map);
 
-        alternatePolyline.bindTooltip(`<b>${otherRoute.name}</b><br>${otherRoute.distanceKm} km · ${otherRoute.durationMin} min (Click to select route)`, { sticky: true });
+        alternatePolyline.bindTooltip(`<b>${otherRoute.name}</b><br>${otherRoute.distanceKm} km · ${formatFullDuration(otherRoute.durationMin)} (Click to select)`, { sticky: true });
         alternatePolyline.on('click', () => {
           selectRoute(altIndex);
         });
@@ -4132,9 +5435,9 @@
         // Floating Google Maps-style pill on alternate route line
         const altMidCoord = otherRoute.coordinates[Math.floor(otherRoute.coordinates.length * 0.54)];
         if (altMidCoord) {
-          const rHours = Math.floor(otherRoute.durationMin / 60);
-          const rMins = otherRoute.durationMin % 60;
-          const altTimeStr = rHours > 0 ? `${rHours}h ${rMins}m` : `${rMins}m`;
+          const altTimeStr = currentTravelMode === 'walk' 
+            ? `🚶 ${formatFullDuration(otherRoute.durationMin)}` 
+            : formatFullDuration(otherRoute.durationMin);
 
           const altBadge = L.marker(altMidCoord, {
             icon: L.divIcon({
@@ -4177,34 +5480,249 @@
           lineJoin: 'round'
         }).addTo(map);
 
-        primaryPolyline.bindTooltip(`<b>${activeRoute.name}</b><br>${activeRoute.distanceKm} km · ${activeRoute.durationMin} min (Active Route)`, { sticky: true });
+        primaryPolyline.bindTooltip(`<b>${activeRoute.name}</b><br>${activeRoute.distanceKm} km · ${formatFullDuration(activeRoute.durationMin)} (Active Route)`, { sticky: true });
 
-        // Floating Google Maps-style pill on active route line
+        // Floating Google Maps-style pill on active route line (Matching user screenshots!)
         const activeMidCoord = activeRoute.coordinates[Math.floor(activeRoute.coordinates.length * 0.44)];
         if (activeMidCoord) {
-          const rHours = Math.floor(activeRoute.durationMin / 60);
-          const rMins = activeRoute.durationMin % 60;
-          const activeTimeStr = rHours > 0 ? `${rHours}h ${rMins}m` : `${rMins}m`;
+          let activePillContent = '';
+          if (currentTravelMode === 'car') {
+            const tollStr = activeRoute.toll && activeRoute.toll !== 'No toll' ? activeRoute.toll : '';
+            activePillContent = `
+              <span class="route-pill-time">${formatFullDuration(activeRoute.durationMin)}</span>
+              <span style="font-size: 0.78rem;">🍃</span>
+              ${tollStr ? `<span style="font-size: 0.76rem; font-weight: 700;">${tollStr}</span>` : ''}
+            `;
+          } else if (currentTravelMode === 'bike') {
+            activePillContent = `
+              <span class="route-pill-time">${formatFullDuration(activeRoute.durationMin)}</span>
+              <span style="font-size: 0.78rem;">🍃</span>
+            `;
+          } else if (currentTravelMode === 'train') {
+            activePillContent = `
+              <span class="route-pill-time">${formatFullDuration(activeRoute.durationMin)}</span>
+            `;
+          } else if (currentTravelMode === 'walk') {
+            activePillContent = `
+              <span style="font-size: 0.8rem;">🚶</span>
+              <span class="route-pill-time">${formatFullDuration(activeRoute.durationMin)}</span>
+            `;
+          }
 
           const activeBadge = L.marker(activeMidCoord, {
             icon: L.divIcon({
               className: 'map-route-pill-wrapper',
               html: `
-                <div class="map-route-pill active" title="Active Route">
-                  <span style="font-size: 0.8rem;">🔵</span>
-                  <span class="route-pill-time">${activeTimeStr}</span>
-                  <span class="route-pill-diff">${activeRoute.tag || 'Fastest'}</span>
+                <div class="map-route-pill active ${currentTravelMode}" title="Active Route">
+                  ${activePillContent}
                 </div>
               `,
-              iconSize: [140, 32],
-              iconAnchor: [70, 16]
+              iconSize: [160, 32],
+              iconAnchor: [80, 16]
             }),
             zIndexOffset: 600
           }).addTo(map);
 
           routeBadgeMarkers.push(activeBadge);
         }
+
+        // For Bike mode: Add Road Closure marker ⛔ on NH 44 (Matching Image 1)
+        if (currentTravelMode === 'bike') {
+          const incMid = activeRoute.coordinates[Math.floor(activeRoute.coordinates.length * 0.65)];
+          if (incMid) {
+            window.incidentMarker = L.marker([incMid[0] + 0.009, incMid[1] - 0.009], {
+              icon: L.divIcon({
+                className: 'gmaps-incident-marker',
+                html: `
+                  <div class="gmaps-incident-pill" title="Road closure on NH 44: Two-wheeler route avoids this segment">
+                    <span>⛔</span>
+                    <span>Road closure on NH 44</span>
+                  </div>
+                `,
+                iconSize: [190, 30],
+                iconAnchor: [95, 15]
+              }),
+              zIndexOffset: 650
+            }).addTo(map);
+          }
+        }
       }
+    }
+
+    // ============================================================
+    // Google Maps Left Panel Controls & Drawer Menus
+    // ============================================================
+    function swapOriginDestination() {
+      if (!destinationCoord) {
+        alert('Please select a destination first before swapping!');
+        return;
+      }
+
+      // Swap origin and destination coordinates
+      const prevOrigin = [squad[0].lat, squad[0].lng];
+      const prevDest = [...destinationCoord];
+      const prevDestName = currentDestShortName;
+
+      destinationCoord = prevOrigin;
+      currentDestShortName = 'Original Start Point';
+      currentDestFullName = 'Original Start Point';
+
+      squad[0].lat = prevDest[0];
+      squad[0].lng = prevDest[1];
+
+      // Update input fields
+      const originInput = document.getElementById('route-origin-input');
+      const destInput = document.getElementById('destination-search');
+      if (originInput) originInput.value = prevDestName || 'Previous Destination';
+      if (destInput) destInput.value = 'Your location';
+
+      // Update map marker
+      if (destinationMarker) map.removeLayer(destinationMarker);
+      destinationMarker = L.marker(destinationCoord, {
+        icon: createIcon('#ef4444', '🏁')
+      }).addTo(map).bindPopup(`<b>Destination:</b><br>${currentDestShortName}`).openPopup();
+
+      addChatMessage('⇅ Direction Inverted', `Swapped route: Now navigating to **${currentDestShortName}**.`, '#38bdf8', true);
+
+      // Recalculate routes
+      loadRoadRoutes(squad[0].lat, squad[0].lng, destinationCoord[0], destinationCoord[1], currentDestShortName);
+    }
+
+    function toggleNavHud(open) {
+      const gmapsNav = document.getElementById('gmaps-left-nav');
+      const miniBtn = document.getElementById('nav-hud-mini-btn');
+      if (open) {
+        if (gmapsNav) gmapsNav.style.display = 'flex';
+        if (miniBtn) miniBtn.style.display = 'none';
+      } else {
+        if (gmapsNav) gmapsNav.style.display = 'none';
+        if (miniBtn) miniBtn.style.display = 'flex';
+      }
+    }
+
+    function closeRoutePanel() {
+      toggleNavHud(false);
+    }
+
+    function saveTripToHistory() {
+      if (!destinationCoord || !currentDestShortName) {
+        alert('Please search and select a destination first!');
+        return;
+      }
+
+      const activeRoute = availableRoutes[selectedRouteIndex] || availableRoutes[0];
+      const historyList = JSON.parse(localStorage.getItem('squadnav_trip_history') || '[]');
+
+      const tripRecord = {
+        id: 'trip_' + Date.now(),
+        destination: currentDestShortName,
+        destinationCoords: destinationCoord,
+        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        memberCount: 1 + Object.keys(squadRemoteMembers).length,
+        distanceKm: activeRoute ? activeRoute.distanceKm : '0',
+        durationMin: activeRoute ? activeRoute.durationMin : '0',
+        travelMode: currentTravelMode,
+        stopsCount: routeStops.length
+      };
+
+      if (historyList.length === 0 || historyList[0].destination !== tripRecord.destination) {
+        historyList.unshift(tripRecord);
+        localStorage.setItem('squadnav_trip_history', JSON.stringify(historyList.slice(0, 25)));
+      }
+
+      renderDrawerHistory();
+      addChatMessage('🔖 Trip Saved', `Saved route to **${currentDestShortName}** (${tripRecord.distanceKm} km · ${formatFullDuration(tripRecord.durationMin)}) in your Trip History! View it from the top-right ☰ menu.`, '#22c55e', true);
+    }
+
+    // Google Maps Side Drawer (Squad Convoy, Trip History & Settings)
+    function toggleMainMenu(open) {
+      const drawer = document.getElementById('gmaps-side-drawer');
+      const backdrop = document.getElementById('gmaps-drawer-backdrop');
+      if (open) {
+        if (drawer) drawer.classList.add('open');
+        if (backdrop) backdrop.classList.add('open');
+        renderDrawerSquad();
+        renderDrawerHistory();
+      } else {
+        if (drawer) drawer.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('open');
+      }
+    }
+
+    function renderDrawerSquad() {
+      const countEl = document.getElementById('drawer-member-count');
+      const arrivalEl = document.getElementById('drawer-arrival-counter');
+      const codeEl = document.getElementById('drawer-squad-code');
+      const listEl = document.getElementById('drawer-members-list');
+      if (!listEl) return;
+
+      const allMembers = [
+        {
+          id: squad[0].id,
+          name: squad[0].name,
+          color: squad[0].color,
+          speed: squad[0].speed || 0,
+          vehicle: currentTravelMode,
+          status: isGPSTracking ? 'traveling' : 'online',
+          isHost: true
+        },
+        ...Object.values(squadRemoteMembers)
+      ];
+
+      const arrivedCount = allMembers.filter(m => m.status === 'arrived').length;
+      if (countEl) countEl.textContent = allMembers.length;
+      if (arrivalEl) arrivalEl.textContent = `${arrivedCount}/${allMembers.length} Arrived`;
+      if (codeEl) codeEl.textContent = squadRoomCode || 'DEFAULT';
+
+      const vehicleIcons = { car: '🚗', bike: '🏍️', train: '🚆', walk: '🚶' };
+
+      listEl.innerHTML = '';
+      allMembers.forEach(m => {
+        const vIcon = vehicleIcons[m.vehicle] || '🚗';
+        const card = document.createElement('div');
+        card.className = 'drawer-member-card';
+        card.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 1.1rem;">${m.isHost ? '👑' : vIcon}</span>
+            <div>
+              <div style="font-weight: 700; color: var(--text-primary);">${m.name} ${m.isHost ? '<span style="font-size: 0.7rem; color: var(--accent-cyan);">(Host)</span>' : ''}</div>
+              <div style="font-size: 0.72rem; color: var(--text-secondary);">${m.status === 'arrived' ? '✅ Arrived' : `🟢 Live • ${m.speed || 0} km/h`}</div>
+            </div>
+          </div>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">${vIcon}</span>
+        `;
+        listEl.appendChild(card);
+      });
+    }
+
+    function renderDrawerHistory() {
+      const container = document.getElementById('drawer-history-list');
+      if (!container) return;
+
+      const historyList = JSON.parse(localStorage.getItem('squadnav_trip_history') || '[]');
+      if (historyList.length === 0) {
+        container.innerHTML = '<div style="font-size: 0.76rem; color: var(--text-muted); text-align: center; padding: 16px;">No past trips recorded yet.<br><span style="font-size: 0.7rem;">Click 🔖 Save on any route or start navigation to build your trip log.</span></div>';
+        return;
+      }
+
+      const vehicleIcons = { car: '🚗', bike: '🏍️', train: '🚆', walk: '🚶' };
+      container.innerHTML = '';
+      historyList.forEach(t => {
+        const vIcon = vehicleIcons[t.travelMode] || '🚗';
+        const item = document.createElement('div');
+        item.className = 'drawer-history-item';
+        item.onclick = () => replayHistoricalTrip(t.id);
+        item.innerHTML = `
+          <div>
+            <div style="font-weight: 700; font-size: 0.84rem; color: var(--text-primary);">📍 ${t.destination}</div>
+            <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">
+              ${t.date} • ${vIcon} ${t.distanceKm} km • ${formatFullDuration(t.durationMin)}
+            </div>
+          </div>
+          <button class="primary" style="font-size: 0.72rem; padding: 4px 10px; border-radius: 6px;" onclick="event.stopPropagation(); replayHistoricalTrip('${t.id}')">Navigate</button>
+        `;
+        container.appendChild(item);
+      });
     }
 
     // ============================================================
@@ -4434,11 +5952,15 @@
       const originPt = [squad[0].lat, squad[0].lng];
       map.flyTo(originPt, 17, { animate: true, duration: 1.5 });
 
-      // 2. Show Driving Navigation UI
+      // 2. Show Driving Navigation UI & Controls
       const banner = document.getElementById('nav-driving-banner');
       const dock = document.getElementById('nav-driving-dock');
+      const rightControls = document.getElementById('gmaps-nav-right-controls');
+      const closureBanner = document.getElementById('gmaps-closure-banner');
       if (banner) banner.style.display = 'flex';
       if (dock) dock.style.display = 'flex';
+      if (rightControls) rightControls.style.display = 'flex';
+      if (closureBanner) closureBanner.style.display = 'flex';
 
       // 3. Hide background overview HUD and bottom telemetry panel for clean Google Maps view
       const navHud = document.getElementById('nav-hud');
@@ -4462,11 +5984,15 @@
     function exitNavigation() {
       isNavigating = false;
 
-      // 1. Hide Driving Navigation UI
+      // 1. Hide Driving Navigation UI & Controls
       const banner = document.getElementById('nav-driving-banner');
       const dock = document.getElementById('nav-driving-dock');
+      const rightControls = document.getElementById('gmaps-nav-right-controls');
+      const closureBanner = document.getElementById('gmaps-closure-banner');
       if (banner) banner.style.display = 'none';
       if (dock) dock.style.display = 'none';
+      if (rightControls) rightControls.style.display = 'none';
+      if (closureBanner) closureBanner.style.display = 'none';
 
       // 2. Restore bottom telemetry and Overview HUD mini button
       const hudPanel = document.querySelector('.hud-panel');
@@ -4558,7 +6084,36 @@
       }
     }
 
-    // Update Floating Google Maps HUD
+    function formatFullDuration(min) {
+      if (!min || isNaN(min)) return '--';
+      const h = Math.floor(min / 60);
+      const m = min % 60;
+      if (h >= 24) {
+        const days = Math.floor(h / 24);
+        const remH = h % 24;
+        return remH > 0 ? `${days} d ${remH} hr` : `${days} day${days > 1 ? 's' : ''}`;
+      }
+      if (h > 0) {
+        return m > 0 ? `${h} hr ${m} min` : `${h} hr`;
+      }
+      return `${m} min`;
+    }
+
+    function formatModeDuration(min) {
+      if (!min || isNaN(min)) return '--';
+      const h = Math.floor(min / 60);
+      const m = min % 60;
+      if (h >= 24) {
+        const days = Math.round(h / 24);
+        return `${days} d`;
+      }
+      if (h > 0) {
+        return m > 0 ? `${h} hr ${m}` : `${h} hr`;
+      }
+      return `${m} min`;
+    }
+
+    // Update Floating Google Maps HUD & Left Panel
     function updateNavHUD() {
       if (availableRoutes.length === 0) return;
       const r = availableRoutes[selectedRouteIndex];
@@ -4570,11 +6125,16 @@
       const arrivalDate = new Date(Date.now() + r.durationMin * 60000);
       const arrivalStr = arrivalDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      document.getElementById('nav-eta').textContent = etaStr;
-      document.getElementById('nav-distance').textContent = `${r.distanceKm} km`;
-      document.getElementById('nav-arrival').textContent = `Arrive ~${arrivalStr}`;
-      document.getElementById('nav-via-road').textContent = r.via;
-      document.getElementById('nav-status-badge').textContent = r.tag || 'Active route';
+      const navEta = document.getElementById('nav-eta');
+      const navDist = document.getElementById('nav-distance');
+      const navArr = document.getElementById('nav-arrival');
+      const navVia = document.getElementById('nav-via-road');
+      const navBadge = document.getElementById('nav-status-badge');
+      if (navEta) navEta.textContent = etaStr;
+      if (navDist) navDist.textContent = `${r.distanceKm} km`;
+      if (navArr) navArr.textContent = `Arrive ~${arrivalStr}`;
+      if (navVia) navVia.textContent = r.via;
+      if (navBadge) navBadge.textContent = r.tag || 'Active route';
 
       // Update Miniature Floating Icon badge
       const miniEta = document.getElementById('mini-eta-badge');
@@ -4582,43 +6142,72 @@
         miniEta.textContent = `${etaStr} • ${r.distanceKm} km`;
       }
 
-      // Render Route selection cards in Overview
+      // Update Travel Mode Duration Labels on Mode Bar
+      const distKmNum = parseFloat(r.distanceKm) || 0;
+      const carMin = r.durationMin;
+      const bikeMin = Math.max(3, Math.round((distKmNum / 38) * 60));
+      const trainMin = Math.max(12, Math.round(distKmNum * 1.4 + 6));
+      const walkMin = Math.max(4, Math.round(distKmNum * 12.5));
+
+      const modeTimeCar = document.getElementById('mode-time-car');
+      const modeTimeBike = document.getElementById('mode-time-bike');
+      const modeTimeTrain = document.getElementById('mode-time-train');
+      const modeTimeWalk = document.getElementById('mode-time-walk');
+      if (modeTimeCar) modeTimeCar.textContent = formatModeDuration(carMin);
+      if (modeTimeBike) modeTimeBike.textContent = formatModeDuration(bikeMin);
+      if (modeTimeTrain) modeTimeTrain.textContent = formatModeDuration(trainMin);
+      if (modeTimeWalk) modeTimeWalk.textContent = formatModeDuration(walkMin);
+
+      const carLabel = document.querySelector('#mode-btn-car .mode-label');
+      const bikeLabel = document.querySelector('#mode-btn-bike .mode-label');
+      const trainLabel = document.querySelector('#mode-btn-train .mode-label');
+      const walkLabel = document.querySelector('#mode-btn-walk .mode-label');
+      if (carLabel) carLabel.textContent = formatModeDuration(carMin);
+      if (bikeLabel) bikeLabel.textContent = formatModeDuration(bikeMin);
+      if (trainLabel) trainLabel.textContent = formatModeDuration(trainMin);
+      if (walkLabel) walkLabel.textContent = formatModeDuration(walkMin);
+
+      // Render Mode Route choice cards
+      renderModeRouteChoices();
+
+      // Render Legacy Route selection cards in Overview
       const container = document.getElementById('nav-routes-container');
-      container.innerHTML = '';
+      if (container) {
+        container.innerHTML = '';
+        availableRoutes.forEach((route, idx) => {
+          const isSel = idx === selectedRouteIndex;
+          const card = document.createElement('div');
+          card.className = `route-card ${isSel ? 'selected' : ''}`;
+          card.onclick = () => selectRoute(idx);
 
-      availableRoutes.forEach((route, idx) => {
-        const isSel = idx === selectedRouteIndex;
-        const card = document.createElement('div');
-        card.className = `route-card ${isSel ? 'selected' : ''}`;
-        card.onclick = () => selectRoute(idx);
+          const rHours = Math.floor(route.durationMin / 60);
+          const rMins = route.durationMin % 60;
+          const timeStr = rHours > 0 ? `${rHours}h ${rMins}m` : `${rMins}m`;
 
-        const rHours = Math.floor(route.durationMin / 60);
-        const rMins = route.durationMin % 60;
-        const timeStr = rHours > 0 ? `${rHours}h ${rMins}m` : `${rMins}m`;
-
-        card.innerHTML = `
-          <div style="display: flex; align-items: center; gap: 9px;">
-            <div style="font-size: 1rem; color: ${isSel ? '#3b82f6' : '#64748b'};">${isSel ? '🔘' : '⚪'}</div>
-            <div>
-              <div class="route-title" style="font-weight: 700; color: ${isSel ? '#93c5fd' : '#f8fafc'}; font-size: 0.83rem;">
-                ${route.name}
+          card.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 9px;">
+              <div style="font-size: 1rem; color: ${isSel ? '#3b82f6' : '#64748b'};">${isSel ? '🔘' : '⚪'}</div>
+              <div>
+                <div class="route-title" style="font-weight: 700; color: ${isSel ? '#93c5fd' : '#f8fafc'}; font-size: 0.83rem;">
+                  ${route.name}
+                </div>
+                <div class="route-meta" style="font-size: 0.72rem; color: #94a3b8; margin-top: 1px;">
+                  ${route.via}
+                </div>
               </div>
-              <div class="route-meta" style="font-size: 0.72rem; color: #94a3b8; margin-top: 1px;">
-                ${route.via}
+            </div>
+            <div style="text-align: right;">
+              <div style="font-weight: 800; font-size: 0.94rem; color: ${isSel ? '#4ade80' : '#e2e8f0'};">
+                ${timeStr}
+              </div>
+              <div class="route-meta" style="font-size: 0.7rem; color: #94a3b8; margin-top: 1px;">
+                ${route.distanceKm} km ${route.tag && route.tag !== 'Active route' ? `• <span style="color: ${isSel ? '#60a5fa' : '#94a3b8'}; font-weight: 600;">${route.tag}</span>` : ''}
               </div>
             </div>
-          </div>
-          <div style="text-align: right;">
-            <div style="font-weight: 800; font-size: 0.94rem; color: ${isSel ? '#4ade80' : '#e2e8f0'};">
-              ${timeStr}
-            </div>
-            <div class="route-meta" style="font-size: 0.7rem; color: #94a3b8; margin-top: 1px;">
-              ${route.distanceKm} km ${route.tag && route.tag !== 'Active route' ? `• <span style="color: ${isSel ? '#60a5fa' : '#94a3b8'}; font-weight: 600;">${route.tag}</span>` : ''}
-            </div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
+          `;
+          container.appendChild(card);
+        });
+      }
     }
 
     function selectRoute(index) {
@@ -5865,7 +7454,12 @@
     function clearTripHistory() {
       if (confirm('Delete all trip history?')) {
         localStorage.removeItem('squadnav_trip_history');
-        openHistoryModal();
+        renderDrawerHistory();
+        const modal = document.getElementById('trip-history-modal');
+        if (modal && modal.style.display === 'flex') {
+          openHistoryModal();
+        }
+        addChatMessage('🗑️ History Cleared', 'All saved trip history has been cleared.', '#94a3b8', true);
       }
     }
 
@@ -5873,7 +7467,11 @@
       const historyList = JSON.parse(localStorage.getItem('squadnav_trip_history') || '[]');
       const trip = historyList.find(t => t.id === tripId);
       if (trip && trip.destinationCoords) {
+        toggleMainMenu(false);
         closeHistoryModal();
+        if (trip.travelMode) {
+          setTravelMode(trip.travelMode);
+        }
         selectDestination(trip.destinationCoords[0], trip.destinationCoords[1], trip.destination);
       }
     }
@@ -5975,6 +7573,7 @@
     }
 
     // 10. Initial App Initialization
+    applyTheme(currentTheme);
     initFirebaseSync();
     checkInviteUrlOnLoad();
     renderRoster();
